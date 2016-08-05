@@ -13,6 +13,12 @@
 # try config-based find first
 find_package(${CMAKE_FIND_PACKAGE_NAME} ${${CMAKE_FIND_PACKAGE_NAME}_FIND_VERSION} CONFIG QUIET)
 
+# compatibility fix find vs config @Neithy
+if(${GLEW_FOUND})
+	add_library(GLEW SHARED IMPORTED)
+	copy_imported_target_properties(GLEW::GLEW GLEW)
+endif()
+
 # use regular old-style approach
 if(NOT ${CMAKE_FIND_PACKAGE_NAME}_FOUND)
 

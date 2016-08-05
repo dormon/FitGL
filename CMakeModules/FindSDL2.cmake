@@ -55,6 +55,13 @@
 # This needed to change because "proper" SDL convention
 # is #include "SDL.h", not <SDL2/SDL.h>. This is done for portability
 # reasons because not all systems place things in SDL2/ (see FreeBSD).
+#
+#
+#
+# Modified by Neithy
+# added check for SDL2_DIR env variable
+# change include fom <SDL.h> to <SDL2/SDL.h>
+
 
 #=============================================================================
 # Copyright 2003-2009 Kitware, Inc.
@@ -87,10 +94,11 @@ if(NOT ${CMAKE_FIND_PACKAGE_NAME}_FOUND)
       /opt
    )
 
-   find_path(SDL2_INCLUDE_DIR SDL.h
+   find_path(SDL2_INCLUDE_DIR SDL2/SDL.h
       HINTS
       $ENV{SDL2DIR}
-      PATH_SUFFIXES include/SDL2 include
+      $ENV{SDL2_DIR}
+      PATH_SUFFIXES include
       PATHS ${SDL2_SEARCH_PATHS}
    )
 
@@ -98,6 +106,7 @@ if(NOT ${CMAKE_FIND_PACKAGE_NAME}_FOUND)
       NAMES SDL2
       HINTS
       $ENV{SDL2DIR}
+      $ENV{SDL2_DIR}
       PATH_SUFFIXES lib64 lib
       PATHS ${SDL2_SEARCH_PATHS}
    )
@@ -112,6 +121,7 @@ if(NOT ${CMAKE_FIND_PACKAGE_NAME}_FOUND)
             NAMES SDL2main
             HINTS
             $ENV{SDL2DIR}
+            $ENV{SDL_2DIR}
             PATH_SUFFIXES lib64 lib
             PATHS ${SDL2_SEARCH_PATHS}
          )
