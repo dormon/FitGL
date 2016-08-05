@@ -1,0 +1,21 @@
+//#PIXEL_PER_THREAD
+//#WORKGROUP_SIZE
+
+//layout(local_size_x=1,local_size_y=WORKGROUP_SIZE)in;
+layout(local_size_x=1,local_size_y=WORKGROUP_SIZE)in;
+
+layout(binding=0) uniform sampler2D tex;
+layout(binding=0, rgba8ui) writeonly uniform uimage2D texWrite;
+
+uniform bool f=false;
+void main(){
+	for(int i=0;i<PIXEL_PER_THREAD;i++){
+		ivec2 itc = ivec2(gl_GlobalInvocationID.xy);
+		itc.x = itc.x*PIXEL_PER_THREAD+i;
+
+		vec4 color=texelFetch(tex,itc,0);
+		
+		if(color.x>22)
+			imageStore(texWrite,itc,ivec4(0,0,0,0));
+	}
+}

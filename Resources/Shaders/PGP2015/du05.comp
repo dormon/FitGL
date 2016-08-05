@@ -1,0 +1,156 @@
+#version 430
+layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
+
+struct SimVertex {
+	// pozice
+	vec3 position;
+	// normala
+	vec3 normal;
+	// texturovaci souradnice
+	vec2 tc;
+	// rychlost
+	vec3 velocity;
+	// zarovnani
+	float pad;
+	// id sousednich vertexu kam vede pruzina
+	int connections[16];
+	// delka pruzin
+	float lengths[16];
+};
+
+// buffer na cteni
+layout(std430, binding = 0) readonly buffer readBuffer{
+    SimVertex inVertices[];
+};
+
+// buffer pro zapis
+layout(std430, binding = 1) writeonly buffer writeBuffer{
+    SimVertex outVertices[];
+};
+
+// pocet vertexu
+uniform int vertexCount;
+// krok casu
+uniform float dt;
+// cas pro animaci vetru - klavesa A
+uniform float time;
+// zapnuti gravitace - klavesa G
+uniform bool gravityEnabled;
+// zapnuti vetru - klavesa V
+uniform bool windEnabled;
+
+
+/* Konstanty pro simulaci */
+/* Muzete zmenit dle potreby*/
+
+// tihove zrychleni
+uniform vec3 gravity = vec3(0,-20,0);
+// sila vetru
+uniform float windStrength = 0.8;
+// hmotnost castic latky
+uniform float mass = 0.01;
+// tuhost pruzin
+uniform float stiffness = 100;
+// utum rychlosti
+uniform float decay = 0.0002;
+
+/* Vrati tihove ZRYCHLENI */
+vec3 getGravity(){
+	return gravityEnabled?gravity:vec3(0);
+}
+
+/* Vypocet smeru vetru */
+vec3 getWindDir(){
+	float angle = (0.5-sin(time*.5))*3.14*0.3;
+	return vec3(sin(angle), 0, cos(angle));
+}
+
+/* Vypocet SILY vetru na castici, zavisi na normale*/
+vec3 getWind(vec3 normal){
+	vec3 windDir = getWindDir();
+	float c = abs(dot(windDir,normal));
+	return windEnabled? c*windDir*windStrength:vec3(0);
+}
+
+/* Kontrola zda je bod pevny */
+bool isFixed(uint id){
+	return inVertices[id].connections[0]<0;
+}
+
+/* Vypocita normalu pro bod */
+vec3 getNormal(uint id){
+	vec3 normal = vec3(0);
+	vec3 pos = inVertices[id].position;
+	for(int i=0;i<4;i++){
+		int p1i = inVertices[id].connections[i];
+		int p2i = inVertices[id].connections[(i+1)%4];
+		if(p1i>=0&&p2i>=0){
+			vec3 p1 = inVertices[p1i].position;
+			vec3 p2 = inVertices[p2i].position;
+			normal+=normalize(cross(p1-pos,p2-pos));
+		}
+	}
+	return normalize(normal);
+}
+
+void main(){
+	// id aktualniho vlakna
+	uint id = gl_GlobalInvocationID.x;
+	
+	if(id<vertexCount){
+		// nacteni pozice, rychlosti, normaly jednoho vertexu
+		vec3 pos = inVertices[id].position;
+		vec3 velocity = inVertices[id].velocity;
+		vec3 normal = inVertices[id].normal;
+
+
+		/**** STUDENT DOPLNI ****/
+		/* Vypocet sil pusobicich na bod
+		 * a podle toho upraveni pozice a rychlosti bodu
+		 */
+		/* Simulace nemusi vypadat uplne presne jako ve videu.
+		 * Staci, kdyz se vam povede vlajku rozhypat tak, aby to vypadalo pekne*/
+		/* Postup:
+		 * zkontrolovat zda neni bod pevny
+		 * poscitat silu vsech okolnich pruzin
+		 * pridat silu vetru 
+		 * prevest silu na zrychleni
+		 * pridat tihove zrychleni
+		 * utlum puvodni rychlosti
+		 * pridat zrychleni k rychlosti
+		 * posunout bod podle rychlosti
+		 */
+		if(!isFixed(id)){
+			vec3 force = vec3(0);
+
+			for (int i = 0; i<16; i++) {
+				int index = inVertices[id].connections[i];
+				if (index >= 0) {
+					vec3 pos2 = inVertices[index].position;
+					vec3 dir = pos2 - pos;
+					float c = (1 - length(dir) / inVertices[id].lengths[i]);
+					vec3 f = -normalize(dir)*c;
+					force += f*stiffness;
+				 }
+			}
+			force += getWind(normal);
+			vec3 a = force/mass;
+			a+=getGravity();
+
+			velocity*=(1-decay);
+			velocity+=a*dt;
+			pos+=velocity*dt;
+
+			// kolize se sloupem
+			if(length(pos.xz)<0.5){
+				pos.xz=normalize(pos.xz)*0.5;
+				velocity*=0.9;
+			}
+		}
+		
+		// ulozeni pozice, rychlosti, normaly
+		outVertices[id].velocity = velocity;
+		outVertices[id].position = pos;
+		outVertices[id].normal = getNormal(id);
+	}
+}

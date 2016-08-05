@@ -1,0 +1,30 @@
+//#PIXEL_PER_THREAD
+//#WORKGROUP_SIZE
+
+//layout(local_size_x=1,local_size_y=WORKGROUP_SIZE)in;
+layout(local_size_x=1,local_size_y=WORKGROUP_SIZE)in;
+
+layout(binding=0, rgba8ui) writeonly uniform uimage2D tex;
+
+uniform bool noise;
+
+ivec4 hash(ivec2 id){
+	return ivec4((id.x*id.x*1103515245+12345)%255,
+				(id.x*id.y*1103515245+12345)%255,
+				(id.y*id.y*1103515245+12345)%255,
+				(id.y*id.x*1103515245+12345)%255);
+};
+
+void main(){
+	for(int i=0;i<PIXEL_PER_THREAD;i++){
+		ivec2 itc = ivec2(gl_GlobalInvocationID.xy);
+		itc.x = itc.x*PIXEL_PER_THREAD+i;
+
+		//ivec4 color = ivec4(255,0,0,0);
+		//ivec4 color = int((itc.x&1)==(itc.y&1))*ivec4(255,255,255,255);
+		ivec4 color;
+		if(noise) color = hash(itc);
+		else color = ivec4(0,0,0,0);
+		imageStore(tex,itc,color);
+	}
+}
