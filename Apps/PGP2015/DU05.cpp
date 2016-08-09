@@ -9,31 +9,18 @@ using namespace std;
 #define PI 3.1415926535897932384626433832795
 
 DU05::DU05() {
-	// mys
-	rmbPressed = false;
-	lmbPressed = false;
-	posx = 0, posy = 0;
 	//kamera
-	rotx = 170, roty = 25, zoom = 80;
-	center = glm::vec3(10, 40, 10);
-	//aniamce
-	animationEnabled = true;
-	time = 0;
-	lastFrameTics = 0;
-	//debug
-	wireframe = false;
-	debug = false;
-	gravityEnabled = true;
-	windEnabled = true;
-	// obraz
-	fullscreen = false;	
-	multisample = 16;
+	camera.rotx = 170;
+	camera.roty = 25;
+	camera.zoom = 80;
+	camera.center = glm::vec3(10, 40, 10);
+	multisample = 4;
+
 	//svelto
 	lightPosition = glm::vec3(-300, 300,150);
+
 	// velikost shadowmapy
 	smSize = 4096;
-	//
-	activeBuffer = 0;
 }
 
 void DU05::init() {
@@ -409,8 +396,8 @@ void DU05::draw() {
 		time += dt;
 	}
 
-	/* M atice */
-	updateMatrix();
+	/* Matice */
+	camera.update();
 
 	// simulace
 	updateScene(dt); 
@@ -437,8 +424,8 @@ void DU05::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(drawProgram);
-	glUniformMatrix4fv(glGetUniformLocation(drawProgram, "v"), 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(glGetUniformLocation(drawProgram, "p"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(glGetUniformLocation(drawProgram, "v"), 1, GL_FALSE, glm::value_ptr(camera.view));
+	glUniformMatrix4fv(glGetUniformLocation(drawProgram, "p"), 1, GL_FALSE, glm::value_ptr(camera.projection));
 	glUniformMatrix4fv(glGetUniformLocation(drawProgram, "smb"), 1, GL_FALSE, glm::value_ptr(shadowMatBias));
 	glUniform3fv(glGetUniformLocation(drawProgram, "lightPosition"), 1, glm::value_ptr(lightPosition));
 
@@ -456,51 +443,6 @@ void DU05::draw() {
 	}
 
 	drawScene(drawProgram);
-}
-
-void DU05::onMouseMove(int dx, int dy, int x, int y) {
-	if (rmbPressed || lmbPressed) {
-		rotx += dx;
-		roty += dy;
-		roty = max(min(roty, 89), -89);
-	}
-	posx = x;
-	posy = y;
-}
-
-void DU05::onMousePress(Uint8 button, int x, int y) {
-	switch (button) {
-	case SDL_BUTTON_LEFT:
-		lmbPressed = true;
-		break;
-	case SDL_BUTTON_MIDDLE:
-		break;
-	case SDL_BUTTON_RIGHT:
-		rmbPressed = true;
-		break;
-	}
-}
-
-void DU05::onMouseRelease(Uint8 button, int x, int y) {
-	switch (button) {
-	case SDL_BUTTON_LEFT:
-		lmbPressed = false;
-		break;
-	case SDL_BUTTON_MIDDLE:
-		break;
-	case SDL_BUTTON_RIGHT:
-		rmbPressed = false;
-		break;
-	}
-}
-
-void DU05::onMouseWheel(int delta) {
-	if (delta > 0) {
-		zoom /= 1.1;
-	}
-	else {
-		zoom *= 1.1;
-	}
 }
 
 void DU05::onKeyPress(SDL_Keycode key, Uint16 mod) {
@@ -525,23 +467,6 @@ void DU05::onKeyPress(SDL_Keycode key, Uint16 mod) {
 		break;
 	}
 }
-
-void DU05::updateMatrix() {
-	model = glm::mat4(1.0);
-
-	float radx = glm::radians((float)rotx);
-	float rady = glm::radians((float)roty);
-	float x = zoom * cos(rady) * cos(radx);
-	float y = zoom * sin(rady);
-	float z = zoom * cos(rady) * sin(radx);
-
-	glm::vec3 eye(x, y, z);
-	eye += center;
-	glm::vec3 up(0, 1, 0);
-	view = glm::lookAt(eye, center, up);
-	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 1000.0f);
-}
-
 
 int main(int /*argc*/, char ** /*argv*/) {
 	DU05 app;

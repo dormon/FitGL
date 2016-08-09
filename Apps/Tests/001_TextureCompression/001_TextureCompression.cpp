@@ -1,12 +1,10 @@
 #include "001_TextureCompression.h"
 #include <iostream>
 
-#define TEX_SIZE 1024*16
+#define TEX_SIZE 1024*8
 #define PIXELS (TEX_SIZE*TEX_SIZE)
-#define WORKGROUP_SIZE 32
-#define PIXEL_PER_THREAD 32
-#define WORKGROUPS (PIXELS/(WORKGROUP_SIZE*PIXEL_PER_THREAD))
-
+#define WORKGROUP_SIZE_X 16
+#define WORKGROUP_SIZE_Y 16
 
 TextureCompression::TextureCompression() {
 }
@@ -14,22 +12,24 @@ TextureCompression::TextureCompression() {
 void TextureCompression::init() {
 	std::string prefix = "../Resources/Shaders/Tests/001_TextureCompression/";
 
-	std::string def = "#version 450\n#define WORKGROUP_SIZE " + std::to_string(WORKGROUP_SIZE) + "\n";
-	def += "#define PIXEL_PER_THREAD " + std::to_string(PIXEL_PER_THREAD) + "\n";
+	std::string def = "#version 450\n";
+	def += "#define WORKGROUP_SIZE_X " + std::to_string(WORKGROUP_SIZE_X) + "\n";
+	def += "#define WORKGROUP_SIZE_Y " + std::to_string(WORKGROUP_SIZE_Y) + "\n";
+	def += "#define TEX_SIZE " + std::to_string(TEX_SIZE) + "\n";
 	std::cout << def << std::endl;
 
 	auto cs = compileShader(GL_COMPUTE_SHADER, def + loadFile(prefix + "write.comp"));
-	programWrite = linkShader(1, cs);
-
+	programWriteBlack = linkShader(1, cs);
+	cs = compileShader(GL_COMPUTE_SHADER, def+"#define NOISE\n" + loadFile(prefix + "write.comp"));
+	programWriteNoise = linkShader(1, cs);
+	cs = compileShader(GL_COMPUTE_SHADER, def + loadFile(prefix + "read.comp"));
+	programRead = linkShader(1, cs);
 
 	auto vs = compileShader(GL_VERTEX_SHADER, loadFile(prefix + "draw.vert"));
 	auto gs = compileShader(GL_GEOMETRY_SHADER, loadFile(prefix + "draw.geo"));
 	auto fs = compileShader(GL_FRAGMENT_SHADER, loadFile(prefix + "draw.frag"));
 	program = linkShader(3, vs, gs, fs);
-
-	cs = compileShader(GL_COMPUTE_SHADER, def+loadFile(prefix + "read.comp"));
-	programRead = linkShader(1, cs);
-
+	
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
 	/*char *data = new char[PIXELS * 4];
@@ -42,17 +42,16 @@ void TextureCompression::init() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	glBindImageTexture(0, tex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8UI);
-	
+
 	glGenQueries(2, queries);
 
 	std::cout << "\nBlack image " << TEX_SIZE << "x" << TEX_SIZE << "\n";
-	glUseProgram(programWrite);
-	glUniform1i(glGetUniformLocation(programWrite, "noise"), false);
+	glUseProgram(programWriteBlack);
 	compute();
 
+
 	std::cout << "Noise image " << TEX_SIZE << "x" << TEX_SIZE << "\n";
-	glUseProgram(programWrite); 
-	glUniform1i(glGetUniformLocation(programWrite, "noise"), true);	
+	glUseProgram(programWriteNoise);
 	compute();
 
 
@@ -61,15 +60,17 @@ void TextureCompression::init() {
 }
 
 void TextureCompression::compute() {
-	for (int i = 0; i < 20; i++) {
-		glUseProgram(programWrite);
+	for (int i = 0; i < 200; i++) {
 		glBeginQuery(GL_TIME_ELAPSED, queries[0]);
-		glDispatchCompute(TEX_SIZE / PIXEL_PER_THREAD, TEX_SIZE / WORKGROUP_SIZE, 1);
-		glEndQuery(GL_TIME_ELAPSED);
+
+		glDispatchCompute(TEX_SIZE / WORKGROUP_SIZE_X, TEX_SIZE / WORKGROUP_SIZE_Y, 1);
 		
+		glEndQuery(GL_TIME_ELAPSED);
+
 		glUseProgram(programRead);
 		glBeginQuery(GL_TIME_ELAPSED, queries[1]);
-		glDispatchCompute(TEX_SIZE / PIXEL_PER_THREAD, TEX_SIZE / WORKGROUP_SIZE, 1);
+
+		glDispatchCompute(TEX_SIZE / WORKGROUP_SIZE_X, TEX_SIZE / WORKGROUP_SIZE_Y, 1);
 		glEndQuery(GL_TIME_ELAPSED);
 
 		unsigned int time;

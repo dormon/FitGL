@@ -14,6 +14,7 @@ set(FRAMEWORK_INCLUDES
 
 set(FRAMEWORK_SOURCES
   LoadTextFile.cpp
+  BaseApp.cpp
   )
 
 add_library(${LIB_NAME}

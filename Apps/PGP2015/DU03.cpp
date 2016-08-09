@@ -8,19 +8,9 @@
 
 using namespace std;
 
-DU03::DU03(){
-	rmbPressed = false;
-	lmbPressed = false;
-	posx = 0, posy = 0;
-	rotx = 170, roty = 25, zoom = 4;
-	//rotx = 180, roty = 88, zoom = 1.22;
-	
-	animationEnabled = false;
-	time = 0;
-	lastFrameTics = 0;
-	wireframe = false;
-	debug = false;
-	//fullscreen = true;	
+DU03::DU03(){	
+	camera.rotx = 170;
+	camera.roty = 25; 
 }
 
 void DU03::init() {
@@ -101,7 +91,7 @@ void DU03::draw() {
 	}
 
 	/* Matice */
-	updateMatrix();
+	camera.update();
 
 	glViewport(0, 0, width, height);
 
@@ -113,9 +103,9 @@ void DU03::draw() {
 
 	glUseProgram(program);
 
-	glUniformMatrix4fv(mUniform, 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(vUniform, 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(pUniform, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(mUniform, 1, GL_FALSE, glm::value_ptr(glm::mat4(1)));
+	glUniformMatrix4fv(vUniform, 1, GL_FALSE, glm::value_ptr(camera.view));
+	glUniformMatrix4fv(pUniform, 1, GL_FALSE, glm::value_ptr(camera.projection));
 
 	glUniform1i(timeUniform, time);
 	glUniform1i(animationEnabledUniform, animationEnabled);
@@ -141,50 +131,6 @@ void DU03::draw() {
 	}
 }
 
-void DU03::onMouseMove(int dx, int dy, int x, int y){
-	if (rmbPressed||lmbPressed) {
-		rotx += dx;
-		roty += dy;
-		roty = max(min(roty, 89), -89);
-	}
-	posx = x;
-	posy = y;
-}
-
-void DU03::onMousePress(Uint8 button, int x, int y){
-	switch (button) {
-	case SDL_BUTTON_LEFT:
-		lmbPressed = true;
-		break;
-	case SDL_BUTTON_MIDDLE:
-		break;
-	case SDL_BUTTON_RIGHT:
-		rmbPressed = true;
-		break;
-	}
-}
-
-void DU03::onMouseRelease(Uint8 button, int x, int y){
-	switch (button) {
-	case SDL_BUTTON_LEFT:
-		lmbPressed = false;
-		break;
-	case SDL_BUTTON_MIDDLE:
-		break;
-	case SDL_BUTTON_RIGHT:
-		rmbPressed = false;
-		break;
-	}
-}
-
-void DU03::onMouseWheel(int delta){
-	if (delta > 0) {
-		zoom /= 1.1;
-	}else {
-		zoom *= 1.1;
-	}
-}
-
 void DU03::onKeyPress(SDL_Keycode key, Uint16 mod){
 	switch (key) {
 	case SDLK_ESCAPE:
@@ -200,22 +146,6 @@ void DU03::onKeyPress(SDL_Keycode key, Uint16 mod){
 		wireframe = !wireframe;
 		break;
 	}
-}
-
-void DU03::updateMatrix() {
-	model = glm::mat4(1.0);
-
-	float radx = glm::radians((float)rotx);
-	float rady = glm::radians((float)roty);
-	float x = zoom * cos(rady) * cos(radx);
-	float y = zoom * sin(rady);
-	float z = zoom * cos(rady) * sin(radx);
-
-	glm::vec3 eye(x, y, z);
-	glm::vec3 center(0, 0, 0);
-	glm::vec3 up(0, 1, 0);
-	view = glm::lookAt(eye, center, up);
-	projection = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
 }
 
 int main(int /*argc*/, char ** /*argv*/){

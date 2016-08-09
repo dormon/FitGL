@@ -19,32 +19,14 @@ protected:
 	*/
 	virtual void draw();
 
-	virtual void onMouseMove(int dx, int dy, int x, int y);
 	virtual void onMousePress(Uint8 button, int x, int y);
-	virtual void onMouseRelease(Uint8 button, int x, int y);
-	virtual void onMouseWheel(int delta);
 	virtual void onKeyPress(SDL_Keycode key, Uint16 mod);
-
-
-	void updateMatrix();
 	void insertCube(glm::vec3 pos);
-
-	/* Mys */
-	float zoom;
-	bool rmbPressed;
-	int posx, posy;
-	int rotx, roty;
-	
-
-	/* Matice */
-	glm::mat4 model;
-	glm::mat4 view;
-	glm::mat4 projection;
 
 	/* Kostky */
 	static const int MAX_CUBES = 1024;
 	static const size_t cubeSize = sizeof(float) * 3;
-	int cubeCount;
+	int cubeCount=0;
 	std::vector<glm::vec3> cubes;
 	Uint32 faceId;
 	Uint32 cubeId;

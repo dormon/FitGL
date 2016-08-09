@@ -2,20 +2,30 @@
 //#WORKGROUP_SIZE
 
 //layout(local_size_x=1,local_size_y=WORKGROUP_SIZE)in;
-layout(local_size_x=1,local_size_y=WORKGROUP_SIZE)in;
+layout(local_size_x=32,local_size_y=8)in;
 
 layout(binding=0) uniform sampler2D tex;
-layout(binding=0, rgba8ui) writeonly uniform uimage2D texWrite;
+layout(binding=0, rgba8ui) uniform uimage2D texWrite;
 
 uniform bool f=false;
 void main(){
-	for(int i=0;i<PIXEL_PER_THREAD;i++){
+	//for(int i=0;i<PIXEL_PER_THREAD;i++){
+	/*for(int i=0;i<2048;i++){
 		ivec2 itc = ivec2(gl_GlobalInvocationID.xy);
-		itc.x = itc.x*PIXEL_PER_THREAD+i;
+		//itc.x = itc.x*PIXEL_PER_THREAD+i;
+		//itc =int(gl_WorkGroupID.x*PIXEL_PER_THREAD*gl_WorkGroupSize.x+gl_LocalInvocationID.x+gl_WorkGroupSize.x*i);
+		//itc.y=2048*itc.y+i;
+		itc.y=itc.y+i*8;
 
 		vec4 color=texelFetch(tex,itc,0);
 		
 		if(color.x>22)
 			imageStore(texWrite,itc,ivec4(0,0,0,0));
-	}
+	}*/
+	ivec2 itc = ivec2(gl_GlobalInvocationID.xy);
+	//vec4 color=texelFetch(tex,itc,0);
+	vec4 color=texture(tex,itc/vec2(8192,8192),0);
+		
+	if(color.x>22)
+		imageStore(texWrite,itc,ivec4(0,0,0,0));
 }

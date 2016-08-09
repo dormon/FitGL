@@ -16,13 +16,10 @@ glm::vec3 directions[6] = {
 };
 
 DU02::DU02(){
-	cubeCount = 0;
 	resizable = false;
-	zoom = 10;
-	rmbPressed = false;
-	posx = 0, posy = 0;
-	rotx = 20, roty = 45;
-	fullscreen = true;
+	camera.rotx = 20;
+	camera.roty = 45;
+	camera.button = SDL_BUTTON_RIGHT;
 }
 
 void DU02::init() {
@@ -179,7 +176,7 @@ void DU02::draw() {
 	glViewport(0, 0,width, height);
 
 	/* aktualizace matic */
-	updateMatrix();
+	camera.update();
 
 	
 	/*
@@ -203,9 +200,9 @@ void DU02::draw() {
 	glUseProgram(programCubes);
 
 	/* Nastaveni uniforem do programu*/
-	glUniformMatrix4fv(mUniform, 1, GL_FALSE, glm::value_ptr(model));
-	glUniformMatrix4fv(vUniform, 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(pUniform, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(mUniform, 1, GL_FALSE, glm::value_ptr(glm::mat4(1)));
+	glUniformMatrix4fv(vUniform, 1, GL_FALSE, glm::value_ptr(camera.view));
+	glUniformMatrix4fv(pUniform, 1, GL_FALSE, glm::value_ptr(camera.projection));
 
 	/* Pripojeni textury */
 	glActiveTexture(GL_TEXTURE0);
@@ -219,8 +216,8 @@ void DU02::draw() {
 
 
 	Uint32 id=0;
-	int x = posx;
-	int y = height - posy;
+	int x = camera.posx;
+	int y = height - camera.posy;
 	/**** STUDENT DOPLNI ****/
 	/* Vycteni jednoho pixelu z framebuffer z pozice pod ukazatelem mysi (promenna x,y)
 	* Cteme pouze z color bufferu, ktery obsahuje ID
@@ -278,16 +275,6 @@ void DU02::draw() {
 	glDrawArrays(GL_POINTS, 0, 1);
 }
 
-void DU02::onMouseMove(int dx, int dy, int x, int y){
-	if (rmbPressed) {
-		rotx += dx;
-		roty += dy;
-		roty = max(min(roty, 89), -89);
-	}
-	posx = x;
-	posy = y;
-}
-
 void DU02::onMousePress(Uint8 button, int x, int y){
 	switch (button) {
 	case SDL_BUTTON_LEFT:
@@ -295,31 +282,6 @@ void DU02::onMousePress(Uint8 button, int x, int y){
 			insertCube(cubes[cubeId] + directions[faceId]);
 		}
 		break;
-	case SDL_BUTTON_MIDDLE:
-		break;
-	case SDL_BUTTON_RIGHT:
-		rmbPressed = true;
-		break;
-	}
-}
-
-void DU02::onMouseRelease(Uint8 button, int x, int y){
-	switch (button) {
-	case SDL_BUTTON_LEFT:
-		break;
-	case SDL_BUTTON_MIDDLE:
-		break;
-	case SDL_BUTTON_RIGHT:
-		rmbPressed = false;
-		break;
-	}
-}
-
-void DU02::onMouseWheel(int delta){
-	if (delta > 0) {
-		zoom /= 1.1;
-	}else {
-		zoom *= 1.1;
 	}
 }
 
@@ -328,22 +290,6 @@ void DU02::onKeyPress(SDL_Keycode key, Uint16 mod){
 	case SDLK_ESCAPE:
 		quit();
 	}
-}
-
-void DU02::updateMatrix(){
-	model = glm::mat4(1.0);
-	
-	float radx = glm::radians((float)rotx);
-	float rady = glm::radians((float)roty);
-	float x = zoom * cos(rady) * cos(radx);
-	float y = zoom * sin(rady);
- 	float z = zoom * cos(rady) * sin(radx);
-	
-	glm::vec3 eye(x,y,z);
-	glm::vec3 center(0,0,0);
-	glm::vec3 up(0,1,0);
-	view = glm::lookAt(eye, center, up);
-	projection = glm::perspective(45.0f,(float)width/(float)height,0.1f,1000.0f);
 }
 
 void DU02::insertCube(glm::vec3 pos){

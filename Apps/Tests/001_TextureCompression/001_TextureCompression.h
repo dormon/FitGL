@@ -16,7 +16,8 @@ protected:
 
 	GLuint program;
 	GLuint programRead;
-	GLuint programWrite;
+	GLuint programWriteBlack;
+	GLuint programWriteNoise;
 	GLuint tex;
 	GLuint vao;
 };

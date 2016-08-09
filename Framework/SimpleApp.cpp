@@ -1,31 +1,33 @@
 #include "SimpleApp.h"
 
+#include <algorithm>
 #include <fstream>
 #include <iterator>
 #include <stdexcept>
 
 using namespace std;
 
-SimpleApp::SimpleApp(){
-	width = 1024;
-	height = 768;
-	resizable = true;
-	fullscreen = false;	
-	multisample = 1;
+SimpleApp::SimpleApp() {
 }
 
-SimpleApp::~SimpleApp(){
+SimpleApp::~SimpleApp() {
 }
 
-int SimpleApp::run(){
+int SimpleApp::run() {
+	bool initOK = false;
 	try {
 		initGL();
 		init();
-
+		camera.resize(width, height);
+		initOK = true;
+	}catch (const exception &e) {
+		cerr <<e.what();
+	}
+	try {
 		SDL_Event e;
 		bool quit = false;
 		while (!quit) {
-		
+
 			while (SDL_PollEvent(&e)) {
 				switch (e.type) {
 				case SDL_QUIT:
@@ -38,15 +40,19 @@ int SimpleApp::run(){
 					onKeyRelease(e.key.keysym.sym, e.key.keysym.mod);
 					break;
 				case SDL_MOUSEMOTION:
-					onMouseMove(e.motion.xrel,e.motion.yrel,e.motion.x,e.motion.y);
+					camera.move(e.motion.xrel, e.motion.yrel, e.motion.x, e.motion.y);
+					onMouseMove(e.motion.xrel, e.motion.yrel, e.motion.x, e.motion.y);
 					break;
 				case SDL_MOUSEBUTTONDOWN:
+					camera.press(e.button.button);
 					onMousePress(e.button.button, e.button.x, e.button.y);
 					break;
 				case SDL_MOUSEBUTTONUP:
-					onMouseRelease(e.button.button,e.button.x,e.button.y);
+					camera.release(e.button.button);
+					onMouseRelease(e.button.button, e.button.x, e.button.y);
 					break;
 				case SDL_MOUSEWHEEL:
+					camera.wheel(e.wheel.y);
 					onMouseWheel(e.wheel.y);
 					break;
 
@@ -56,15 +62,26 @@ int SimpleApp::run(){
 						width = e.window.data1;
 						height = e.window.data2;
 						onResize(width, height);
+						camera.resize(width, height);
 						break;
-					
+
 					}
-					break;				
+					break;
 				}
 			}
 
 
-			draw();
+			if (initOK)draw();
+			frames++;
+			int now = SDL_GetTicks();
+			int dif = now - fpsTimer;
+			if (dif > 1000) {
+				float fps = 1000.0*float(frames) / dif;
+				string title = "FPS: " + std::to_string(fps);
+				SDL_SetWindowTitle(window, title.c_str());
+				fpsTimer = now;
+				frames = 0;
+			}
 			SDL_GL_SwapWindow(window);
 		}
 
@@ -83,13 +100,13 @@ int SimpleApp::run(){
 	return 0;
 }
 
-void SimpleApp::quit(){
+void SimpleApp::quit() {
 	SDL_Event event;
 	event.type = SDL_QUIT;
 	SDL_PushEvent(&event);
 }
 
-void SimpleApp::texImageFileBMP(GLuint target, GLuint level, GLuint internalFormat, std::string file){
+void SimpleApp::texImageFileBMP(GLuint target, GLuint level, GLuint internalFormat, std::string file) {
 	SDL_Surface* surface = SDL_LoadBMP(file.c_str());
 	if (!surface) throw "Failed to load texture " + file + " error:" + SDL_GetError() + "\n";
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -109,11 +126,11 @@ void SimpleApp::texImageFileBMP(GLuint target, GLuint level, GLuint internalForm
 	}
 }
 
-GLuint SimpleApp::textureFromBMP(std::string file){
+GLuint SimpleApp::textureFromBMP(std::string file) {
 	GLuint tex;
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	texImageFileBMP(GL_TEXTURE_2D,0,GL_RGB,file);
+	texImageFileBMP(GL_TEXTURE_2D, 0, GL_RGB, file);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	return tex;
@@ -147,7 +164,7 @@ string SimpleApp::getProgramInfo(GLuint shader) {
 	return log;
 }
 
-GLuint SimpleApp::compileShader(const GLenum type, string src){
+GLuint SimpleApp::compileShader(const GLenum type, string src) {
 	GLuint shader = glCreateShader(type);
 	const char * srcPtr = src.c_str();
 	glShaderSource(shader, 1, &srcPtr, NULL);
@@ -159,7 +176,7 @@ GLuint SimpleApp::compileShader(const GLenum type, string src){
 	return shader;
 }
 
-GLuint SimpleApp::linkShader(int count, ...){
+GLuint SimpleApp::linkShader(int count, ...) {
 	GLuint program = glCreateProgram();
 
 	// Attach shaders
@@ -184,6 +201,7 @@ GLuint SimpleApp::linkShader(int count, ...){
 }
 
 
+
 #ifdef __linux__
 #define __stdcall
 #endif
@@ -200,32 +218,32 @@ void SimpleApp::initGL() {
 		string er = string("SDL_INIT_ERROR") + SDL_GetError();
 		throw er;
 	}
-	
+
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 
-	if (multisample > 1){
+	if (multisample > 1) {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
 	}
 	/* Window */
 	SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-	window = SDL_CreateWindow("OpenGL Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width,height,
+	window = SDL_CreateWindow("OpenGL Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height,
 		SDL_WINDOW_OPENGL
-		| (resizable?SDL_WINDOW_RESIZABLE:0)
-		| (fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0));
+		| (resizable ? SDL_WINDOW_RESIZABLE : 0)
+		| (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
 	SDL_GetWindowSize(window, &width, &height);
-	
+
 
 	if (window == NULL) {
 		string er = string("SDL_CreateWindow") + SDL_GetError();
 		throw er;
 	}
 	atexit(SDL_Quit);
-	
+
 	/* Context */
 	context = SDL_GL_CreateContext(window);
 	if (SDL_GL_SetSwapInterval(-1) == -1) {
@@ -246,7 +264,52 @@ void SimpleApp::initGL() {
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
 	glDebugMessageControl(GL_DONT_CARE, GL_DEBUG_TYPE_PERFORMANCE, GL_DONT_CARE, 0, NULL, GL_FALSE);
-	glDebugMessageCallback((GLDEBUGPROC)debugMessageCallback, NULL);	
+	glDebugMessageCallback((GLDEBUGPROC)debugMessageCallback, NULL);
 
 }
 
+void SimpleApp::OrbitCamera::resize(int w, int h){
+	width = w; height = h;
+}
+
+void SimpleApp::OrbitCamera::update(){
+	float radx = glm::radians((float)rotx);
+	float rady = glm::radians((float)roty);
+	float x = zoom * cos(rady) * cos(radx);
+	float y = zoom * sin(rady);
+	float z = zoom * cos(rady) * sin(radx);
+
+	eye = glm::vec3(x, y, z);
+	eye += center;
+	up = glm::vec3(0, 1, 0);
+	view = glm::lookAt(eye, center, up);
+	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, near, far);
+
+}
+
+void SimpleApp::OrbitCamera::wheel(int d) {
+	float c = 1.1;
+	zoom = d < 0 ? zoom*c : zoom / c;
+}
+
+void SimpleApp::OrbitCamera::press(Uint8 b) {
+	if (button == b) {
+		pressed = true;
+	}
+}
+
+void SimpleApp::OrbitCamera::release(Uint8 b) {
+	if (button == b) {
+		pressed = false;
+	}
+}
+
+void SimpleApp::OrbitCamera::move(int dx, int dy, int x, int y) {
+	if (pressed) {
+		rotx += dx;
+		roty += dy;
+		roty = max(min(roty, 89), -89);
+	}
+	posx = x;
+	posy = y;
+}

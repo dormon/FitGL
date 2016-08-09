@@ -58,14 +58,7 @@ protected:
 	virtual void draw();
 
 	/* Input Eventy */
-	virtual void onMouseMove(int dx, int dy, int x, int y);
-	virtual void onMousePress(Uint8 button, int x, int y);
-	virtual void onMouseRelease(Uint8 button, int x, int y);
-	virtual void onMouseWheel(int delta);
 	virtual void onKeyPress(SDL_Keycode key, Uint16 mod);
-
-	/* Vypocet matice kamery */
-	void updateMatrix();
 
 	/* Tvorba sceny */
 	void createGround();
@@ -79,30 +72,20 @@ protected:
 	/* Vykresleni sceny */
 	void drawScene(GLuint program);
 
-	/* Mys */
-	bool rmbPressed;
-	bool lmbPressed;
-	int posx, posy;
-
-	/* Kamera */
-	float zoom;
-	int rotx, roty;
-	glm::vec3 center;
-
 	/* Svetlo */
 	glm::vec3 lightPosition;
 
 	/* Animace */
-	bool animationEnabled;
-	Uint32 time;
-	Uint32 lastFrameTics;
+	bool animationEnabled = true;
+	Uint32 time =0;
+	Uint32 lastFrameTics = 0;;
 
-	bool gravityEnabled;
-	bool windEnabled;
+	bool gravityEnabled = true;
+	bool windEnabled = true;
 
 	/* Debug */
-	bool debug;
-	bool wireframe;
+	bool debug=false;
+	bool wireframe=false;
 
 	/* Zem */
 	GLuint texGround;
@@ -116,7 +99,7 @@ protected:
 	GLuint eboPole;
 
 	/* Vlajka */
-	int activeBuffer;	
+	int activeBuffer =0;	
 	int countFlag;
 	int flagVertexCount;
 	GLuint texFlag;
@@ -130,11 +113,6 @@ protected:
 	GLuint fbo;
 	glm::mat4 shadowMat;
 	glm::mat4 shadowMatBias;
-
-	/* Matice */
-	glm::mat4 model;
-	glm::mat4 view;
-	glm::mat4 projection;
 
 	/* Shadery */
 	GLuint drawProgram;
