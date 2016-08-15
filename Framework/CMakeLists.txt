@@ -3,18 +3,29 @@ set(LIB_NAME Framework)
 set(HEADER_PATH ${FitGL_SOURCE_DIR}/${LIB_NAME})
 
 set(FRAMEWORK_INCLUDES
-  Shader.h
-  Camera.h
-  LoadTextFile.h
-  ProgramObject.h
-  Shader.h
-  Timer.h
-  ValuePrinter.h
+	BaseApp.h
+	SDLWindow/CallbackInterface.h
+	SDLWindow/EventCallbackInterface.h
+	SDLWindow/EventDataInterface.h	
+	SDLWindow/EventHandlerInterface.h
+	SDLWindow/SDLEventData.h
+	SDLWindow/SDLEventProc.h
+	SDLWindow/SDLWindow.h
+		
+  #Shader.h
+  #Camera.h
+  #LoadTextFile.h
+  #ProgramObject.h
+  #Shader.h
+  #Timer.h
+  #ValuePrinter.h
   )
 
 set(FRAMEWORK_SOURCES
-  LoadTextFile.cpp
-  BaseApp.cpp
+	BaseApp.cpp
+	SDLWindow/SDLEventProc.cpp
+	SDLWindow/SDLWindow.cpp
+  #LoadTextFile.cpp  
   )
 
 add_library(${LIB_NAME}
@@ -23,7 +34,7 @@ add_library(${LIB_NAME}
   )
 
 
-set(Internal_deps)
+set(Internal_deps SDL2 GLEW glm)
 set(Internal_inc ${FitGL_SOURCE_DIR}/Framework)
 set(includes_to_export ${FitGL_SOURCE_DIR}/include)
 

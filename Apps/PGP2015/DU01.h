@@ -16,7 +16,7 @@ protected:
 	virtual void draw();
 
 	virtual void onKeyPress(SDL_Keycode key, Uint16 mod);
-
+	
 	/* Opengl objekty */
 
 	/* Buffery */

@@ -1,13 +1,14 @@
 #pragma once
 
-#include<geAd/SDLWindow/EventDataInterface.h>
+#include<SDLWindow/EventDataInterface.h>
 
-namespace ge{
-  namespace util{
-    class EventCallbackInterface{
-      public:
-        virtual ~EventCallbackInterface(){}
-        virtual bool operator()(EventDataPointer const&) = 0;
-    };
-  }
-}
+#include <functional>
+
+//typedef std::function<void(EventDataPointer const&)> EventCallbackInterface;
+
+
+class EventCallbackInterface {
+public:
+	virtual ~EventCallbackInterface() {}
+	virtual bool operator()(EventDataPointer const&) = 0;
+};

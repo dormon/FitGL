@@ -3,8 +3,8 @@
 
 #define TEX_SIZE 1024*8
 #define PIXELS (TEX_SIZE*TEX_SIZE)
-#define WORKGROUP_SIZE_X 16
-#define WORKGROUP_SIZE_Y 16
+#define WORKGROUP_SIZE_X 32
+#define WORKGROUP_SIZE_Y 32
 
 TextureCompression::TextureCompression() {
 }
@@ -60,31 +60,35 @@ void TextureCompression::init() {
 }
 
 void TextureCompression::compute() {
-	for (int i = 0; i < 200; i++) {
+	int count = 1000;
+
 		glBeginQuery(GL_TIME_ELAPSED, queries[0]);
 
-		glDispatchCompute(TEX_SIZE / WORKGROUP_SIZE_X, TEX_SIZE / WORKGROUP_SIZE_Y, 1);
-		
+		for (int i = 0; i < count; i++) {
+			glDispatchCompute(TEX_SIZE / WORKGROUP_SIZE_X, TEX_SIZE / WORKGROUP_SIZE_Y, 1);
+
+		}
 		glEndQuery(GL_TIME_ELAPSED);
 
 		glUseProgram(programRead);
 		glBeginQuery(GL_TIME_ELAPSED, queries[1]);
-
+		for (int i = 0; i < count; i++) {
 		glDispatchCompute(TEX_SIZE / WORKGROUP_SIZE_X, TEX_SIZE / WORKGROUP_SIZE_Y, 1);
+
+		}
 		glEndQuery(GL_TIME_ELAPSED);
 
-		unsigned int time;
-		glGetQueryObjectuiv(queries[0], GL_QUERY_RESULT, &time);
+		uint64_t time;
+		glGetQueryObjectui64v(queries[0], GL_QUERY_RESULT, &time);
 
-		unsigned int time2;
-		glGetQueryObjectuiv(queries[1], GL_QUERY_RESULT, &time2);
+		uint64_t time2;
+		glGetQueryObjectui64v(queries[1], GL_QUERY_RESULT, &time2);
 
 		float bandwidth = PIXELS * 4 / (time*1e-9);
-		std::cout << "bandwidth write " << bandwidth*1e-9 << "\n";
+		std::cout << "bandwidth write " << bandwidth*1e-9*count << "\n";
 		bandwidth = PIXELS * 4 / (time2*1e-9);
-		std::cout << "bandwidth read " << bandwidth*1e-9 << "\n";
+		std::cout << "bandwidth read " << bandwidth*1e-9*count << "\n";
 
-	}
 }
 
 void TextureCompression::draw() {

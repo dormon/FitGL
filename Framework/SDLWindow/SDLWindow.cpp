@@ -1,16 +1,12 @@
-#include<geAd/SDLWindow/SDLWindow.h>
-#include<geAd/SDLWindow/SDLEventProc.h>
-#include<geAd/SDLWindow/EventCallbackInterface.h>
+#include<SDLWindow/SDLWindow.h>
 
 #include<iostream>
 #include<cassert>
 
-using namespace ge::util;
-
 SDLWindow::SDLWindow(uint32_t width,uint32_t height){
   assert(this!=nullptr);
   Uint32 flags = SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN;
-  this->m_window  = SDL_CreateWindow("",0,0,width,height,flags);
+  this->m_window  = SDL_CreateWindow("FitGL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,width,height,flags);
 }
 
 SDLWindow::~SDLWindow(){

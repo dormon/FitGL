@@ -11,7 +11,7 @@ set(CMAKE_MODULE_PATH "${FitGL_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 find_package(GLEW          REQUIRED)
 find_package(OpenGL        REQUIRED)
 find_package(SDL2          REQUIRED)
-find_package(glm           QUIET)
+find_package(glm           REQUIRED)
 find_package(FreeImage     QUIET)
 find_package(FreeImagePlus QUIET)
 
@@ -20,17 +20,11 @@ include_directories(${FitGL_SOURCE_DIR}/Framework)
 
 add_subdirectory(Framework)
 
-set(FITGL_BUILD_TUTORIALS ON CACHE BOOL "Build all tutorials")
-
-set(FITGL_BUILD_EXAMPLES ON CACHE BOOL "Build all examples")
-
-
 # PGP2015 apps       
 set(FITGL_BUILD_PGP2015 ON CACHE BOOL "Build PGP2015")
 if(FITGL_BUILD_PGP2015)
 	add_subdirectory(Apps/PGP2015)
-endif()
-
+endif()   
 
 # tests
 set(FITGL_BUILD_TESTS ON CACHE BOOL "Build all test")
@@ -48,10 +42,23 @@ if(FITGL_BUILD_TESTS)
 		source_group("Shaders" FILES ${shaders})
 		target_link_libraries(Test_${app} GLEW glm SDL2)			
 	endforeach()
-	
-	
+endif()
 
+#tests
+set(FITGL_BUILD_TESTS ON CACHE BOOL "Build all tests")
+if(FIGL_BUILD_TUTORIALS)
+	add_subdirectory(Apps/Tests)
 endif()
 
 
 # tutorial
+set(FITGL_BUILD_TUTORIALS ON CACHE BOOL "Build all tutorials")
+if(FIGL_BUILD_TUTORIALS)
+	add_subdirectory(Apps/Tutorial)
+endif()
+
+# tutorial
+set(FITGL_BUILD_EXAMPLES ON CACHE BOOL "Build all examples")
+if(FITGL_BUILD_EXAMPLES)
+	add_subdirectory(Apps/Examples)
+endif()
