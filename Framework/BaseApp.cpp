@@ -1,74 +1,147 @@
 #include "BaseApp.h"
 
 BaseApp::BaseApp() {
-	mainLoop = std::make_shared<SDLEventProc>(true); 
+    mainLoop = std::make_shared<SDLEventProc>(true);
 
-	mainWindow = std::make_shared<SDLWindow>();
-	mainWindow->createContext("context", 450, SDLWindow::CORE, SDLWindow::Flag::DEBUG);
+    mainWindow = addWindow();
 
-	glewExperimental = GL_TRUE;
-	glewInit();
+    mainContext = mainWindow->createContext("context", 450, SDLWindow::CORE, SDLWindow::Flag::DEBUG);
 
+    glewExperimental = GL_TRUE;
+    glewInit();
 
-	mainLoop->addWindow("window", mainWindow);
-	mainLoop->setIdleCallback(std::make_shared<CallbackInterface>(
-		[&]() {
-		//std::cout << "MainLoop::idle\n";
-		draw();
-		mainWindow->swap();
-	}));
-	
-	mainLoop->setEventHandler(
-		std::make_shared<EventHandlerInterface>(
-			[&](EventDataPointer ptr)->bool {
-		//std::cout << "MainLoop::event\n";
+    mainLoop->setIdleCallback(std::bind(&BaseApp::handleIdle, this));
 
-		auto e =(*static_cast<SDLEventData const*> (ptr)).event;
+    mainLoop->setEventHandler([this](SDL_Event const&e)->bool {
+        handleEvent(e);
+        return true;
+    });
 
-		switch (e.type) {
-		case SDL_QUIT:
-			quit();
-			break;
-		case SDL_KEYDOWN:
-			onKeyPress(e.key.keysym.sym, e.key.keysym.mod);
-			break;
-		case SDL_KEYUP:
-			onKeyRelease(e.key.keysym.sym, e.key.keysym.mod);
-			break;
-		case SDL_MOUSEMOTION:
-			onMouseMove(e.motion.xrel, e.motion.yrel, e.motion.x, e.motion.y);
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-			onMousePress(e.button.button, e.button.x, e.button.y);
-			break;
-		case SDL_MOUSEBUTTONUP:
-			onMouseRelease(e.button.button, e.button.x, e.button.y);
-			break;
-		case SDL_MOUSEWHEEL:
-			onMouseWheel(e.wheel.y);
-			break;
-		case SDL_WINDOWEVENT:
-			switch (e.window.event) {
-			case SDL_WINDOWEVENT_RESIZED:
-				onResize(e.window.data1, e.window.data2);
-				break;
-			}
-			break;
-		}
-
-		return false; }));
-	
+    setupMainWindowEvents();
 }
 
 BaseApp::~BaseApp() {
 }
 
 int BaseApp::run() {
-	init();
-	(*mainLoop)();
-	return 0;
+	for (auto &c : initCallbacks)c();
+    (*mainLoop)();
+    return 0;
 }
 
-void BaseApp::quit(){
-	mainLoop->quit();
+void BaseApp::quit() {
+    mainLoop->quit();
+}
+
+SDLWindowShared BaseApp::addWindow(SDLWindowShared const & window) {
+    windows.push_back(window);
+    mainLoop->addWindow(std::to_string(window->getId()), window);
+    return window;
+}
+
+SDLWindowShared BaseApp::addWindow(int width, int height, bool resizable, bool fullscreen, int multisample) {
+    return addWindow(std::make_shared<SDLWindow>(width, height, resizable, fullscreen, multisample));
+}
+
+void BaseApp::handleEvent(SDL_Event const & e) {
+    for (auto &ec : eventCallbacks) {
+        if ((ec.type == ANY_EVENT || ec.type == e.type) &&
+                (ec.window == ANY_WINDOW || ec.window == e.window.windowID)) {
+            ec.callback(e);
+        }
+    }
+}
+
+void BaseApp::handleIdle() {
+    for (auto &w : windows) {
+        w->makeCurrent(mainContext);
+        for (auto &dc : drawCallbacks) {
+            auto dcw = dc.window.lock();
+            if (dcw == w) dc.callback();
+        }
+        w->swap();
+    }
+}
+
+void BaseApp::addInitCallback(Callback const & callback){
+	initCallbacks.push_back(callback);
+}
+
+void BaseApp::addEventCallback(std::function<void(SDL_Event) > callback, int type, int window) {
+    EventCallbackFilter ec = {callback, type, window};
+    eventCallbacks.push_back(ec);
+}
+
+void BaseApp::addDrawCallback(Callback const & callback, SDLWindowShared window) {
+	if (window == nullptr)window = mainWindow;
+    DrawCallbackFilter dc = {callback, SDLWindowWeak(window)};
+    drawCallbacks.push_back(dc);
+}
+
+void BaseApp::addResizeCallback(std::function<void(int, int) >f, int window) {
+    addEventCallback([f](SDL_Event const&e) {
+        if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
+            f(e.window.data1, e.window.data2);
+        }
+    }, SDL_WINDOWEVENT, window);
+}
+
+void BaseApp::addMouseMoveCallback(std::function<void(int, int, int, int) >f, int window) {
+    addEventCallback([f](SDL_Event const&e) {
+        f(e.motion.xrel, e.motion.yrel, e.motion.x, e.motion.y);
+    }, SDL_MOUSEMOTION, window);
+}
+
+void BaseApp::addMousePressCallback(std::function<void(Uint8, int, int) >f, int window) {
+    addEventCallback([f](SDL_Event const&e) {
+        f(e.button.button, e.button.x, e.button.y);
+    }, SDL_MOUSEBUTTONDOWN, window);
+}
+
+void BaseApp::addMouseReleaseCallback(std::function<void(Uint8, int, int) >f, int window) {
+    addEventCallback([f](SDL_Event const&e) {
+        f(e.button.button, e.button.x, e.button.y);
+    }, SDL_MOUSEBUTTONUP, window);
+}
+
+void BaseApp::addMouseWheelCallback(std::function<void(int) > f, int window) {
+    addEventCallback([f](SDL_Event const&e) {
+        f(e.wheel.y);
+    }, SDL_MOUSEWHEEL, window);
+}
+
+void BaseApp::addKeyPressCallback(std::function<void(SDL_Keycode, Uint16) > f, int window) {
+    addEventCallback([f](SDL_Event const&e) {
+        f(e.key.keysym.sym, e.key.keysym.mod);
+    }, SDL_KEYDOWN, window);
+}
+
+void BaseApp::addKeyReleaseCallback(std::function<void(SDL_Keycode, Uint16) > f, int window) {
+    addEventCallback([f](SDL_Event const&e) {
+        f(e.key.keysym.sym, e.key.keysym.mod);
+    }, SDL_KEYUP, window);
+}
+
+void BaseApp::setupMainWindowEvents() {
+    using namespace std::placeholders;
+	// init
+	addInitCallback(std::bind(&BaseApp::init, this));
+	// virtual function callbacks
+    addResizeCallback(std::bind(&BaseApp::onResize, this, _1, _2), mainWindow->getId());
+    addMouseMoveCallback(std::bind(&BaseApp::onMouseMove, this, _1, _2, _3, _4), mainWindow->getId());
+    addMousePressCallback(std::bind(&BaseApp::onMousePress, this, _1, _2, _3), mainWindow->getId());
+    addMouseReleaseCallback(std::bind(&BaseApp::onMouseRelease, this, _1, _2, _3), mainWindow->getId());
+    addMouseWheelCallback(std::bind(&BaseApp::onMouseWheel, this, _1), mainWindow->getId());
+    addKeyPressCallback(std::bind(&BaseApp::onKeyPress, this, _1, _2), mainWindow->getId());
+    addKeyReleaseCallback(std::bind(&BaseApp::onKeyRelease, this, _1, _2), mainWindow->getId());
+    // close on ESC
+    addKeyPressCallback([this](int key, int) {
+        if (key == SDLK_ESCAPE)quit();
+    });
+    // close on window X
+    addEventCallback([this](SDL_Event const&e) {
+        quit(); }, SDL_QUIT);
+    // draw
+    addDrawCallback(std::bind(&BaseApp::draw, this), mainWindow);
+
 }

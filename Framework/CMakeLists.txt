@@ -4,18 +4,13 @@ set(HEADER_PATH ${FitGL_SOURCE_DIR}/${LIB_NAME})
 
 set(FRAMEWORK_INCLUDES
 	BaseApp.h
-	SDLWindow/CallbackInterface.h
-	SDLWindow/EventCallbackInterface.h
-	SDLWindow/EventDataInterface.h	
-	SDLWindow/EventHandlerInterface.h
-	SDLWindow/SDLEventData.h
 	SDLWindow/SDLEventProc.h
 	SDLWindow/SDLWindow.h
 		
-  #Shader.h
+  Shader.h
   #Camera.h
-  #LoadTextFile.h
-  #ProgramObject.h
+  LoadTextFile.h
+  ProgramObject.h
   #Shader.h
   #Timer.h
   #ValuePrinter.h
@@ -25,7 +20,7 @@ set(FRAMEWORK_SOURCES
 	BaseApp.cpp
 	SDLWindow/SDLEventProc.cpp
 	SDLWindow/SDLWindow.cpp
-  #LoadTextFile.cpp  
+  LoadTextFile.cpp  
   )
 
 add_library(${LIB_NAME}

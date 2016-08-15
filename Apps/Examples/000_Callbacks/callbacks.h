@@ -18,4 +18,5 @@ protected:
 	virtual void onKeyPress(SDL_Keycode  key , Uint16  mod );
 	virtual void onKeyRelease(SDL_Keycode  key , Uint16  mod );
 
+	SDLWindowShared window2;
 };

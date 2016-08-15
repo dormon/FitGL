@@ -1,5 +1,6 @@
 set(list
 000_Callbacks
+001_Minimal
 )
 
 foreach(app ${list})
