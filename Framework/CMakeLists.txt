@@ -7,10 +7,12 @@ set(FRAMEWORK_INCLUDES
 	SDLWindow/SDLEventProc.h
 	SDLWindow/SDLWindow.h
 		
-  Shader.h
+	Shader.h
+	ProgramObject.h
+	Loader.h
+	Debugging.h   
   #Camera.h
-  LoadTextFile.h
-  ProgramObject.h
+  #LoadTextFile.h  
   #Shader.h
   #Timer.h
   #ValuePrinter.h
@@ -20,7 +22,9 @@ set(FRAMEWORK_SOURCES
 	BaseApp.cpp
 	SDLWindow/SDLEventProc.cpp
 	SDLWindow/SDLWindow.cpp
-  LoadTextFile.cpp  
+	Loader.cpp
+	
+  #LoadTextFile.cpp  
   )
 
 add_library(${LIB_NAME}
@@ -30,6 +34,11 @@ add_library(${LIB_NAME}
 
 
 set(Internal_deps SDL2 GLEW glm)
+if(FreeImage_FOUND AND FreeImagePlus_FOUND)
+	add_definitions(-DUSE_FREEIMAGE)
+	set(Internal_deps ${Internal_deps} FreeImage FreeImagePlus)	
+endif()
+
 set(Internal_inc ${FitGL_SOURCE_DIR}/Framework)
 set(includes_to_export ${FitGL_SOURCE_DIR}/include)
 

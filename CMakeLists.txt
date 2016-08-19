@@ -14,6 +14,7 @@ find_package(SDL2          REQUIRED)
 find_package(glm           REQUIRED)
 find_package(FreeImage     QUIET)
 find_package(FreeImagePlus QUIET)
+find_package(Assimp QUIET)
 
 include_directories(${FitGL_SOURCE_DIR}/Framework)
 
@@ -29,25 +30,13 @@ endif()
 # tests
 set(FITGL_BUILD_TESTS ON CACHE BOOL "Build all test")
 if(FITGL_BUILD_TESTS)
-	
-	# tests based on SimpleApp
-	set(apps
-		001_TextureCompression
-	)
-	
-	foreach(app ${apps})
-		file(GLOB shaders Resources/Shaders/Tests/${app}/*)
-		file(GLOB src Apps/Tests/${app}/*.cpp)
-		add_executable(Test_${app} ${src} ${FitGL_SOURCE_DIR}/Framework/SimpleApp.cpp ${shaders})
-		source_group("Shaders" FILES ${shaders})
-		target_link_libraries(Test_${app} GLEW glm SDL2)			
-	endforeach()
+	add_subdirectory(Apps/Tests)
 endif()
 
 #tests
 set(FITGL_BUILD_TESTS ON CACHE BOOL "Build all tests")
 if(FIGL_BUILD_TUTORIALS)
-	add_subdirectory(Apps/Tests)
+	add_subdirectory(Apps/Tests)                    
 endif()
 
 
@@ -62,3 +51,10 @@ set(FITGL_BUILD_EXAMPLES ON CACHE BOOL "Build all examples")
 if(FITGL_BUILD_EXAMPLES)
 	add_subdirectory(Apps/Examples)
 endif()
+	
+# copy resources - whole dir	
+add_custom_command(
+    OUTPUT res
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources/ ${CMAKE_CURRENT_BINARY_DIR}/Resources/
+    MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/resources)	
+add_custom_target(CopyResources ALL DEPENDS res)

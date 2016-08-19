@@ -1,20 +1,19 @@
 #pragma once
 
-
-#include <ProgramObject.h>
-#include <Shader.h>
-
 #include <GL/glew.h>
-
 #include <SDLWindow/SDLWindow.h>
-
 #include <cstdlib>
 #include <iostream>
 #include <string>
-
 #include <functional>
 #include <vector>
 
+// 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <ProgramObject.h>
+#include <Shader.h>
 
 /** @TODO
 X -include SDLWindow
@@ -44,38 +43,15 @@ public:
 
 	int run();
 	void quit();
-protected:
 
-	struct EventCallbackFilter {
-		std::function<void(SDL_Event) > callback;
-		int type;
-		int window;
-	};
-
-	struct DrawCallbackFilter {
-		Callback callback;
-		SDLWindowWeak window;
-	};
-
-	SDLWindowShared mainWindow;
-	std::vector<SDLWindowShared> windows;
-	SDLEventProcShared mainLoop;
-	SDL_GLContext mainContext;
-
-	std::vector<EventCallbackFilter> eventCallbacks;
-	std::vector<DrawCallbackFilter> drawCallbacks;
-	std::vector<Callback> initCallbacks;
-
-
-	void handleEvent(SDL_Event const &e);
-	void handleIdle();
-public:
 	// windows
 	SDLWindowShared addWindow(SDLWindowShared const&window);
 	SDLWindowShared addWindow(int width = 1024, int height = 768, bool resizable = true, bool fullscreen = false, int multisample = 1);
 	SDLWindowShared getWindow(int i) { return windows[i]; }
+	SDLWindowShared getMainWindow() { return mainWindow; }
 
 	void addInitCallback(Callback const&callback);
+	void enableDebug();
 
 	//events
 	void addEventCallback(std::function<void(SDL_Event) > callback, int type = ANY_EVENT, int windowID = ANY_WINDOW);
@@ -101,4 +77,28 @@ public:
 	virtual void onKeyPress(SDL_Keycode /*key*/, Uint16 /*mod*/) {}
 	virtual void onKeyRelease(SDL_Keycode /*key*/, Uint16 /*mod*/) {}
 
+protected:
+	struct EventCallbackFilter {
+		std::function<void(SDL_Event) > callback;
+		int type;
+		int window;
+	};
+
+	struct DrawCallbackFilter {
+		Callback callback;
+		SDLWindowWeak window;
+	};
+
+	SDLWindowShared mainWindow;
+	std::vector<SDLWindowShared> windows;
+	SDLEventProcShared mainLoop;
+	SDL_GLContext mainContext;
+
+	std::vector<EventCallbackFilter> eventCallbacks;
+	std::vector<DrawCallbackFilter> drawCallbacks;
+	std::vector<Callback> initCallbacks;
+
+
+	void handleEvent(SDL_Event const &e);
+	void handleIdle();
 };

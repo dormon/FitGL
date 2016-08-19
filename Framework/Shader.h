@@ -18,7 +18,6 @@ GLuint compileShader(GLenum type,ARGS... sources){
 
   //compile shader
   glCompileShader(id);
-
   //get compilation status
   GLint status;
   glGetShaderiv(id,GL_COMPILE_STATUS,&status);
@@ -32,8 +31,8 @@ GLuint compileShader(GLenum type,ARGS... sources){
     glGetShaderInfoLog(id,bufferLen,nullptr,buffer);
     std::cerr<<buffer<<std::endl;
     delete[]buffer;
-    return 0;
   }
+  throw std::exception("Shader compile failed!");
   return id;
 }
 
@@ -58,7 +57,7 @@ GLuint createProgram(ARGS...args){
     (void)dummy1;
     return id;
   }
-
+  
   //get linking log
   GLint bufferLen;
   glGetProgramiv(id,GL_INFO_LOG_LENGTH,&bufferLen);
@@ -69,5 +68,6 @@ GLuint createProgram(ARGS...args){
     delete[]buffer;
     glDeleteProgram(id);
   }
+  throw std::exception("Program link failed!");
   return 0;
 }
