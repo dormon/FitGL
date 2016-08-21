@@ -2,6 +2,22 @@
 #define BUNNY_H
 
 #include <GL/gl.h>
+#define bunnyInit(vao,vbo,ebo) \
+glCreateBuffers(1, &vbo);\
+glNamedBufferData(vbo, sizeof(bunnyVertices), bunnyVertices, GL_STATIC_DRAW);\
+glCreateBuffers(1, &ebo);\
+glNamedBufferData(ebo, sizeof(bunny), bunny, GL_STATIC_DRAW);\
+glCreateVertexArrays(1, &vao);\
+glBindVertexArray(vao);\
+glBindVertexBuffer(0, vbo, offsetof(BunnyVertex, position), sizeof(BunnyVertex));\
+glBindVertexBuffer(1, vbo, offsetof(BunnyVertex, normal), sizeof(BunnyVertex));\
+glEnableVertexAttribArray(0);\
+glEnableVertexAttribArray(1);\
+glVertexArrayElementBuffer(vao, ebo);\
+
+#define bunnyDraw() \
+glBindVertexArray(vao);\
+glDrawElements(GL_TRIANGLES, sizeof(bunny) / sizeof(short), GL_UNSIGNED_SHORT, 0);
 
 const GLenum bunnyIndexType = GL_UNSIGNED_SHORT;
 

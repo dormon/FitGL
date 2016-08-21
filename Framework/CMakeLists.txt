@@ -11,6 +11,7 @@ set(FRAMEWORK_INCLUDES
 	ProgramObject.h
 	Loader.h
 	Debugging.h   
+	Gui.h
   #Camera.h
   #LoadTextFile.h  
   #Shader.h
@@ -23,6 +24,7 @@ set(FRAMEWORK_SOURCES
 	SDLWindow/SDLEventProc.cpp
 	SDLWindow/SDLWindow.cpp
 	Loader.cpp
+	Gui.cpp
 	
   #LoadTextFile.cpp  
   )
@@ -32,8 +34,8 @@ add_library(${LIB_NAME}
   ${FRAMEWORK_SOURCES}
   )
 
-
-set(Internal_deps SDL2 GLEW glm)
+ 
+set(Internal_deps SDL2 GLEW glm imgui)
 if(FreeImage_FOUND AND FreeImagePlus_FOUND)
 	add_definitions(-DUSE_FREEIMAGE)
 	set(Internal_deps ${Internal_deps} FreeImage FreeImagePlus)	

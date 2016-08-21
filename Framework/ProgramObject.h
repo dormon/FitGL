@@ -19,8 +19,10 @@ class ProgramObject{
       return ii->second;
     }
   public:
-    ProgramObject(GLuint id){this->_id = id;}
+    ProgramObject(GLuint id=0){this->_id = id;}
     ~ProgramObject(){glDeleteProgram(this->_id);}
+	void operator=(GLuint id) { this->_id = id; }
+	operator int() { return _id; }
     GLuint getId()const{return this->_id;}
     void use(){glUseProgram(this->_id);}
     void set1f(std::string name,float v0                           ){glUniform1f(this->_getUniform(name),v0         );}

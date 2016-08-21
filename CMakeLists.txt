@@ -18,7 +18,7 @@ find_package(Assimp QUIET)
 
 include_directories(${FitGL_SOURCE_DIR}/Framework)
 
-
+add_subdirectory(3rdParty/imgui)
 add_subdirectory(Framework)
 
 # PGP2015 apps       
