@@ -29,7 +29,6 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 		glCreateVertexArrays(1, &vao);
 		glBindVertexArray(vao);
-
 		texture[0] = Loader::texture(texPrefix + "up.bmp");
 		texture[1] = Loader::texture(texPrefix + "down.bmp");
 		texture[2] = Loader::texture(texPrefix + "front.bmp");

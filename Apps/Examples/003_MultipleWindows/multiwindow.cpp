@@ -31,19 +31,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		auto fs = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "lambert.frag"));
 		program = createProgram(vs, fs);	
 
-		glCreateBuffers(1, &vbo);
-		glNamedBufferData(vbo, sizeof(bunnyVertices), bunnyVertices, GL_STATIC_DRAW);
-
-		glCreateBuffers(1, &ebo);
-		glNamedBufferData(ebo, sizeof(bunny), bunny, GL_STATIC_DRAW);
-
-		glCreateVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-		glBindVertexBuffer(0, vbo, offsetof(BunnyVertex, position), sizeof(BunnyVertex));
-		glBindVertexBuffer(1, vbo, offsetof(BunnyVertex, normal), sizeof(BunnyVertex));
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glVertexArrayElementBuffer(vao, ebo);
+		bunnyInit(vao, vbo, ebo);
 	});
 
 	app.addDrawCallback([&]() {
@@ -63,7 +51,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);		
 		
-		glDrawElements(GL_TRIANGLES, sizeof(bunny) / sizeof(short), GL_UNSIGNED_SHORT, 0);
+		bunnyDraw();
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	});
 
@@ -74,7 +62,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glViewport(0, 0, w, h);
 		mat4 v = lookAt(vec3(z, 0, 0), vec3(0, 0, 0), vec3(0, 1, 0));
 		glUniformMatrix4fv(glGetUniformLocation(program, "v"), 1, 0, value_ptr(v));
-		glDrawElements(GL_TRIANGLES, sizeof(bunny) / sizeof(short), GL_UNSIGNED_SHORT, 0);
+		bunnyDraw();
 	}, window1);
 
 	app.addDrawCallback([&]() {
@@ -84,7 +72,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glViewport(0, 0, w, h);
 		mat4 v = lookAt(vec3(0, z, 0), vec3(0, 0, 0), vec3(1, 0, 0));
 		glUniformMatrix4fv(glGetUniformLocation(program, "v"), 1, 0, value_ptr(v));
-		glDrawElements(GL_TRIANGLES, sizeof(bunny) / sizeof(short), GL_UNSIGNED_SHORT, 0);
+		bunnyDraw();
 	}, window2);
 
 	app.addDrawCallback([&]() {
@@ -94,7 +82,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glViewport(0, 0, w, h);
 		mat4 v = lookAt(vec3(0, 0, z), vec3(0, 0, 0), vec3(0, 1, 0));
 		glUniformMatrix4fv(glGetUniformLocation(program, "v"), 1, 0, value_ptr(v));
-		glDrawElements(GL_TRIANGLES, sizeof(bunny) / sizeof(short), GL_UNSIGNED_SHORT, 0);
+		bunnyDraw();
 	}, window3);
 	return app.run();
 }

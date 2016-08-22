@@ -8,11 +8,10 @@ glNamedBufferData(vbo, sizeof(bunnyVertices), bunnyVertices, GL_STATIC_DRAW);\
 glCreateBuffers(1, &ebo);\
 glNamedBufferData(ebo, sizeof(bunny), bunny, GL_STATIC_DRAW);\
 glCreateVertexArrays(1, &vao);\
-glBindVertexArray(vao);\
-glBindVertexBuffer(0, vbo, offsetof(BunnyVertex, position), sizeof(BunnyVertex));\
-glBindVertexBuffer(1, vbo, offsetof(BunnyVertex, normal), sizeof(BunnyVertex));\
-glEnableVertexAttribArray(0);\
-glEnableVertexAttribArray(1);\
+glVertexArrayVertexBuffer(vao,0, vbo, offsetof(BunnyVertex, position), sizeof(BunnyVertex));\
+glVertexArrayVertexBuffer(vao,1, vbo, offsetof(BunnyVertex, normal), sizeof(BunnyVertex));\
+glEnableVertexArrayAttrib(vao, 0);\
+glEnableVertexArrayAttrib(vao, 1);\
 glVertexArrayElementBuffer(vao, ebo);\
 
 #define bunnyDraw() \

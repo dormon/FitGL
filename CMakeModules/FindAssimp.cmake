@@ -31,7 +31,7 @@ else()
 
    # find Assimp includes
    find_path(ASSIMP_INCLUDE_DIR assimp/mesh.h
-      HINTS ${ASSIMP_ROOT_DIR}
+      HINTS ${ASSIMP_ROOT_DIR} $ENV{ASSIMP_DIR}
       PATH_SUFFIXES include
       DOC "Assimp include directory"
    )
@@ -41,13 +41,13 @@ endif()
 
 # find Assimp libraries
 find_library(ASSIMP_LIBRARY_RELEASE assimp
-   HINTS ${ASSIMP_ROOT_DIR}
-   PATH_SUFFIXES lib
+   HINTS ${ASSIMP_ROOT_DIR} $ENV{ASSIMP_DIR}
+   PATH_SUFFIXES lib lib64
    DOC "Assimp release library"
 )
 find_library(ASSIMP_LIBRARY_DEBUG assimpd NAMES assimp
-   HINTS ${ASSIMP_ROOT_DIR}
-   PATH_SUFFIXES lib
+   HINTS ${ASSIMP_ROOT_DIR} $ENV{ASSIMP_DIR}
+   PATH_SUFFIXES lib lib64
    DOC "Assimp debug library (optional)"
 )
 
@@ -55,12 +55,12 @@ if(WIN32)
 
    # find Assimp DLLs
    find_file(ASSIMP_DLL_RELEASE assimp.dll
-      HINTS ${ASSIMP_ROOT_DIR}
+      HINTS ${ASSIMP_ROOT_DIR} $ENV{ASSIMP_DIR}
       PATH_SUFFIXES bin
       DOC "Assimp release DLL"
    )
    find_file(ASSIMP_DLL_DEBUG assimpd.dll NAMES assimp.dll
-      HINTS ${ASSIMP_ROOT_DIR}
+      HINTS ${ASSIMP_ROOT_DIR} $ENV{ASSIMP_DIR}
       PATH_SUFFIXES bin
       DOC "Assimp debug DLL (optional)"
    )

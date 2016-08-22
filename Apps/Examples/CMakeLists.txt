@@ -4,7 +4,8 @@ set(apps
 	002_MultipleViews
 	003_MultipleWindows                
 	004_Textures
-	005_imgui
+	005_Imgui
+	006_ModelLoader
 )
 
 foreach(app ${apps})

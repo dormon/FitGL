@@ -12,9 +12,12 @@ set(FRAMEWORK_INCLUDES
 	Loader.h
 	Debugging.h   
 	Gui.h
+	Mesh.h
+	Image.h
+	Node.h
+	Material.h
   #Camera.h
   #LoadTextFile.h  
-  #Shader.h
   #Timer.h
   #ValuePrinter.h
   )
@@ -23,10 +26,13 @@ set(FRAMEWORK_SOURCES
 	BaseApp.cpp
 	SDLWindow/SDLEventProc.cpp
 	SDLWindow/SDLWindow.cpp
-	Loader.cpp
+	LoaderText.cpp
+	LoaderAssimp.cpp
+	LoaderTexture.cpp
 	Gui.cpp
-	
-  #LoadTextFile.cpp  
+	Mesh.cpp
+	Node.cpp
+	Material.cpp
   )
 
 add_library(${LIB_NAME}
@@ -39,6 +45,10 @@ set(Internal_deps SDL2 GLEW glm imgui)
 if(FreeImage_FOUND AND FreeImagePlus_FOUND)
 	add_definitions(-DUSE_FREEIMAGE)
 	set(Internal_deps ${Internal_deps} FreeImage FreeImagePlus)	
+endif()
+if(Assimp_FOUND)
+	add_definitions(-DUSE_ASSIMP)
+	set(Internal_deps ${Internal_deps} Assimp)	
 endif()
 
 set(Internal_inc ${FitGL_SOURCE_DIR}/Framework)
