@@ -14,6 +14,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <ProgramObject.h>
 #include <Shader.h>
+#include <Gui.h>
 
 /** @TODO
 X -include SDLWindow
@@ -76,7 +77,7 @@ public:
 	virtual void onMouseWheel(int /*delta*/) {}
 	virtual void onKeyPress(SDL_Keycode /*key*/, Uint16 /*mod*/) {}
 	virtual void onKeyRelease(SDL_Keycode /*key*/, Uint16 /*mod*/) {}
-
+	
 protected:
 	struct EventCallbackFilter {
 		std::function<void(SDL_Event) > callback;
@@ -101,4 +102,5 @@ protected:
 
 	void handleEvent(SDL_Event const &e);
 	void handleIdle();
+
 };

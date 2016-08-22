@@ -6,7 +6,7 @@ BaseApp::BaseApp() {
 	mainWindow = addWindow();
 
 	mainContext = mainWindow->createContext("context", 450, SDLWindow::CORE, SDLWindow::Flag::DEBUG);
-
+	
 	glewExperimental = GL_TRUE;
 	glewInit();
 
@@ -19,6 +19,7 @@ BaseApp::BaseApp() {
 
 	setupMainWindowEvents();
 	enableDebug();
+	ImGui_ImplSdlGL3_Init(mainWindow->getWindowHandle());
 }
 
 BaseApp::~BaseApp() {
@@ -70,10 +71,12 @@ void BaseApp::handleEvent(SDL_Event const & e) {
 void BaseApp::handleIdle() {
 	for (auto &w : windows) {
 		w->makeCurrent(mainContext);
+		ImGui_ImplSdlGL3_NewFrame(w->getWindowHandle());
 		for (auto &dc : drawCallbacks) {
 			auto dcw = dc.window.lock();
 			if (dcw == w) dc.callback();
 		}
+		ImGui::Render();
 		w->swap();
 	}
 }
@@ -166,5 +169,5 @@ void BaseApp::setupMainWindowEvents() {
 		quit(); }, SDL_QUIT);
 	// draw
 	addDrawCallback(std::bind(&BaseApp::draw, this), mainWindow);
-
 }
+

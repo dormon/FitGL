@@ -7,6 +7,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF()
 
 set(CMAKE_MODULE_PATH "${FitGL_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 find_package(GLEW          REQUIRED)
 find_package(OpenGL        REQUIRED)
@@ -32,13 +33,6 @@ set(FITGL_BUILD_TESTS ON CACHE BOOL "Build all test")
 if(FITGL_BUILD_TESTS)
 	add_subdirectory(Apps/Tests)
 endif()
-
-#tests
-set(FITGL_BUILD_TESTS ON CACHE BOOL "Build all tests")
-if(FIGL_BUILD_TUTORIALS)
-	add_subdirectory(Apps/Tests)                    
-endif()
-
 
 # tutorial
 set(FITGL_BUILD_TUTORIALS ON CACHE BOOL "Build all tutorials")

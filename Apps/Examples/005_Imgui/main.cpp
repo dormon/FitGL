@@ -13,7 +13,6 @@ int main(int /*argc*/, char ** /*argv*/) {
 	ProgramObject program;
 	
 	auto mainWindow = app.getMainWindow();
-	auto mainWindowHandle = mainWindow->getWindowHandle();
 
 	float lightDir = 0;
 	float zoom = 4;
@@ -27,11 +26,6 @@ int main(int /*argc*/, char ** /*argv*/) {
 		program = createProgram(vs, fs);
 
 		bunnyInit(vao, vbo, ebo);
-		ImGui_ImplSdlGL3_Init(mainWindowHandle);
-	});
-
-	app.addEventCallback([] (SDL_Event &e){
-		ImGui_ImplSdlGL3_ProcessEvent(&e);
 	});
 
 	app.addDrawCallback([&]() {
@@ -56,7 +50,6 @@ int main(int /*argc*/, char ** /*argv*/) {
 		bunnyDraw();
 
 		// GUI
-		ImGui_ImplSdlGL3_NewFrame(mainWindowHandle);
 		using namespace ImGui;
 		label("FPS: " + std::to_string(GetIO().Framerate));		
 
@@ -73,7 +66,6 @@ int main(int /*argc*/, char ** /*argv*/) {
 			ImGui::ShowTestWindow(&showDemo);
 		}
 		
-		ImGui::Render();
 
 	});
 	return app.run();
