@@ -4,7 +4,7 @@
 
 class Image {
 public:
-	~Image() { if (data)delete data; }
+	~Image() { if (data)delete[]data; }
 	unsigned int* data = nullptr;
 	int width = 0;
 	int height = 0;

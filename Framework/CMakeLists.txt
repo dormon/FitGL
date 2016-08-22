@@ -40,7 +40,12 @@ add_library(${LIB_NAME}
   ${FRAMEWORK_SOURCES}
   )
 
- 
+
+set(Assimp_FOUND false)
+if(Assimp_FOUND)
+  message("ahoj")
+endif()
+
 set(Internal_deps SDL2 GLEW glm imgui)
 if(FreeImage_FOUND AND FreeImagePlus_FOUND)
 	add_definitions(-DUSE_FREEIMAGE)

@@ -33,7 +33,7 @@ ImageShared Loader::image(std::string const & fileName) {
 			return generateImage();
 		}
 		else {
-			throw std::exception(er.c_str());
+			throw std::runtime_error(er.c_str());
 			return nullptr;
 		}
 	}

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0.0)
 PROJECT(FitGL)
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -W -Wall -pedantic")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")# -W -Wall")# -pedantic")
 ENDIF()
 
 set(CMAKE_MODULE_PATH "${FitGL_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
@@ -50,5 +50,5 @@ endif()
 add_custom_command(
     OUTPUT res
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources/ ${CMAKE_CURRENT_BINARY_DIR}/Resources/
-    MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/resources)	
+    )#MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/resources)	
 add_custom_target(CopyResources ALL DEPENDS res)

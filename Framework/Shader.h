@@ -32,7 +32,7 @@ GLuint compileShader(GLenum type,ARGS... sources){
     std::cerr<<buffer<<std::endl;
     delete[]buffer;
   }
-  throw std::exception("Shader compile failed!");
+  throw std::runtime_error("Shader compile failed!");
   return id;
 }
 
@@ -68,6 +68,6 @@ GLuint createProgram(ARGS...args){
     delete[]buffer;
     glDeleteProgram(id);
   }
-  throw std::exception("Program link failed!");
+  throw std::runtime_error("Program link failed!");
   return 0;
 }

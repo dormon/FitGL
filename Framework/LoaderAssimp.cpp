@@ -11,7 +11,7 @@
 #include <assimp/postprocess.h>
 #endif
 
-
+#ifdef USE_ASSIMP
 void processNode(NodeShared &current, aiNode *ain,
 	std::vector<MaterialShared>&allMaterials, std::vector<MeshShared>&allMeshes) {
 	for (int i = 0; i<ain->mNumMeshes; i++) {
@@ -31,6 +31,7 @@ void processNode(NodeShared &current, aiNode *ain,
 		processNode(n, c, allMaterials, allMeshes);
 	}
 }
+#endif
 
 NodeShared Loader::scene(std::string const & fileName){
 	NodeShared node = std::make_shared<Node>();
@@ -43,7 +44,7 @@ NodeShared Loader::scene(std::string const & fileName){
 	auto scene = importer->ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals);
 	if (!scene) {
 		std::string er = "File not found: " + fileName + "\n";
-		throw std::exception(er.c_str());
+		throw std::runtime_error(er.c_str());
 		return node;
 	}
 
