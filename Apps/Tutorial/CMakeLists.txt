@@ -1,6 +1,7 @@
 set(apps
 	001_HelloTriangle
 	002_Primitives
+	0xx_Blending
 )
 
 foreach(app ${apps})

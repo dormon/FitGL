@@ -16,8 +16,10 @@ set(FRAMEWORK_INCLUDES
 	Image.h
 	Node.h
 	Material.h
-  #Camera.h
-  #LoadTextFile.h  
+	Camera.h
+	Manipulator.h
+	Timer.h
+  
   #Timer.h
   #ValuePrinter.h
   )
@@ -33,6 +35,8 @@ set(FRAMEWORK_SOURCES
 	Mesh.cpp
 	Node.cpp
 	Material.cpp
+	Camera.cpp
+	Manipulator.cpp
   )
 
 add_library(${LIB_NAME}
@@ -40,11 +44,13 @@ add_library(${LIB_NAME}
   ${FRAMEWORK_SOURCES}
   )
 
-
-set(Assimp_FOUND false)
-if(Assimp_FOUND)
-  message("ahoj")
-endif()
+message("Assimp check")
+message("Assimp_FOUND " ${Assimp_FOUND})
+message("ASSIMP_INCLUDE_DIR " ${ASSIMP_INCLUDE_DIR})
+message("ASSIMP_LIBRARY_RELEASE " ${ASSIMP_LIBRARY_RELEASE})
+message("ASSIMP_LIBRARY_DEBUG " ${ASSIMP_LIBRARY_DEBUG})
+message("ASSIMP_DLL_RELEASE " ${ASSIMP_DLL_RELEASE})
+message("ASSIMP_DLL_DEBUG "  ${ASSIMP_DLL_DEBUG})
 
 set(Internal_deps SDL2 GLEW glm imgui)
 if(FreeImage_FOUND AND FreeImagePlus_FOUND)

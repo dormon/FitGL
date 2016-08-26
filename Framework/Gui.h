@@ -6,4 +6,4 @@
 #include <string>
 /* Useful 'macros' to help with imgui */
 
-void label(std::string const&text, int x=0, int y=0, int width = 120, int height = 20);
+void label(std::string const&text, int x=0, int y=0, int width = 200, int height = 20);

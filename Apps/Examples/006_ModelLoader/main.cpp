@@ -39,7 +39,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		auto fs = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "phong.frag"));
 		program = createProgram(vs, fs);
 
-		scene = Loader::scene(prefixModel+"texCube/texCube.obj");
+		scene = Loader::scene(prefixModel+ "texCube/texCube.obj");
 	});
 
 	app.addDrawCallback([&]() {

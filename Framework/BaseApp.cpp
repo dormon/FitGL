@@ -1,11 +1,13 @@
 #include "BaseApp.h"
 #include <Debugging.h>
 BaseApp::BaseApp() {
+	SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
+	
 	mainLoop = std::make_shared<SDLEventProc>(true);
 
 	mainWindow = addWindow();
 
-	mainContext = mainWindow->createContext("context", 450, SDLWindow::CORE, SDLWindow::Flag::DEBUG);
+	mainContext = mainWindow->createContext("context", 450, SDLWindow::CORE, SDLWindow::Flag::DEBUG,false);
 	
 	glewExperimental = GL_TRUE;
 	glewInit();
@@ -19,7 +21,7 @@ BaseApp::BaseApp() {
 
 	setupMainWindowEvents();
 	enableDebug();
-	ImGui_ImplSdlGL3_Init(mainWindow->getWindowHandle());
+	//SDL_CaptureMouse(SDL_TRUE);
 }
 
 BaseApp::~BaseApp() {
@@ -29,6 +31,7 @@ int BaseApp::run() {
 	try {
 		for (auto &c : initCallbacks)c();	
 		(*mainLoop)();
+		for (auto &c : cleanupCallbacks)c();
 	}catch (const std::exception &e) {		
 		std::cerr << e.what() << "\n";
 #ifdef WIN32
@@ -52,6 +55,9 @@ void BaseApp::quit() {
 SDLWindowShared BaseApp::addWindow(SDLWindowShared const & window) {
 	windows.push_back(window);
 	mainLoop->addWindow(std::to_string(window->getId()), window);
+	int w = window->getWidth();
+	int h = window->getHeight();
+	window->setSize(w, h);
 	return window;
 }
 
@@ -69,6 +75,9 @@ void BaseApp::handleEvent(SDL_Event const & e) {
 }
 
 void BaseApp::handleIdle() {
+	dt = timer.elapsedFromLast();
+	for (auto&c : updateCallbacks)c(dt);
+
 	for (auto &w : windows) {
 		w->makeCurrent(mainContext);
 		ImGui_ImplSdlGL3_NewFrame(w->getWindowHandle());
@@ -83,6 +92,14 @@ void BaseApp::handleIdle() {
 
 void BaseApp::addInitCallback(Callback const & callback) {
 	initCallbacks.push_back(callback);
+}
+
+void BaseApp::addCleanupCallback(Callback const & callback){
+	cleanupCallbacks.push_back(callback);
+}
+
+void BaseApp::addUpdateCallback(UpdateCallback const & callback){
+	updateCallbacks.push_back(callback);
 }
 
 void BaseApp::enableDebug() {
@@ -106,7 +123,7 @@ void BaseApp::addDrawCallback(Callback const & callback, SDLWindowShared window)
 
 void BaseApp::addResizeCallback(std::function<void(int, int) >f, int window) {
 	addEventCallback([f](SDL_Event const&e) {
-		if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
+		if (e.window.event == /*SDL_WINDOWEVENT_RESIZED*/SDL_WINDOWEVENT_SIZE_CHANGED) {
 			f(e.window.data1, e.window.data2);
 		}
 	}, SDL_WINDOWEVENT, window);
@@ -169,5 +186,12 @@ void BaseApp::setupMainWindowEvents() {
 		quit(); }, SDL_QUIT);
 	// draw
 	addDrawCallback(std::bind(&BaseApp::draw, this), mainWindow);
+	//gui
+	addInitCallback([&](){
+		ImGui_ImplSdlGL3_Init(mainWindow->getWindowHandle()); 
+	});
+	addCleanupCallback([]() {
+		ImGui_ImplSdlGL3_Shutdown();
+	});
 }
 

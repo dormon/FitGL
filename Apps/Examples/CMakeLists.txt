@@ -6,6 +6,10 @@ set(apps
 	004_Textures
 	005_Imgui
 	006_ModelLoader
+	007_Timer
+	008_OrbitManipulator
+	
+	x01_Challenge
 )
 
 foreach(app ${apps})

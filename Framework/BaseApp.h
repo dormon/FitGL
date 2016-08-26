@@ -12,9 +12,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include <ProgramObject.h>
 #include <Shader.h>
 #include <Gui.h>
+#include <Loader.h>
+#include <Timer.h>
+#include <Camera.h>
+#include <Manipulator.h>
+
 
 /** @TODO
 X -include SDLWindow
@@ -22,7 +28,7 @@ X -event virtual functions
 X -dynamic event callbacks
 X -remove old compile and texture functions
 -delete more stuff from SDLWindow nad SDLEventProc :)
--add imgui
+X -add imgui
 -add fps meter
 X -multiple windows
 -add remove functions
@@ -36,6 +42,7 @@ typedef std::shared_ptr<SDLEventProc> SDLEventProcShared;
 #define ANY_EVENT -1
 #define ANY_WINDOW -1
 typedef std::function<void() > Callback;
+typedef std::function<void(float) > UpdateCallback;
 
 class BaseApp {
 public:
@@ -51,12 +58,19 @@ public:
 	SDLWindowShared getWindow(int i) { return windows[i]; }
 	SDLWindowShared getMainWindow() { return mainWindow; }
 
-	void addInitCallback(Callback const&callback);
-	void enableDebug();
 
-	//events
+
+	//
+	float getTimeFromStart() { return timer.elapsedFromStart(); }
+	float getDt() { return dt; }
+
+	// callbacks
 	void addEventCallback(std::function<void(SDL_Event) > callback, int type = ANY_EVENT, int windowID = ANY_WINDOW);
 	void addDrawCallback(Callback const&callback, SDLWindowShared window=nullptr);
+	void addInitCallback(Callback const&callback);
+	void addCleanupCallback(Callback const&callback);
+	void addUpdateCallback(UpdateCallback const&callback);
+
 	// specific event callbacks
 	void addResizeCallback(std::function<void(int /*w*/, int /*h*/) >f, int window = ANY_WINDOW);
 	void addMouseMoveCallback(std::function<void(int /*dx*/, int /*dy*/, int /*x*/, int /*y*/) >f, int window = ANY_WINDOW);
@@ -98,9 +112,14 @@ protected:
 	std::vector<EventCallbackFilter> eventCallbacks;
 	std::vector<DrawCallbackFilter> drawCallbacks;
 	std::vector<Callback> initCallbacks;
+	std::vector<Callback> cleanupCallbacks;
+	std::vector<UpdateCallback> updateCallbacks;
 
 
 	void handleEvent(SDL_Event const &e);
 	void handleIdle();
+	void enableDebug();
 
+	Timer<float> timer;
+	float dt;
 };

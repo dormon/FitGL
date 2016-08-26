@@ -36,11 +36,11 @@ endif()
 
 # tutorial
 set(FITGL_BUILD_TUTORIALS ON CACHE BOOL "Build all tutorials")
-if(FIGL_BUILD_TUTORIALS)
+if(FITGL_BUILD_TUTORIALS)
 	add_subdirectory(Apps/Tutorial)
 endif()
 
-# tutorial
+# examples
 set(FITGL_BUILD_EXAMPLES ON CACHE BOOL "Build all examples")
 if(FITGL_BUILD_EXAMPLES)
 	add_subdirectory(Apps/Examples)
@@ -50,5 +50,5 @@ endif()
 add_custom_command(
     OUTPUT res
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources/ ${CMAKE_CURRENT_BINARY_DIR}/Resources/
-    )#MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/resources)	
+    )
 add_custom_target(CopyResources ALL DEPENDS res)
