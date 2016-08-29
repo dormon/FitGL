@@ -35,8 +35,8 @@ void main(){
     diffuseColor,
     lightColor);
 
-  if(computeLightInFS){
-    if(usePhongLighting)
+  if(computeLightInFS==1){
+    if(usePhongLighting==1)
       fColor = vec4(phong  ,1);
     else
       fColor = vec4(lambert,1);

@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-#define clamp(v,l,h) std::min(std::max(v,l),h)
+#define clamp(v,l,h) std::fmin(std::fmax(v,l),h)
 
 using namespace glm;
 

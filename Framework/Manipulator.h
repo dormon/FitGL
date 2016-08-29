@@ -29,10 +29,13 @@ public:
 	virtual void update(float dt);
 	virtual void setupCallbacks(BaseApp &app);
 
+	void setZoom(float z) { zoom = z; }
+	void setRotationX(float x) { movex = x; }
+	void setRotationY(float y) { movey = y; }
 protected:
 	bool mouseButton[6] = {};
-	int movex = 0;
-	int movey = 0;
+	float movex = 0;
+	float movey = 0;
 	int dragx = 0;
 	int dragy = 0;
 	float zoom = 30;

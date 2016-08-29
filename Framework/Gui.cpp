@@ -1,6 +1,12 @@
 #include "Gui.h"
 
 using namespace ImGui;
+
+
+void textColor(float r, float g, float b, float a){
+	ImGui::GetStyle().Colors[ImGuiCol_Text] = ImVec4(r, g, b, a);
+}
+
 void label(std::string const & text, int x, int y, int width, int height) {
 	static int id = 0;
 	IMGUI_ONCE_UPON_A_FRAME{

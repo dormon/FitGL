@@ -17,6 +17,6 @@ Camera::Camera(glm::vec3 eye, glm::vec3 center, glm::vec3 up):
 
 void Camera::compute(){
 	view = glm::lookAt(eye, center, up);
-	vp = view*projection;
+	vp = projection*view;
 	ivp = glm::inverse(vp);
 }

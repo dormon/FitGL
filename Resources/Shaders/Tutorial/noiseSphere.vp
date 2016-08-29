@@ -24,8 +24,8 @@ vec3 computeFlatNormal(){
   uint faceId = gl_VertexID/6;
   uint faceIdX = faceId%sphereSizeX;
   uint faceIdY = faceId/sphereSizeX;
-  float xAngle = radians((faceIdX+0.5)/sphereSizeX*360);
-  float yAngle = radians((faceIdY+0.5)/sphereSizeY*180);
+  float xAngle = radians((float(faceIdX)+0.5)/sphereSizeX*360);
+  float yAngle = radians((float(faceIdY)+0.5)/sphereSizeY*180);
   return vec3(cos(xAngle)*sin(yAngle),-cos(yAngle),sin(xAngle)*sin(yAngle));
 }
 
