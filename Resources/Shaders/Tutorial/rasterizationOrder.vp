@@ -1,0 +1,11 @@
+out vec4 vColor;
+
+void main(){
+  if(gl_VertexID<3)
+    vColor = vec4(1,0,0,0);
+  else
+    vColor = vec4(0,1,0,0);
+
+  int vertexId = gl_VertexID%3;
+  gl_Position = vec4((vertexId%2)*4.f-1,(vertexId/2)*4.f-1,1,1);
+}

@@ -52,13 +52,11 @@ GLuint createProgram(ARGS...args){
   GLint status;
   glGetProgramiv(id,GL_LINK_STATUS,&status);
   if(status == GL_TRUE){
-	  std::cout << "status GL_TRUE\n";
     //mark shaders for deletion
     auto dummy1 = {(glDeleteShader(args),0)...};
     (void)dummy1;
     return id;
   }
-  std::cout << "status not GL_TRUE\n";
   
   //get linking log
   GLint bufferLen;

@@ -12,16 +12,39 @@ void OrbitManipulator::update(float dt) {
 	vec3 eye = camera->getEye();
 	vec3 up = camera->getUp();
 
+	vec3 dir = eye - center;
+	vec3 a = cross(dir, up);
+	vec3 f = normalize(cross(a, up));
+	vec3 r = cross(f, up);
+	
+	vec3 move(0);
+	// WSADEQ 
 	if (keymap[SDLK_w]) {
-		vec3 dir = eye - center;
-		vec3 a = cross(dir, up);
-		vec3 f = normalize(cross(a, up));
-		center += f*moveSpeed;
-		std::cout << f.x << " " << f.y << " " << f.z << "\n";
+		move += f*moveSpeed;
 	}
-
-
-
+	if (keymap[SDLK_s]) {
+		move += -f*moveSpeed;
+	}
+	if (keymap[SDLK_d]) {
+		move += r*moveSpeed;
+	}
+	if (keymap[SDLK_a]) {
+		move += -r*moveSpeed;
+	}
+	if (keymap[SDLK_e]) {
+		move += up*moveSpeed;
+	}
+	if (keymap[SDLK_q]) {
+		move += -up*moveSpeed;
+	}
+	// middle mouse drag
+	if (dragx!= 0 || dragy!= 0) {
+		vec3 viewRight = normalize(cross(dir,up));
+		vec3 viewUp = normalize(cross(viewRight, dir));
+		move +=dragSpeed*( viewUp*float(dragy) + viewRight*float(dragx));
+		dragx = 0; dragy = 0;
+	}
+	center += move*zoom;
 
 	eye =vec3(-zoom, 0, 0);
 	eye = rotate(eye, -rotSpeedY* radians(float(movey)), vec3(0, 0, 1));
@@ -60,5 +83,9 @@ void OrbitManipulator::setupCallbacks(BaseApp & app) {
 	});
 	app.addKeyReleaseCallback([&](SDL_Keycode key, Uint16) {
 		if (key < 256)keymap[key] = false;
+	});
+
+	app.addUpdateCallback([&](float dt) {
+		update(dt);
 	});
 }

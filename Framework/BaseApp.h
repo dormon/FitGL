@@ -1,4 +1,5 @@
 #pragma once
+class BaseApp;
 
 #include <GL/glew.h>
 #include <SDLWindow/SDLWindow.h>
@@ -13,6 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <ProgramObject.h>
 #include <Shader.h>
 #include <Gui.h>
@@ -20,7 +22,8 @@
 #include <Timer.h>
 #include <Camera.h>
 #include <Manipulator.h>
-
+//
+#include <utils/utils.h>
 
 /** @TODO
 X -include SDLWindow

@@ -1,0 +1,7 @@
+out vec2 vCoord;
+
+void main(){
+  vec2 coord = vec2(gl_VertexID%2,gl_VertexID/2);
+  gl_Position = vec4(-1+2*coord,1,1.);
+  vCoord = vec2(coord.x,1-coord.y);
+}

@@ -35,6 +35,9 @@ void Mesh::updateData(){
 	glVertexArrayVertexBuffer(vao, 0, vbo, offsetof(Vertex, pos), sizeof(Vertex));
 	glVertexArrayVertexBuffer(vao, 1, vbo, offsetof(Vertex, norm), sizeof(Vertex));
 	glVertexArrayVertexBuffer(vao, 2, vbo, offsetof(Vertex, tc), sizeof(Vertex));
+	glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, 0, 0);
+	glVertexArrayAttribFormat(vao, 1, 3, GL_FLOAT, 0, 0);
+	glVertexArrayAttribFormat(vao, 2, 2, GL_FLOAT, 0, 0);
 	glEnableVertexArrayAttrib(vao, 0);
 	glEnableVertexArrayAttrib(vao, 1);
 	glEnableVertexArrayAttrib(vao, 2);

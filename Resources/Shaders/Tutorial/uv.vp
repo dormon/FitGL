@@ -1,0 +1,19 @@
+uniform mat4 v;
+uniform mat4 p;
+
+layout(location=0)in vec4 position;
+layout(location=1)in vec2 coord;
+
+out vec3 vPosition;
+out vec3 vNormal;
+out vec2 vCoord;
+out vec3 vCamera;
+
+void main(){
+  gl_Position = p * (v * position);
+
+  vPosition = position.xyz;
+  vNormal = normalize(position.xyz);
+  vCoord  = coord;
+  vCamera = (inverse(v)*vec4(0,0,0,1)).xyz;
+}

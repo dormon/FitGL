@@ -1,0 +1,38 @@
+float diffuse(vec3 position,vec3 normal,vec3 light){
+  vec3 l = normalize(light-position);
+  return clamp(dot(normal,l),0,1);
+}
+
+float specular(vec3 position,vec3 normal,vec3 light,vec3 camera,float shininess){
+  vec3 l = normalize(light-position);
+  vec3 v = normalize(camera-position);
+  vec3 r = reflect(v,normal);
+  return pow(clamp(dot(l,-r),0,1),shininess)*sign(diffuse(position,normal,light));
+}
+
+vec3 lambertLighting(
+    vec3 position,
+    vec3 normal,
+    vec3 light,
+    vec3 diffuseColor){
+  float ambientFactor = 0.4;
+  float diffuseFactor = diffuse(position,normal,light);
+  return ambientFactor*diffuseColor+
+    diffuseFactor*diffuseColor;
+}
+
+vec3 phongLighting(
+    vec3 position,
+    vec3 normal,
+    vec3 light,
+    vec3 camera,
+    float shininess,
+    vec3 diffuseColor,
+    vec3 lightColor){
+  float ambientFactor = 0.4;
+  float diffuseFactor = diffuse(position,normal,light);
+  float specularFactor = specular(position,normal,light,camera,shininess);
+  return ambientFactor*diffuseColor+
+    diffuseFactor*diffuseColor+
+    specularFactor*lightColor;
+}

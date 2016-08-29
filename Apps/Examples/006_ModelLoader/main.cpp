@@ -7,21 +7,6 @@
 
 using namespace glm;
 
-void drawNode(ProgramObject program, NodeShared const&node, mat4 parentMat = mat4()) {
-	mat4 useMat = parentMat * node->getMatrix();
-	program.setMatrix4fv("m", value_ptr(useMat));
-	mat4 n = transpose(inverse(useMat));
-	program.setMatrix4fv("n", value_ptr(useMat));
-
-	for (auto &m : node->meshes) {
-		m->mat->bind(program);		
-		m->draw();
-	}
-	for (auto &c : node->children) {
-		drawNode(program, c, useMat);
-	}
-};
-
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
 	ProgramObject program;

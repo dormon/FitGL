@@ -1,0 +1,55 @@
+layout(location=0)in vec4 position;
+
+uniform mat4 v;
+uniform mat4 p;
+
+uniform vec4 light;
+
+uniform vec3  diffuseColor = vec3(0.5,0.5,0.5);
+uniform vec3  lightColor = vec3(1,1,1);
+uniform float shininess = 40;
+
+uniform uint sphereSizeX = 10;
+uniform uint sphereSizeY = 10;
+
+uniform int useGouraudNormal = 0;
+uniform int usePhongLighting = 0;
+
+out vec3 vNormal;
+out vec3 vPosition;
+out vec3 vCamera;
+out vec3 vColor;
+
+vec3 computeFlatNormal(){
+  uint faceId = gl_VertexID/6;
+  uint faceIdX = faceId%sphereSizeX;
+  uint faceIdY = faceId/sphereSizeX;
+  float xAngle = radians((faceIdX+0.5)/sphereSizeX*360);
+  float yAngle = radians((faceIdY+0.5)/sphereSizeY*180);
+  return vec3(cos(xAngle)*sin(yAngle),-cos(yAngle),sin(xAngle)*sin(yAngle));
+}
+
+void main(){
+  vec3 gouraudNormal = normalize(position.xyz);
+  vec3 flatNormal = computeFlatNormal();
+  vec3 camera = (inverse(v)*vec4(0,0,0,1)).xyz;
+  vec3 normal;
+
+  if(useGouraudNormal == 1)
+    normal = gouraudNormal;
+  else
+    normal = flatNormal;
+
+  gl_Position = p * (v * position);
+  vNormal = normal;
+  vPosition = position.xyz;
+  vCamera = camera;
+
+  vec3 lambert = lambertLighting(position.xyz,normal,light.xyz,diffuseColor);
+  vec3 phong = phongLighting(position.xyz,normal,light.xyz,camera,shininess,diffuseColor,lightColor);
+
+  if(usePhongLighting == 1)
+    vColor = phong;
+  else
+    vColor = lambert;
+}

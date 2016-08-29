@@ -5,21 +5,6 @@
 
 using namespace glm;
 
-void drawNode(ProgramObject &program, NodeShared const&node, mat4 parentMat = mat4()) {
-	mat4 useMat = parentMat * node->getMatrix();
-	program.setMatrix4fv("m", value_ptr(useMat));
-	mat4 n = transpose(inverse(useMat));
-	program.setMatrix4fv("n", value_ptr(useMat));
-
-	for (auto &m : node->meshes) {
-		m->mat->bind(program);
-		m->draw();
-	}
-	for (auto &c : node->children) {
-		drawNode(program, c, useMat);
-	}
-};
-
 void resizeID(GLuint fbo, GLuint tex,GLuint renderBuffer, int width, int height) {
 	glTextureImage2DEXT(tex, GL_TEXTURE_2D, 0, GL_R32I, width, height, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, 0);
 	glNamedRenderbufferStorage(renderBuffer,GL_DEPTH_COMPONENT,width,height);
@@ -116,11 +101,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		cam.setAspect(float(w) / float(h));
 		resizeID(fbo, texid, renderBuffer, w, h);
 	});
-
-	app.addUpdateCallback([&](float dt) {
-		manipulator.update(dt);
-	});
-
+	
 	app.addMouseMoveCallback([&](int dx,int dy,int x,int y) {
 		lastX = x;
 		lastY = y;

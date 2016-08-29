@@ -6,7 +6,6 @@ layout(location=2) in vec2 aTc;
 uniform mat4 v;
 uniform mat4 p;
 uniform mat4 m;
-uniform mat4 n;
 
 void main(){
 	gl_Position=p*v*m*vec4(aPosition,1);

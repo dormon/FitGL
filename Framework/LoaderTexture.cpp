@@ -22,6 +22,21 @@ GLuint Loader::texture(std::string const & fileName, bool generateMipmap,
 	return tex;
 }
 
+GLuint Loader::cubemap(std::string const(&fileNames)[6], bool generateMipmap, GLenum filterMin, GLenum filterMag, GLenum wrapR, GLenum wrapS){
+	GLuint tex;
+	glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &tex);
+	for (int i = 0; i < 6; i++) {
+		auto img = image(fileNames[i]);
+		glTextureImage2DEXT(tex, GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, 0, GL_RGBA, img->width, img->height, 0, img->format, img->type, img->data);
+	}	
+	if (generateMipmap)glGenerateTextureMipmap(tex);
+	glTextureParameteri(tex, GL_TEXTURE_MIN_FILTER, filterMin);
+	glTextureParameteri(tex, GL_TEXTURE_MAG_FILTER, filterMag);
+	glTextureParameteri(tex, GL_TEXTURE_WRAP_R, wrapR);
+	glTextureParameteri(tex, GL_TEXTURE_WRAP_S, wrapS);
+	return tex;
+}
+
 
 ImageShared Loader::image(std::string const & fileName) {
 #ifdef USE_FREEIMAGE

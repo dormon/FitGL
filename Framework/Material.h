@@ -14,7 +14,7 @@ typedef std::shared_ptr<Material> MaterialShared;
 
 class PhongMaterial: public Material{
 public:
-	glm::vec4 diffuse;
+	glm::vec4 diffuse = glm::vec4(0, 0, 0, 0);
 	GLuint diffuseTex=0;
 	//...
 

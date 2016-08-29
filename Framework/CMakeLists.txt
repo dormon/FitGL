@@ -19,6 +19,8 @@ set(FRAMEWORK_INCLUDES
 	Camera.h
 	Manipulator.h
 	Timer.h
+
+	utils/utils.h
   
   #Timer.h
   #ValuePrinter.h
@@ -37,6 +39,8 @@ set(FRAMEWORK_SOURCES
 	Material.cpp
 	Camera.cpp
 	Manipulator.cpp
+
+	utils/drawNode.cpp
   )
 
 add_library(${LIB_NAME}

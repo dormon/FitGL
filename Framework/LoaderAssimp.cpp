@@ -41,7 +41,7 @@ NodeShared Loader::scene(std::string const & fileName){
 	std::string dir = std::regex_replace(fileName, std::regex("[^/]+$"), "");
 
 	auto importer = new Assimp::Importer();
-	auto scene = importer->ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals);
+	auto scene = importer->ReadFile(fileName.c_str(), aiProcess_Triangulate );
 	if (!scene) {
 		std::string er = "File not found: " + fileName + "\n";
 		throw std::runtime_error(er.c_str());
@@ -62,6 +62,7 @@ NodeShared Loader::scene(std::string const & fileName){
 			std::string texPath = dir + tex.C_Str();
 
 			m->diffuseTex = Loader::texture(texPath);
+			m->diffuse = glm::vec4(0, 0, 0, 0);
 		}
 
 		allMaterials.push_back(m);

@@ -2,6 +2,7 @@
 
 #include <Camera.h>
 #include <functional>
+
 class BaseApp;
 
 class Manipulator {
@@ -37,6 +38,7 @@ protected:
 	float zoom = 30;
 	float rotSpeedX = 1;
 	float rotSpeedY = 1;
-	float moveSpeed = 1;
+	float moveSpeed = 0.001;
+	float dragSpeed = 0.001;
 	bool keymap[256] = {};
 };

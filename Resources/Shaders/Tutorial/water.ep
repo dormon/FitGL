@@ -1,0 +1,51 @@
+layout(quads)in;
+
+in patch uint cId;
+in patch vec3 cCamera;
+
+uniform uint waterSizeX = 10;
+uniform uint waterSizeY = 10;
+
+uniform mat4 v;
+uniform mat4 p;
+uniform float time = 0;
+
+out vec3 eView;
+out vec3 ePosition;
+out vec3 eNormal;
+out vec3 eCamera;
+
+vec3 computeNormal(int stpX,int stpY,ivec3 pos,uint maxLevel,uint level,float persistency){
+  float d = 4;
+  float dx = noise(pos+ivec3(stpX,0,0),maxLevel,level,persistency)-
+  noise(pos-ivec3(stpX,0,0),maxLevel,level,persistency);
+  float dy = noise(pos+ivec3(0,0,stpY),maxLevel,level,persistency)-
+  noise(pos-ivec3(0,0,stpY),maxLevel,level,persistency);
+  return normalize(vec3(dx,d,-dy));
+}
+
+void main(){
+  uint chunkX = cId%waterSizeX;
+  uint chunkY = cId/waterSizeX;
+
+  float size=10;
+  vec4 position = vec4(
+      (-1+2*float(chunkX)/waterSizeX)*size,
+      0,
+      (-1+2*float(chunkY)/waterSizeY)*size,
+      1);
+  position.xz += gl_TessCoord.xy*vec2(size*2)/vec2(waterSizeX,waterSizeY);
+
+  position.y = noise(ivec3(position.xz*100,time*100),8u,8u,2)*.4;
+
+  eView = position.xyz-cCamera;
+  uint noiseScale = 100;
+  int stpX = int(noiseScale*2*size/(gl_TessLevelInner[0]*waterSizeX));
+  int stpY = int(noiseScale*2*size/(gl_TessLevelInner[1]*waterSizeY));
+  eNormal = computeNormal(stpX,stpY,ivec3(position.xz*noiseScale,time*noiseScale),8u,8u,2);
+
+  eCamera = cCamera;
+  ePosition = position.xyz;
+
+  gl_Position = p*(v*position);
+}
