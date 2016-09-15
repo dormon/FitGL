@@ -92,7 +92,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glDisable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
-		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		//glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	});
 
 	app.addResizeCallback([&](int w, int h) {

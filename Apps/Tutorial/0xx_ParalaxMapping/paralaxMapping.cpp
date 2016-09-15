@@ -56,7 +56,8 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
-		
+
+
 		textColor(1, 1, 0, 1);
 		std::string msg;
 		msg += "X - useNormalMapping: " + std::to_string(useNormalMapping) + "\n";

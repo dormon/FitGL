@@ -23,6 +23,6 @@ void label(std::string const & text, int x, int y, int width, int height) {
 }
 
 void fpsLabel(int x, int y, int width, int height) {
-	std::string s = "fps: " + std::to_string(GetIO().Framerate);
+	std::string s = "fps: " + std::to_string(ImGui::GetIO().Framerate);
 	label(s, x, y, width, height);
 }

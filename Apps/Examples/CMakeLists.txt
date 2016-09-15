@@ -9,7 +9,7 @@ set(apps
 	007_Timer
 	008_OrbitManipulator
 	
-	x01_Challenge
+	x01_3DPiskvorky
 )
 
 foreach(app ${apps})

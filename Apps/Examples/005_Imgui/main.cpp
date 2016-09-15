@@ -4,6 +4,10 @@
 #include <bunny.h>
 
 #include <Gui.h>
+//ImGui_ImplSdlGL3_Init(window);
+//ImGui_ImplSdlGL3_NewFrame(window);
+
+//ImGui::Render();
 
 using namespace glm;
 
@@ -18,6 +22,12 @@ int main(int /*argc*/, char ** /*argv*/) {
 	float zoom = 4;
 	float bunnyColor[3] = { 1.0,0.5,0.25};
 	bool showDemo = false;
+	ImVec2 optSize(200, 200);
+	ImVec2 optPos(20, 40);
+
+	PerspectiveCamera cam;
+	OrbitManipulator manipulator(&cam);
+	manipulator.setupCallbacks(app);
 
 	std::string prefix = "../../Resources/Shaders/Examples/005_Imgui/";
 	app.addInitCallback([&]() {
@@ -36,15 +46,13 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 		//bunny
-		mat4 p = perspective(radians(45.f), float(w) / float(h), 0.1f, 1000.f);
-		mat4 v = lookAt(zoom*vec3(-1,1,1), vec3(0, 0, 0), vec3(0, 1, 0));
 		float lightDist = 50;
 		vec3 lightPos(cos(lightDir), 1, sin(lightDir));
 		lightPos = lightPos*lightDist;
 		program.use();
 		program.set3fv("color", bunnyColor);
-		program.setMatrix4fv("p", value_ptr(p));
-		program.setMatrix4fv("v", value_ptr(v));
+		program.setMatrix4fv("p", value_ptr(cam.getProjection()));
+		program.setMatrix4fv("v", value_ptr(cam.getView()));
 		program.set3fv("lightPosition", value_ptr(lightPos));
 
 		bunnyDraw();
@@ -53,8 +61,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		using namespace ImGui;
 		label("FPS: " + std::to_string(GetIO().Framerate));		
 
-		Begin("Options",0,ImVec2(200,200));
-		SetWindowPos(ImVec2(20, 40));
+		Begin("Options",0,optSize);
 
 		ImGui::SliderFloat("Light dir", &lightDir, 0.0f, 2*pi<float>());
 		ImGui::ColorEdit3("Bunny color", bunnyColor);

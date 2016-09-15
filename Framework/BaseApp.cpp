@@ -7,7 +7,7 @@ BaseApp::BaseApp() {
 
 	mainWindow = addWindow();
 
-	mainContext = mainWindow->createContext("context", 450, SDLWindow::CORE, SDLWindow::Flag::DEBUG,false);
+	mainContext = mainWindow->createContext("context", 450, SDLWindow::CORE, SDLWindow::Flag::DEBUG,true);
 	
 	glewExperimental = GL_TRUE;
 	glewInit();

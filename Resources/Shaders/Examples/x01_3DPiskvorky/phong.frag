@@ -6,7 +6,7 @@ in vec2 tc;
 
 uniform vec3 La = vec3(0.2);
 uniform vec3 Ld = vec3(0.8);
-uniform vec3 lightPosition = vec3(50,50,50);
+uniform vec3 lightPosition = vec3(50,60,70);
 uniform uint pick=-1;;
 uniform uint id=0;
 

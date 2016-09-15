@@ -61,6 +61,8 @@ void DU04::init() {
 	/* vygenerovani jmena pro VAO a jeho aktivace */
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
+
+	glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 }
 
 /* Funkce pro prepocet HSV->RGB */

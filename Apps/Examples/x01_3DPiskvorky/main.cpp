@@ -19,7 +19,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	auto mainWindow = app.getMainWindow();
 	mainWindow->setSize(1280, 720);
 	
-	std::string prefix = "../../Resources/Shaders/Examples/x01_Challenge/";
+	std::string prefix = "../../Resources/Shaders/Examples/x01_3DPiskvorky/";
 	std::string modelPrefix = "../../Resources/Models/Challenge/";
 
 	PerspectiveCamera cam;
@@ -38,27 +38,16 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 
 	app.addInitCallback([&]() {
-		std::cout << "comp1\n";
 		auto vs = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "phong.vert"));
 		auto fs = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "phong.frag"));
 		
-		program = createProgram(vs, fs);
-		
-		program.use();
-		
-		
-		std::cout << "prog1 "<<program.getId()<<"\n";
+		program = createProgram(vs, fs);		
 		
 		auto vs1 = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "id.vert"));
 		auto fs1 = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "id.frag"));
-		
+
 		programID = createProgram(vs1, fs1);
-		
-		programID.use();
-		
-		std::cout << "prog2 " << programID.getId() << "\n";
-		std::cout << "quit\n";
-		
+				
 		
 		cross = Loader::scene(modelPrefix + "cross.fbx");
 		sphere = Loader::scene(modelPrefix + "sphere.fbx");
