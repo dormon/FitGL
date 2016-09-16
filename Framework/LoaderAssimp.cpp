@@ -60,7 +60,7 @@ NodeShared Loader::scene(std::string const & fileName){
 			aiString tex;
 			mat->GetTexture(aiTextureType_DIFFUSE, 0, &tex);
 			std::string texPath = dir + tex.C_Str();
-
+			texPath = std::regex_replace(texPath, std::regex("\\\\"), "/");
 			m->diffuseTex = Loader::texture(texPath);
 			m->diffuse = glm::vec4(0, 0, 0, 0);
 		}

@@ -12,30 +12,10 @@
 # Assimp target will be created for cmake 3.0.0 and newer
 #
 
-function(print_target_properties tgt)
-    if(NOT TARGET ${tgt})
-      message("There is no target named '${tgt}'")
-      return()
-    endif()
-
-    foreach (prop ${CMAKE_PROPERTY_LIST})
-        string(REPLACE "<CONFIG>" "${CMAKE_BUILD_TYPE}" prop ${prop})
-        # message ("Checking ${prop}")
-        get_property(propval TARGET ${tgt} PROPERTY ${prop} SET)
-        if (propval)
-            get_target_property(propval ${tgt} ${prop})
-            message ("${tgt} ${prop} = ${propval}")
-        endif()
-    endforeach(prop)
-endfunction(print_target_properties)
-
 
 # try config-based find first
 # (Assimp version 3.1.1 includes config file, but no import target it created)
 find_package(${CMAKE_FIND_PACKAGE_NAME} ${${CMAKE_FIND_PACKAGE_NAME}_FIND_VERSION} CONFIG QUIET)
-
-message("Assimp target info")
-print_target_properties(${CMAKE_FIND_PACKAGE_NAME})
 
 if(${CMAKE_FIND_PACKAGE_NAME}_FOUND)
 
@@ -111,12 +91,4 @@ endif()
 # set *_FOUND flag
 if(ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY_RELEASE)
    set(${CMAKE_FIND_PACKAGE_NAME}_FOUND True)
-endif()
-
-# message
-include(GEMacros)
-if(ASSIMP_LIBRARY_RELEASE)
-   ge_report_find_status("${ASSIMP_LIBRARY_RELEASE}")
-else()
-   ge_report_find_status("")
 endif()

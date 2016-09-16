@@ -48,22 +48,15 @@ add_library(${LIB_NAME}
   ${FRAMEWORK_SOURCES}
   )
 
-message("Assimp check")
-message("Assimp_FOUND " ${Assimp_FOUND})
-message("ASSIMP_INCLUDE_DIR " ${ASSIMP_INCLUDE_DIR})
-message("ASSIMP_LIBRARY_RELEASE " ${ASSIMP_LIBRARY_RELEASE})
-message("ASSIMP_LIBRARY_DEBUG " ${ASSIMP_LIBRARY_DEBUG})
-message("ASSIMP_DLL_RELEASE " ${ASSIMP_DLL_RELEASE})
-message("ASSIMP_DLL_DEBUG "  ${ASSIMP_DLL_DEBUG})
-
 set(Internal_deps SDL2 GLEW glm imgui)
 if(FreeImage_FOUND AND FreeImagePlus_FOUND)
 	add_definitions(-DUSE_FREEIMAGE)
 	set(Internal_deps ${Internal_deps} FreeImage FreeImagePlus)	
 endif()
-if(Assimp_FOUND)
+if(assimp_FOUND)
 	add_definitions(-DUSE_ASSIMP)
-	set(Internal_deps ${Internal_deps} Assimp)	
+	include_directories(${ASSIMP_INCLUDE_DIR})	
+	set(Internal_deps ${Internal_deps} assimp)	
 endif()
 
 set(Internal_inc ${FitGL_SOURCE_DIR}/Framework)

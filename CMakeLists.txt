@@ -15,7 +15,7 @@ find_package(SDL2          REQUIRED)
 find_package(glm           REQUIRED)
 find_package(FreeImage     QUIET)
 find_package(FreeImagePlus QUIET)
-find_package(Assimp QUIET)
+find_package(assimp QUIET)
 
 include_directories(${FitGL_SOURCE_DIR}/Framework)
 
