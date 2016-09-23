@@ -86,6 +86,7 @@ public:
 	// events for main window
 	void setupMainWindowEvents();
 	virtual void init() {}
+	virtual void update(float dt) {}
 	virtual void draw() {}
 	virtual void onResize(int /*w*/, int /*h*/) {}
 	virtual void onMouseMove(int /*dx*/, int /*dy*/, int /*x*/, int /*y*/) {}

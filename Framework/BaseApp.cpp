@@ -169,6 +169,7 @@ void BaseApp::setupMainWindowEvents() {
 	using namespace std::placeholders;
 	// init
 	addInitCallback(std::bind(&BaseApp::init, this));
+	addUpdateCallback(std::bind(&BaseApp::update, this, _1));
 	// virtual function callbacks
 	addResizeCallback(std::bind(&BaseApp::onResize, this, _1, _2), mainWindow->getId());
 	addMouseMoveCallback(std::bind(&BaseApp::onMouseMove, this, _1, _2, _3, _4), mainWindow->getId());
