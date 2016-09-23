@@ -23,7 +23,7 @@ protected:
 
 class OrbitManipulator: public Manipulator{
 public:
-	OrbitManipulator(Camera* c) :Manipulator(c) {}
+	OrbitManipulator(Camera* c=0) :Manipulator(c) {}
 	virtual ~OrbitManipulator() {}
 
 	virtual void update(float dt);
