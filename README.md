@@ -27,3 +27,7 @@ sudo apt-get install git-all
 * pokud cmake nenajde knihovny automaticky, je potřeba vyplnit libky a cesty k hlavičkám
 * generate
 * překlad vygenerovaného projektu
+
+## Prebuilt
+* nově jsou přibaly předkompilované knihovny pro VS2015 x64
+* stačí v cmake zaškrtnout FITGL_USE_LIB_PACKAGE
