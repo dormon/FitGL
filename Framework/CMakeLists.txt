@@ -48,7 +48,7 @@ add_library(${LIB_NAME}
   ${FRAMEWORK_SOURCES}
   )
 
-set(Internal_deps SDL2 GLEW glm imgui)
+set(Internal_deps SDL2 GLEW glm imgui OpenGL)
 if(FreeImage_FOUND AND FreeImagePlus_FOUND)
 	add_definitions(-DUSE_FREEIMAGE)
 	set(Internal_deps ${Internal_deps} FreeImage FreeImagePlus)	
