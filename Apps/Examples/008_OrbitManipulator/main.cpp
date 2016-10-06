@@ -6,7 +6,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	auto mainWindow = app.getMainWindow();
 	
-	std::string prefix = "../../Resources/Shaders/Examples/006_ModelLoader/";
+	std::string prefix = app.getResourceDir() + "Shaders/Examples/006_ModelLoader/";
 
 	PerspectiveCamera cam;
 	OrbitManipulator manipulator(&cam);
@@ -18,7 +18,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		auto fs = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "phong.frag"));
 		program = createProgram(vs, fs);
 
-		root = Loader::scene("../../Resources/Models/sponza/sponza.fbx");
+		root = Loader::scene(app.getResourceDir() + "Models/sponza/sponza.fbx");
 	});
 
 	app.addResizeCallback([&](int w, int h) {

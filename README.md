@@ -22,7 +22,7 @@ sudo apt-get install git-all
 ## Zprovoznění
 * git clone
 * cmake-gui v rootu projektu (tam kde je CMakeLists.txt)
-* vyrat zdrojovou složku (FitGL/) a cílovou složku (FitGL/build)
+* vybrat zdrojovou složku (FitGL/) a cílovou složku (FitGL/build)
 * configure, vybrat oblíbený překladač (Visual Studio, Makefile, ...)
 * pokud cmake nenajde knihovny automaticky, je potřeba vyplnit libky a cesty k hlavičkám
 * generate

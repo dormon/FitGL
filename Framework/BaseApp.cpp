@@ -7,8 +7,8 @@ BaseApp::BaseApp() {
 
 	mainWindow = addWindow();
 
-	mainContext = mainWindow->createContext("context", 450, SDLWindow::CORE, SDLWindow::Flag::DEBUG,true);
-	
+	mainContext = mainWindow->createContext("context", 450, SDLWindow::CORE, SDLWindow::Flag::DEBUG, true);
+
 	glewExperimental = GL_TRUE;
 	glewInit();
 
@@ -22,6 +22,9 @@ BaseApp::BaseApp() {
 	setupMainWindowEvents();
 	enableDebug();
 	//SDL_CaptureMouse(SDL_TRUE);
+
+	//resources 
+	resourceDir = std::string(RESOURCE_DIR);
 }
 
 BaseApp::~BaseApp() {

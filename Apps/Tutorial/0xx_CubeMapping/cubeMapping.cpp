@@ -24,7 +24,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	int32_t sphereSizeY = 20;
 
 	app.addInitCallback([&]() {
-		std::string prefix = "../../Resources/Shaders/Tutorial/";
+		std::string prefix = app.getResourceDir() + "Shaders/Tutorial/";
 		auto vs = compileShader(GL_VERTEX_SHADER,
 			"#version 450\n",
 			Loader::text(prefix + "cubeMapping.vp"));
@@ -43,7 +43,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		programEnv = createProgram(vs, fs);
 
 
-		std::string texPrefix = "../../Resources/Textures/Tutorial/";
+		std::string texPrefix = app.getResourceDir() + "Textures/Tutorial/";
 		diffuseTextureTop = Loader::texture(texPrefix + "grass.png");
 		diffuseTextureSide = Loader::texture(texPrefix + "dirt.jpg");
 		diffuseTextureDown = Loader::texture(texPrefix + "rock.jpg");

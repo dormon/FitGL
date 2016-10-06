@@ -25,7 +25,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	GLuint normalTexture;
 
 	app.addInitCallback([&]() {
-		std::string prefix = "../../Resources/Shaders/Tutorial/";
+		std::string prefix = app.getResourceDir() + "Shaders/Tutorial/";
 		auto vs = compileShader(GL_VERTEX_SHADER,
 			"#version 450\n",
 			Loader::text(prefix + "normalMapping.vp"));
@@ -37,7 +37,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		program = createProgram(vs, fs);
 
 
-		std::string texPrefix = "../../Resources/Textures/Tutorial/";
+		std::string texPrefix = app.getResourceDir() + "Textures/Tutorial/";
 		diffuseTexture = Loader::texture(texPrefix+"sponza_details_diff.png");
 		specularTexture = Loader::texture(texPrefix + "sponza_details_spec.png");
 		normalTexture = Loader::texture(texPrefix + "sponza_detail_ddn.png");

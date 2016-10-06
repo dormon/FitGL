@@ -61,7 +61,9 @@ public:
 	SDLWindowShared getWindow(int i) { return windows[i]; }
 	SDLWindowShared getMainWindow() { return mainWindow; }
 
-
+	// resources
+	std::string getResourceDir() { return resourceDir; }
+	void setResourceDir(std::string const&s) { resourceDir = s; }
 
 	//
 	float getTimeFromStart() { return timer.elapsedFromStart(); }
@@ -126,4 +128,6 @@ protected:
 
 	Timer<float> timer;
 	float dt;
+
+	std::string resourceDir;
 };

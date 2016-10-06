@@ -19,8 +19,8 @@ int main(int /*argc*/, char ** /*argv*/) {
 	auto mainWindow = app.getMainWindow();
 	mainWindow->setSize(1280, 720);
 	
-	std::string prefix = "../../Resources/Shaders/Examples/x01_3DPiskvorky/";
-	std::string modelPrefix = "../../Resources/Models/Challenge/";
+	std::string prefix = app.getResourceDir() + "Shaders/Examples/x01_3DPiskvorky/";
+	std::string modelPrefix = app.getResourceDir() + "Models/Challenge/";
 
 	PerspectiveCamera cam;
 	OrbitManipulator manipulator(&cam);

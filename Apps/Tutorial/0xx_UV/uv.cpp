@@ -23,7 +23,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	int32_t sphereSizeY = 20;
 
 	app.addInitCallback([&]() {
-		std::string prefix = "../../Resources/Shaders/Tutorial/";
+		std::string prefix = app.getResourceDir() + "Shaders/Tutorial/";
 		auto vs = compileShader(GL_VERTEX_SHADER,
 			"#version 450\n",
 			Loader::text(prefix + "uv.vp"));
@@ -33,7 +33,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 			Loader::text(prefix + "uv.fp"));
 		program = createProgram(vs, fs);
 		
-		std::string texPrefix = "../../Resources/Textures/Tutorial/";
+		std::string texPrefix = app.getResourceDir() + "Textures/Tutorial/";
 		diffuseTexture = Loader::texture(texPrefix + "earth.png");
 		specularTexture = Loader::texture(texPrefix + "earth_s.png");
 

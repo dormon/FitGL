@@ -21,7 +21,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	bool useBetweenLINEAR = true;
 
 	app.addInitCallback([&]() {
-		std::string prefix = "../../Resources/Shaders/Tutorial/";
+		std::string prefix = app.getResourceDir() + "Shaders/Tutorial/";
 		auto vs = compileShader(GL_VERTEX_SHADER,
 			"#version 450\n",
 			Loader::text(prefix + "mipmap.vp"));
@@ -31,7 +31,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 			Loader::text(prefix + "mipmap.fp"));
 		program = createProgram(vs, fs);
 
-		diffuseTexture = Loader::texture("../../Resources/Textures/Tutorial/chessboard.png");
+		diffuseTexture = Loader::texture(app.getResourceDir() + "Textures/Tutorial/chessboard.png");
 
 		glGenVertexArrays(1, &vao);
 

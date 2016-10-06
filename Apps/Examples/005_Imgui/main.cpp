@@ -29,7 +29,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	OrbitManipulator manipulator(&cam);
 	manipulator.setupCallbacks(app);
 
-	std::string prefix = "../../Resources/Shaders/Examples/005_Imgui/";
+	std::string prefix = app.getResourceDir() + "Shaders/Examples/005_Imgui/";
 	app.addInitCallback([&]() {
 		auto vs = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "lambert.vert"));
 		auto fs = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "lambert.frag"));
@@ -64,6 +64,8 @@ int main(int /*argc*/, char ** /*argv*/) {
 		Begin("Options",0,optSize);
 
 		ImGui::SliderFloat("Light dir", &lightDir, 0.0f, 2*pi<float>());
+
+
 		ImGui::ColorEdit3("Bunny color", bunnyColor);
 
 		if (Button("show demo menu")) showDemo ^= 1;

@@ -12,6 +12,7 @@ SDLWindow::SDLWindow(uint32_t width, uint32_t height, bool resizable, bool fulls
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
     }
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     this->m_window = SDL_CreateWindow("FitGL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 }
 

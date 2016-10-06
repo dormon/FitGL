@@ -22,7 +22,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	bool computeLightInFS = true;
 
 	app.addInitCallback([&]() {
-		std::string prefix = "../../Resources/Shaders/Tutorial/";
+		std::string prefix = app.getResourceDir() + "Shaders/Tutorial/";
 		auto vs = compileShader(GL_VERTEX_SHADER,
 			"#version 450\n",
 			Loader::text(prefix + "lighting.vp"),

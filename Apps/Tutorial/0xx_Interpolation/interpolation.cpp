@@ -21,7 +21,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	GLint modeUniform;
 
 	app.addInitCallback([&]() {
-		std::string prefix = "../../Resources/Shaders/Tutorial/";
+		std::string prefix = app.getResourceDir() + "Shaders/Tutorial/";
 		auto vs = compileShader(GL_VERTEX_SHADER,
 			Loader::text(prefix + "interpolation.vp"));
 		auto fs = compileShader(GL_FRAGMENT_SHADER,

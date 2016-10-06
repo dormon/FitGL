@@ -18,7 +18,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	GLuint sphereCount = 30;
 
 	app.addInitCallback([&]() {
-		std::string prefix = "../../Resources/Shaders/Tutorial/";
+		std::string prefix = app.getResourceDir() + "Shaders/Tutorial/";
 		auto vs = compileShader(GL_VERTEX_SHADER,
 			"#version 450\n",
 			Loader::text(prefix + "fsRayTracing.vp"));
@@ -28,7 +28,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		program = createProgram(vs, fs);
 		
 
-		std::string texPrefix = "../../Resources/Textures/Tutorial/";
+		std::string texPrefix = app.getResourceDir() + "Textures/Tutorial/";
 		cubeTexture = Loader::cubemap({ 
 			texPrefix + "cube0.png", texPrefix + "cube1.png",
 			texPrefix + "cube2.png", texPrefix + "cube3.png",
