@@ -28,8 +28,8 @@ void DU05::init() {
 	* Vytvoreni shader programu
 	*/
 
-	string shaderPrefix = "../../Resources/Shaders/PGP2015/";
-	texturePrefix = "../../Resources/Textures/PGP2015/";
+	string shaderPrefix = RESOURCE_DIR"Shaders/PGP2015/";
+	texturePrefix = RESOURCE_DIR"Textures/PGP2015/";
 	/*
 	* Kompilace shaderu
 	*/

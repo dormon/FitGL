@@ -20,7 +20,7 @@ class ProgramObject{
     }
   public:
     ProgramObject(GLuint id=0){this->_id = id;}
-    ~ProgramObject(){glDeleteProgram(this->_id);}
+    ~ProgramObject(){if(_id!=0)glDeleteProgram(this->_id);}
 	void operator=(GLuint id) { this->_id = id; }
 	operator int() { return _id; }
     GLuint getId()const{return this->_id;}

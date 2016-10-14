@@ -1,16 +1,40 @@
 #include "BaseApp.h"
 #include <Debugging.h>
+
+Options BaseApp::options;
+
 BaseApp::BaseApp() {
 	SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-	
+
 	mainLoop = std::make_shared<SDLEventProc>(true);
 
 	mainWindow = addWindow();
 
-	mainContext = mainWindow->createContext("context", 450, SDLWindow::CORE, SDLWindow::Flag::DEBUG, true);
+	int version = 450;
+	while (version >= options.minimumVersion && mainContext == nullptr) {
+		mainContext = mainWindow->createContext("context", version, options.profile, options.flags, options.vsync);
+		version -= 10;
+	}
+	if (mainContext == nullptr) {
+		std::string msg = "OpenGL context version "
+			+ std::to_string(options.minimumVersion / 100 )+ "."
+			+ std::to_string((options.minimumVersion % 100) / 10)
+			+ " not supported.\n";
+		std::cerr << msg;
+		initFailed = true;
+		mainLoop->removeWindow(std::to_string(mainWindow->getId()));
+		return;
+	}
 
 	glewExperimental = GL_TRUE;
 	glewInit();
+
+	auto c = glGetString(GL_VERSION);
+	std::cout << c << "\n";
+	c = glGetString(GL_VENDOR);
+	std::cout << c << "\n";
+	c = glGetString(GL_RENDERER);
+	std::cout << c << "\n";
 
 	mainLoop->setIdleCallback(std::bind(&BaseApp::handleIdle, this));
 
@@ -32,28 +56,35 @@ BaseApp::~BaseApp() {
 
 int BaseApp::run() {
 	try {
-		for (auto &c : initCallbacks)c();	
+		for (auto &c : initCallbacks)c();
 		(*mainLoop)();
 		for (auto &c : cleanupCallbacks)c();
-	}catch (const std::exception &e) {		
+	}
+	catch (const std::exception &e) {
 		std::cerr << e.what() << "\n";
-#ifdef WIN32
-		system("pause");
-#else
-		std::cout << "Press ENTER to continue...\n";
-		std::cin.get();
-#endif
-		
-	}catch (...) {
+		waitForPress();
+	}
+	catch (...) {
 		std::cout << "Unknown exception\n";
 	}
-	
+
 	return 0;
+}
+
+void BaseApp::waitForPress() {
+#ifdef WIN32
+	system("pause");
+#else
+	std::cout << "Press ENTER to continue...\n";
+	std::cin.get();
+#endif
 }
 
 void BaseApp::quit() {
 	mainLoop->quit();
 }
+
+
 
 SDLWindowShared BaseApp::addWindow(SDLWindowShared const & window) {
 	windows.push_back(window);
@@ -97,11 +128,11 @@ void BaseApp::addInitCallback(Callback const & callback) {
 	initCallbacks.push_back(callback);
 }
 
-void BaseApp::addCleanupCallback(Callback const & callback){
+void BaseApp::addCleanupCallback(Callback const & callback) {
 	cleanupCallbacks.push_back(callback);
 }
 
-void BaseApp::addUpdateCallback(UpdateCallback const & callback){
+void BaseApp::addUpdateCallback(UpdateCallback const & callback) {
 	updateCallbacks.push_back(callback);
 }
 
@@ -191,8 +222,8 @@ void BaseApp::setupMainWindowEvents() {
 	// draw
 	addDrawCallback(std::bind(&BaseApp::draw, this), mainWindow);
 	//gui
-	addInitCallback([&](){
-		ImGui_ImplSdlGL3_Init(mainWindow->getWindowHandle()); 
+	addInitCallback([&]() {
+		ImGui_ImplSdlGL3_Init(mainWindow->getWindowHandle());
 	});
 	addCleanupCallback([]() {
 		ImGui_ImplSdlGL3_Shutdown();

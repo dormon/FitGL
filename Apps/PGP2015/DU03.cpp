@@ -18,7 +18,7 @@ void DU03::init() {
 	* Vytvoreni shader programu
 	*/
 
-	string prefix = "../../Resources/Shaders/PGP2015/";
+	string prefix = RESOURCE_DIR"Shaders/PGP2015/";
 
 	/*
 	* Kompilace shaderu

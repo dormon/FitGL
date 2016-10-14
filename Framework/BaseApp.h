@@ -25,20 +25,6 @@ class BaseApp;
 //
 #include <utils/utils.h>
 
-/** @TODO
-X -include SDLWindow
-X -event virtual functions
-X -dynamic event callbacks
-X -remove old compile and texture functions
--delete more stuff from SDLWindow nad SDLEventProc :)
-X -add imgui
--add fps meter
-X -multiple windows
--add remove functions
--fix closing windows
-
- */
-
 typedef std::shared_ptr<SDLWindow> SDLWindowShared;
 typedef std::weak_ptr<SDLWindow> SDLWindowWeak;
 typedef std::shared_ptr<SDLEventProc> SDLEventProcShared;
@@ -47,6 +33,13 @@ typedef std::shared_ptr<SDLEventProc> SDLEventProcShared;
 typedef std::function<void() > Callback;
 typedef std::function<void(float) > UpdateCallback;
 
+struct Options {
+	int minimumVersion = 430;
+	bool vsync = true;
+	SDLWindow::Profile profile = SDLWindow::CORE;
+	SDLWindow::Flag flags = SDLWindow::Flag::DEBUG;
+};
+
 class BaseApp {
 public:
 	BaseApp();
@@ -54,6 +47,7 @@ public:
 
 	int run();
 	void quit();
+	void waitForPress();
 
 	// windows
 	SDLWindowShared addWindow(SDLWindowShared const&window);
@@ -97,7 +91,8 @@ public:
 	virtual void onMouseWheel(int /*delta*/) {}
 	virtual void onKeyPress(SDL_Keycode /*key*/, Uint16 /*mod*/) {}
 	virtual void onKeyRelease(SDL_Keycode /*key*/, Uint16 /*mod*/) {}
-	
+public:
+	static Options options;
 protected:
 	struct EventCallbackFilter {
 		std::function<void(SDL_Event) > callback;
@@ -113,7 +108,7 @@ protected:
 	SDLWindowShared mainWindow;
 	std::vector<SDLWindowShared> windows;
 	SDLEventProcShared mainLoop;
-	SDL_GLContext mainContext;
+	SDL_GLContext mainContext = nullptr;
 
 	std::vector<EventCallbackFilter> eventCallbacks;
 	std::vector<DrawCallbackFilter> drawCallbacks;
@@ -130,4 +125,5 @@ protected:
 	float dt;
 
 	std::string resourceDir;
+	bool initFailed = false;
 };
