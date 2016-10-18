@@ -60,7 +60,7 @@ if(assimp_FOUND)
 endif()
 
 set(Internal_inc ${FitGL_SOURCE_DIR}/Framework)
-set(includes_to_export ${FitGL_SOURCE_DIR}/include)
+set(includes_to_export ${FitGL_SOURCE_DIR}/Framework)
 
 target_link_libraries(${LIB_NAME} ${Internal_deps} ${External_libs} )
 set_target_properties(${LIB_NAME} PROPERTIES

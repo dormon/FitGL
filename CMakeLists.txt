@@ -55,6 +55,7 @@ find_package(glm           REQUIRED)
 find_package(FreeImage     QUIET)
 find_package(FreeImagePlus QUIET)
 find_package(assimp QUIET)
+find_package(vulkan QUIET)
 
 include_directories(${FitGL_SOURCE_DIR}/Framework)
 
@@ -62,6 +63,16 @@ add_definitions(-DRESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/Resources/")
 
 add_subdirectory(3rdParty/imgui)
 add_subdirectory(Framework)
+
+# NeiVU
+set(FITGL_BUILD_NEIVU OFF CACHE BOOL "Build vulkan lib")
+if(FITGL_BUILD_NEIVU)
+	add_subdirectory(NeiVu)
+endif()
+set(FITGL_BUILD_NEI_APPS OFF CACHE BOOL "Build nei apps")
+if(FITGL_BUILD_NEI_APPS)
+	add_subdirectory(Apps/Nei)
+endif()
 
 # PGP2015 apps       
 set(FITGL_BUILD_PGP2015 ON CACHE BOOL "Build PGP2015")
