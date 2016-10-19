@@ -48,7 +48,7 @@ public:
 	int run();
 	void quit();
 	void waitForPress();
-
+	
 	// windows
 	SDLWindowShared addWindow(SDLWindowShared const&window);
 	SDLWindowShared addWindow(int width = 1024, int height = 768, bool resizable = true, bool fullscreen = false, int multisample = 1);
@@ -91,6 +91,7 @@ public:
 	virtual void onMouseWheel(int /*delta*/) {}
 	virtual void onKeyPress(SDL_Keycode /*key*/, Uint16 /*mod*/) {}
 	virtual void onKeyRelease(SDL_Keycode /*key*/, Uint16 /*mod*/) {}
+	
 public:
 	static Options options;
 protected:
@@ -119,7 +120,10 @@ protected:
 
 	void handleEvent(SDL_Event const &e);
 	void handleIdle();
+	void handleIdleGL();
 	void enableDebug();
+	void initGL();
+
 
 	Timer<float> timer;
 	float dt;

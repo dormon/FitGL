@@ -10,6 +10,28 @@ BaseApp::BaseApp() {
 
 	mainWindow = addWindow();
 
+	if (options.minimumVersion != 0) {
+		initGL();
+		mainLoop->setIdleCallback(std::bind(&BaseApp::handleIdleGL, this));
+	} else {
+		mainLoop->setIdleCallback(std::bind(&BaseApp::handleIdle, this));
+	}
+	mainLoop->setEventHandler([this](SDL_Event const&e)->bool {
+		handleEvent(e);
+		return true;
+	});
+
+	setupMainWindowEvents();
+	
+	//resources 
+	resourceDir = std::string(RESOURCE_DIR);
+}
+
+BaseApp::~BaseApp() {
+}
+
+
+void BaseApp::initGL() {
 	int version = 450;
 	while (version >= options.minimumVersion && mainContext == nullptr) {
 		mainContext = mainWindow->createContext("context", version, options.profile, options.flags, options.vsync);
@@ -17,7 +39,7 @@ BaseApp::BaseApp() {
 	}
 	if (mainContext == nullptr) {
 		std::string msg = "OpenGL context version "
-			+ std::to_string(options.minimumVersion / 100 )+ "."
+			+ std::to_string(options.minimumVersion / 100) + "."
 			+ std::to_string((options.minimumVersion % 100) / 10)
 			+ " not supported.\n";
 		std::cerr << msg;
@@ -35,23 +57,8 @@ BaseApp::BaseApp() {
 	std::cout << c << "\n";
 	c = glGetString(GL_RENDERER);
 	std::cout << c << "\n";
-
-	mainLoop->setIdleCallback(std::bind(&BaseApp::handleIdle, this));
-
-	mainLoop->setEventHandler([this](SDL_Event const&e)->bool {
-		handleEvent(e);
-		return true;
-	});
-
-	setupMainWindowEvents();
 	enableDebug();
-	//SDL_CaptureMouse(SDL_TRUE);
 
-	//resources 
-	resourceDir = std::string(RESOURCE_DIR);
-}
-
-BaseApp::~BaseApp() {
 }
 
 int BaseApp::run() {
@@ -109,6 +116,17 @@ void BaseApp::handleEvent(SDL_Event const & e) {
 }
 
 void BaseApp::handleIdle() {
+	dt = timer.elapsedFromLast();
+	for (auto&c : updateCallbacks)c(dt);
+	for (auto &w : windows) {
+		for (auto &dc : drawCallbacks) {
+			auto dcw = dc.window.lock();
+			if (dcw == w) dc.callback();
+		}
+	}
+}
+
+void BaseApp::handleIdleGL(){
 	dt = timer.elapsedFromLast();
 	for (auto&c : updateCallbacks)c(dt);
 
@@ -223,10 +241,13 @@ void BaseApp::setupMainWindowEvents() {
 	addDrawCallback(std::bind(&BaseApp::draw, this), mainWindow);
 	//gui
 	addInitCallback([&]() {
+		if(options.minimumVersion!=0)
 		ImGui_ImplSdlGL3_Init(mainWindow->getWindowHandle());
 	});
 	addCleanupCallback([]() {
+		if (options.minimumVersion != 0)
 		ImGui_ImplSdlGL3_Shutdown();
 	});
 }
+
 

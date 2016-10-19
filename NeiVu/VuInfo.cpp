@@ -244,3 +244,35 @@ void NeiVu::printDeviceProperties(vk::PhysicalDevice &device){
 		
 	}
 }
+
+bool NeiVu::isExtensionPresent(std::string name){
+	auto n = vk::enumerateInstanceExtensionProperties();
+	for (auto &p : n) {
+		if (p.extensionName == name)return true;
+	}
+	return false;
+}
+
+bool NeiVu::isLayerPresent(std::string name){
+	auto n = vk::enumerateInstanceExtensionProperties();
+	for (auto &p : n) {
+		if (p.extensionName == name)return true;
+	}
+	return false;
+}
+
+bool NeiVu::isExtensionPresent(vk::PhysicalDevice device, std::string name){
+	auto n = device.enumerateDeviceExtensionProperties();
+	for (auto &p : n) {
+		if (p.extensionName == name)return true;
+	}
+	return false;
+}
+
+bool NeiVu::isLayerPresent(vk::PhysicalDevice device, std::string name){
+	auto n = device.enumerateDeviceLayerProperties();
+	for (auto &p : n) {
+		if (p.layerName == name)return true;
+	}
+	return false;
+}
