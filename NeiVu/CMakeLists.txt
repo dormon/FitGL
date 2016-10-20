@@ -1,5 +1,13 @@
 set(LIB_NAME NeiVu)
 
+set(Internal_deps SDL2 glm vulkan Framework)
+
+foreach(dep ${Internal_deps})
+  if(NOT TARGET ${dep})
+    message(${LIB_NAME} " Missing target: " ${dep})
+  endif()
+endforeach(dep)
+
 set(HEADER_PATH ${FitGL_SOURCE_DIR}/${LIB_NAME})
 
 set(FRAMEWORK_INCLUDES
@@ -17,8 +25,6 @@ add_library(${LIB_NAME}
   ${FRAMEWORK_INCLUDES}
   ${FRAMEWORK_SOURCES}
   )
-
-set(Internal_deps SDL2 glm vulkan Framework)
 
 set(Internal_inc ${FitGL_SOURCE_DIR}/NeiVu)
 
