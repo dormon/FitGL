@@ -30,10 +30,15 @@ protected:
 	vk::CommandPool commandPool;
 	vk::SurfaceKHR surface;
 	vk::SurfaceFormatKHR surfaceFormat;
+	vk::SwapchainKHR swapchain;
+	std::vector<vk::Image> swapchainImages;
+
+	vk::CommandPool commandPool;
+	vk::CommandBuffer commandBuffer;
 private:
 	void createInstance();
 	void createDevice();
-	void createCommandPool();
+	void createCommands();
 	void createSurface();
 	void createSwapchain();
 };
