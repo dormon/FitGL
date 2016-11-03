@@ -10,6 +10,7 @@ set(apps
 	008_OrbitManipulator
 	
 	x01_3DPiskvorky
+	x02_Extensions
 )
 
 foreach(app ${apps})
