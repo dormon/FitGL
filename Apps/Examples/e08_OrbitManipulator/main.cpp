@@ -6,7 +6,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	auto mainWindow = app.getMainWindow();
 	
-	std::string prefix = app.getResourceDir() + "Shaders/Examples/006_ModelLoader/";
+	std::string prefix = app.getResourceDir() + "Shaders/Examples/e06_ModelLoader/";
 
 	PerspectiveCamera cam;
 	OrbitManipulator manipulator(&cam);

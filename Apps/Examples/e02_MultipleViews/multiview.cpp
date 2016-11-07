@@ -12,7 +12,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	GLuint vbo;
 	GLuint ebo;
 
-	std::string prefix = app.getResourceDir()+"Shaders/Examples/002_MultipleViews/";
+	std::string prefix = app.getResourceDir()+"Shaders/Examples/e02_MultipleViews/";
 	auto mainWindow = app.getMainWindow();
 
 	app.addInitCallback([&]() {

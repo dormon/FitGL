@@ -110,6 +110,11 @@ void BaseApp::handleEvent(SDL_Event const & e) {
 	for (auto &ec : eventCallbacks) {
 		if ((ec.type == ANY_EVENT || ec.type == e.type) &&
 			(ec.window == ANY_WINDOW || ec.window == e.window.windowID)) {
+
+      if (e.type == SDL_MOUSEMOTION && ImGui::GetIO().WantCaptureMouse) {
+        continue;
+      }
+
 			ec.callback(e);
 		}
 	}

@@ -17,7 +17,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	NodeShared scene;
 
-	std::string prefix = app.getResourceDir() + "Shaders/Examples/006_ModelLoader/";
+	std::string prefix = app.getResourceDir() + "Shaders/Examples/e06_ModelLoader/";
 	std::string prefixModel = app.getResourceDir() + "Models/";
 	app.addInitCallback([&]() {
 		auto vs = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "phong.vert"));

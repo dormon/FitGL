@@ -24,7 +24,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	auto window3 = app.addWindow(200, 200);
 	window3->move(300, 300);
 
-	std::string prefix = app.getResourceDir() + "Shaders/Examples/003_MultipleWindows/";
+	std::string prefix = app.getResourceDir() + "Shaders/Examples/e03_MultipleWindows/";
 
 	app.addInitCallback([&]() {
 		auto vs = compileShader(GL_VERTEX_SHADER, Loader::text(prefix+"lambert.vert"));

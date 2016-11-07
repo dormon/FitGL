@@ -16,7 +16,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	int z = 4;
 	auto mainWindow = app.getMainWindow();
 
-	std::string prefix = app.getResourceDir() + "Shaders/Examples/004_Textures/";
+	std::string prefix = app.getResourceDir() + "Shaders/Examples/e04_Textures/";
 	std::string texPrefix = app.getResourceDir() + "Textures/PGP2015/";
 
 	GLuint texture[9];

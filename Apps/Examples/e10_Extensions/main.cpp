@@ -2,8 +2,8 @@
 #include <string>
 
 int main(int /*argc*/, char ** /*argv*/) {
-	BaseApp app;
-	
+  BaseApp app;
+
   app.addInitCallback([&] {
     int count;
     glGetIntegerv(GL_NUM_EXTENSIONS, &count);
@@ -13,5 +13,5 @@ int main(int /*argc*/, char ** /*argv*/) {
     }
   });
 
-	return app.run();
+  return app.run();
 }

@@ -29,7 +29,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	OrbitManipulator manipulator(&cam);
 	manipulator.setupCallbacks(app);
 
-	std::string prefix = app.getResourceDir() + "Shaders/Examples/005_Imgui/";
+	std::string prefix = app.getResourceDir() + "Shaders/Examples/e05_Imgui/";
 	app.addInitCallback([&]() {
 		auto vs = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "lambert.vert"));
 		auto fs = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "lambert.frag"));

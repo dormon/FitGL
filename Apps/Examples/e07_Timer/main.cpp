@@ -15,7 +15,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	float zoom = 4;
 	
-	std::string prefix = app.getResourceDir() + "Shaders/Examples/002_MultipleViews/";
+	std::string prefix = app.getResourceDir() + "Shaders/Examples/e02_MultipleViews/";
 	GLuint vao, vbo, ebo;
 
 	mat4 v, p;

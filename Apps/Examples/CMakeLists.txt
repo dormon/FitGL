@@ -1,16 +1,17 @@
 set(apps
-	000_Callbacks
-	001_Minimal
-	002_MultipleViews
-	003_MultipleWindows                
-	004_Textures
-	005_Imgui
-	006_ModelLoader
-	007_Timer
-	008_OrbitManipulator
-	
-	x01_3DPiskvorky
-	x02_Extensions
+	e00_Callbacks
+	e01_Minimal
+	e02_MultipleViews
+	e03_MultipleWindows                
+	e04_Textures
+	e05_Imgui
+	e06_ModelLoader
+	e07_Timer
+	e08_OrbitManipulator
+  e09_3DPiskvorky
+	e10_Extensions
+  e11_Tesselation
+  e12_EndlessTerrain
 )
 
 foreach(app ${apps})

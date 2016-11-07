@@ -19,7 +19,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	auto mainWindow = app.getMainWindow();
 	mainWindow->setSize(1280, 720);
 	
-	std::string prefix = app.getResourceDir() + "Shaders/Examples/x01_3DPiskvorky/";
+	std::string prefix = app.getResourceDir() + "Shaders/Examples/e09_3DPiskvorky/";
 	std::string modelPrefix = app.getResourceDir() + "Models/Challenge/";
 
 	PerspectiveCamera cam;
