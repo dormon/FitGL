@@ -1,0 +1,6 @@
+[submodule "Scenes"]
+	path = Scenes
+	url = https://github.com/neithy/FitGL_resources.git
+[submodule "Resources/Scenes"]
+	path = Resources/Scenes
+	url = https://github.com/neithy/FitGL_resources.git
