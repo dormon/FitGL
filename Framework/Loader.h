@@ -8,6 +8,7 @@
 
 class Loader {
 public:
+  static std::vector<char> binary(std::string const &fileName);
 	// text
 	static std::string text(std::string const &fileName);
 	// textures

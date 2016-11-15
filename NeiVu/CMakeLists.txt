@@ -8,17 +8,41 @@ foreach(dep ${Internal_deps})
   endif()
 endforeach(dep)
 
+if(assimp_FOUND)
+	add_definitions(-DUSE_ASSIMP)
+	include_directories(${ASSIMP_INCLUDE_DIR})	
+	set(Internal_deps ${Internal_deps} assimp)	
+endif()
+
 set(HEADER_PATH ${FitGL_SOURCE_DIR}/${LIB_NAME})
 
 set(FRAMEWORK_INCLUDES
-	VuApp.h
-	VuInfo.h
-	VuDebug.h
+  VuApp.h
+  VuInfo.h
+  VuDebug.h
+  Context.h
+  Pipeline.h
+  Swapchain.h
+  Texture.h
+  Buffer.h
+  VuMesh.h
+  VuNode.h
+  LoaderAssimp.h
+  VuMaterial.h
 )
 
 set(FRAMEWORK_SOURCES
-	VuApp.cpp
-	VuInfo.cpp
+  VuApp.cpp
+  VuInfo.cpp
+  Context.cpp
+  Pipeline.cpp
+  Swapchain.cpp
+  Texture.cpp
+  Buffer.cpp
+  VuMesh.cpp
+  VuNode.cpp
+  LoaderAssimp.cpp
+  VuMaterial.cpp
 )
 
 add_library(${LIB_NAME}

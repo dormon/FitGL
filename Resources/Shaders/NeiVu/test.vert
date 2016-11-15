@@ -1,31 +1,27 @@
-/*
- * Copyright (c) 2015-2016 The Khronos Group Inc.
- * Copyright (c) 2015-2016 Valve Corporation
- * Copyright (c) 2015-2016 LunarG, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * Vertex shader used by Cube demo.
- */
-#version 400
+#version 450
 
-vec2 pos[]=vec2[](
-	vec2(0,0),
-	vec2(1,0),
-	vec2(0,1)
-);
+layout(location = 0) in vec3 aPosition;
+layout(location = 1) in vec3 aNormal;
+layout(location = 2) in vec2 aTexCoord;
+
+layout(push_constant) uniform BlockName {
+  mat4 p;
+  mat4 v;
+  mat4 m;
+} u;
+
+layout(location = 0) out vec3 position;
+layout(location = 1) out vec3 normal;
+layout(location = 2) out vec2 texCoord;
 
 void main() {
-   gl_Position = vec4(pos[gl_VertexIndex],0,0);
+  vec4 pos = u.m*vec4(aPosition,1);
+  position = pos.xyz;
+  normal = aNormal;
+  texCoord = aTexCoord;
+
+  mat4 vp = u.p*u.v;
+  gl_Position = vp*pos;
+  gl_Position.y = -gl_Position.y;
 }
+

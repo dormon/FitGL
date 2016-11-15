@@ -71,7 +71,7 @@ void main() {
   float height = getHeight(tc);
   pos = vec3(tc.x,height,tc.y);
   
-  float e = 1/64.0;
+  float e = 1/64.0;;
   vec3 posX = vec3(tc.x+e,getHeight(tc+vec2(e,0)),tc.y);
   vec3 posY = vec3(tc.x,getHeight(tc+vec2(0,e)),tc.y+e);
   normal = normalize(-cross(pos-posX,pos-posY));
@@ -136,7 +136,6 @@ int main(int /*argc*/, char ** /*argv*/) {
     glClearColor(0.2, 0.2, 0.2, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    //bunny
 
     program.use();
     program.setMatrix4fv("p", value_ptr(cam.getProjection()));

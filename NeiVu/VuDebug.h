@@ -1,6 +1,6 @@
 #pragma once
-#include <vulkan/vulkan.hpp>
-
+#include "Context.h"
+#include <iostream>
 
 VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallback(
 	VkDebugReportFlagsEXT       flags,
@@ -36,7 +36,7 @@ void debugInitFunctions(vk::Instance i) {
 void enableDebugCallbacks(vk::Instance i) {
 	debugInitFunctions(i);
 	auto drcci = vk::DebugReportCallbackCreateInfoEXT(
-		vk::DebugReportFlagBitsEXT::eDebug |
+		//vk::DebugReportFlagBitsEXT::eDebug |
 		vk::DebugReportFlagBitsEXT::eError |
 		//vk::DebugReportFlagBitsEXT::eInformation |
 		vk::DebugReportFlagBitsEXT::ePerformanceWarning |

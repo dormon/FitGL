@@ -1,5 +1,5 @@
 #pragma once
-#include <vulkan/vulkan.hpp>
+#include "Context.h"
 
 namespace NeiVu {
 	void printLayers();
@@ -10,4 +10,5 @@ namespace NeiVu {
 	bool isLayerPresent(std::string name);
 	bool isExtensionPresent(vk::PhysicalDevice device, std::string name);
 	bool isLayerPresent(vk::PhysicalDevice device, std::string name);
+  void printSurfaceCapabilities(vk::PhysicalDevice device,vk::SurfaceKHR surface);
 };
