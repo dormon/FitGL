@@ -5,11 +5,11 @@ PROJECT(FitGL)
 #prebuild lib package                                 
 set(FITGL_USE_LIB_PACKAGE OFF CACHE BOOL "Use prebuild lib package.")
 if(FITGL_USE_LIB_PACKAGE)
-	set(ASSIMP_DLL_DEBUG ${CMAKE_CURRENT_SOURCE_DIR}/bin/assimp-vc140-mt.dll)
-	set(ASSIMP_DLL_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/bin/assimp-vc140-mt.dll)
-	set(ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs/Assimp/include)
-	set(ASSIMP_LIBRARY_DEBUG ${CMAKE_CURRENT_SOURCE_DIR}/libs/Assimp/lib/assimp-vc140-mt.lib)
-	set(ASSIMP_LIBRARY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/libs/Assimp/lib/assimp-vc140-mt.lib)
+	set(ASSIMP_DLL_DEBUG ${CMAKE_CURRENT_SOURCE_DIR}/bin/assimp-vc140-mt.dll CACHE STRING "" FORCE)
+	set(ASSIMP_DLL_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/bin/assimp-vc140-mt.dll CACHE STRING "" FORCE)
+	set(ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs/Assimp/include CACHE STRING "" FORCE)
+	set(ASSIMP_LIBRARY_DEBUG ${CMAKE_CURRENT_SOURCE_DIR}/libs/Assimp/lib/assimp-vc140-mt.lib CACHE STRING "" FORCE)
+	set(ASSIMP_LIBRARY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/libs/Assimp/lib/assimp-vc140-mt.lib CACHE STRING "" FORCE)
 	
 	
 	set(FREEIMAGE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs/FreeImage CACHE STRING "" FORCE)
