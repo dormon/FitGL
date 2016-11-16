@@ -84,8 +84,10 @@ NodeShared Loader::scene(std::string const & fileName){
 			m->pos.push_back(glm::vec3(v.x, v.y, v.z));
 			auto n = mesh->mNormals[i];
 			m->norm.push_back(glm::vec3(n.x, n.y, n.z));
-			auto t = mesh->mTextureCoords[0][i];
-			m->tc.push_back(glm::vec2(t.x, t.y));
+      if(mesh->mTextureCoords[0]){
+			  auto t = mesh->mTextureCoords[0][i];
+			  m->tc.push_back(glm::vec2(t.x, t.y));
+      }
 		}
 
 		m->elements.reserve(mesh->mNumFaces * 3);
