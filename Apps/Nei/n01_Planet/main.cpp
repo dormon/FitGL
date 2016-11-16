@@ -35,14 +35,13 @@ int main(int /*argc*/, char ** /*argv*/) {
     auto tese = compileShader(GL_TESS_EVALUATION_SHADER, Loader::text(prefix + "planet.tese"));
     auto frag = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "planet.frag"));
     programPlanet = createProgram(vert, tesc, tese, frag);
-    cout << "program ok\n";
-
+    
     vert = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "empty.vert"));
     tesc = compileShader(GL_TESS_CONTROL_SHADER, Loader::text(prefix + "atmosphere.tesc"));
     tese = compileShader(GL_TESS_EVALUATION_SHADER, Loader::text(prefix + "atmosphere.tese"));
     frag = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "atmosphere.frag"));
     programAtmosphere = createProgram(vert, tesc, tese, frag);
-    cout << "program ok\n";
+    
     vert = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "stars.vert"));
     frag = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "stars.frag"));
     programStars = createProgram(vert, frag);
