@@ -49,9 +49,9 @@ public:
     pipeline = new Pipeline(vu);
 
     pipeline->addStage(vk::ShaderStageFlagBits::eVertex,
-      vu->loadShader(RESOURCE_DIR"shaders/NeiVu/test.vert.spv"));
+      vu->loadShader(RESOURCE_DIR"shaders/Nei/n00_Test/test.vert.spv"));
     pipeline->addStage(vk::ShaderStageFlagBits::eFragment,
-      vu->loadShader(RESOURCE_DIR"shaders/NeiVu/test.frag.spv"));
+      vu->loadShader(RESOURCE_DIR"shaders/Nei/n00_Test/test.frag.spv"));
     pipeline->renderPass = swapchain->renderPass;
     pipeline->layout = pipelineLayout;
     pipeline->addAttribute(0, 0, vk::Format::eR32G32B32Sfloat, offsetof(Vertex, pos));

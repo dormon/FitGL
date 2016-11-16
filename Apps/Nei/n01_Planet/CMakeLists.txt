@@ -1,6 +1,6 @@
-set(app	001_Test)
+set(app	n01_Planet)
 
-set(deps NeiVu)
+set(deps Framework imgui)
 
 foreach(dep ${Internal_deps})
   if(NOT TARGET ${dep})

@@ -86,12 +86,6 @@ if(FITGL_BUILD_PGP2016)
 	add_subdirectory(Apps/PGP2016)
 endif()  
 
-# tests
-set(FITGL_BUILD_TESTS ON CACHE BOOL "Build all test")
-if(FITGL_BUILD_TESTS)
-	add_subdirectory(Apps/Tests)
-endif()
-
 # tutorial
 set(FITGL_BUILD_TUTORIALS ON CACHE BOOL "Build all tutorials")
 if(FITGL_BUILD_TUTORIALS)
