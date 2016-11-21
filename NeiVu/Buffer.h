@@ -13,11 +13,15 @@ public:
   void alloc(int size, vk::BufferUsageFlagBits usage);
   void* map();
   void unmap();
+  void moveToGPU();
 
   vk::Buffer buffer;
+  vk::Buffer bufferGPU;
 private:
   Context* vu;
   vk::DeviceMemory memory;
+  vk::DeviceMemory memoryGPU;
   int size = 0;
   int offset = 0;
+  vk::BufferUsageFlags usage;
 };

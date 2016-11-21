@@ -11,6 +11,10 @@ NeiVu::Texture::~Texture() {
 
 void NeiVu::Texture::alloc(int width, int height, vk::Format format) {
   std::cout << "Texture::alloc " << width << " " << height << vk::to_string(format) << "\n";
+  this->width = width;
+  this->height = height;
+  this->format = format;
+
   vk::ImageCreateInfo ici;
   ici.arrayLayers = 1;
   ici.extent = vk::Extent3D(width, height, 1);
@@ -19,7 +23,7 @@ void NeiVu::Texture::alloc(int width, int height, vk::Format format) {
   ici.initialLayout = vk::ImageLayout::ePreinitialized;
   ici.mipLevels = 1;
   ici.tiling = vk::ImageTiling::eLinear;
-  ici.usage = vk::ImageUsageFlagBits::eSampled;
+  ici.usage = vk::ImageUsageFlagBits::eTransferSrc;
 
   image = vu->device.createImage(ici);
 
@@ -35,16 +39,6 @@ void NeiVu::Texture::alloc(int width, int height, vk::Format format) {
   memory = vu->device.allocateMemory(mai);
 
   vu->device.bindImageMemory(image, memory, 0);
-
-
-  vk::ImageViewCreateInfo ivci;
-  ivci.image = image;
-  ivci.viewType = vk::ImageViewType::e2D;
-  ivci.format = format;
-  ivci.subresourceRange = vk::ImageSubresourceRange(
-    vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
-
-  imageView = vu->device.createImageView(ivci);
 
   vk::SamplerCreateInfo sci;
   sci.addressModeU = vk::SamplerAddressMode::eRepeat;
@@ -66,7 +60,7 @@ void NeiVu::Texture::alloc(int width, int height, vk::Format format) {
 
 }
 
-void NeiVu::Texture::setReadOptimal(){
+void NeiVu::Texture::setReadOptimal() {
   vu->changeImageLayout(image, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal, vk::ImageAspectFlagBits::eColor, vk::AccessFlagBits::eHostWrite);
 }
 
@@ -81,4 +75,58 @@ void * NeiVu::Texture::map() {
 
 void NeiVu::Texture::unmap() {
   vu->device.unmapMemory(memory);
+}
+
+void NeiVu::Texture::moveToGPU() {
+  if (!imageGPU) {
+    vk::ImageCreateInfo ici;
+    ici.arrayLayers = 1;
+    ici.extent = vk::Extent3D(width, height, 1);
+    ici.format = format;
+    ici.imageType = vk::ImageType::e2D;
+    ici.initialLayout = vk::ImageLayout::eUndefined;
+    ici.mipLevels = 1;
+    ici.tiling = vk::ImageTiling::eOptimal;
+    ici.usage = vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled;
+
+    imageGPU = vu->device.createImage(ici);
+
+    auto mem = vu->device.getImageMemoryRequirements(image);
+    size = mem.size;
+    int index = vu->memoryTypeBitsToIndex(mem.memoryTypeBits,
+      vk::MemoryPropertyFlagBits::eDeviceLocal);
+
+    vk::MemoryAllocateInfo mai;
+    mai.allocationSize = mem.size;
+    mai.memoryTypeIndex = index;
+    memoryGPU = vu->device.allocateMemory(mai);
+
+    vu->device.bindImageMemory(imageGPU, memoryGPU, 0);
+
+
+    vk::ImageViewCreateInfo ivci;
+    ivci.image = imageGPU;
+    ivci.viewType = vk::ImageViewType::e2D;
+    ivci.format = format;
+    ivci.subresourceRange = vk::ImageSubresourceRange(
+      vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1);
+
+    imageView = vu->device.createImageView(ivci);
+  }
+  
+  vu->changeImageLayout(image, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferSrcOptimal,
+    vk::ImageAspectFlagBits::eColor, vk::AccessFlagBits::eHostWrite);
+
+  vu->changeImageLayout(imageGPU, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal,
+    vk::ImageAspectFlagBits::eColor);
+  
+  vu->commandBuffer.copyImage(image, vk::ImageLayout::eTransferSrcOptimal,
+    imageGPU, vk::ImageLayout::eTransferDstOptimal,
+    { vk::ImageCopy(
+      vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor,0,0,1),vk::Offset3D(0,0,0),
+      vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor,0,0,1),vk::Offset3D(0,0,0),
+      vk::Extent3D(width,height,1))});
+
+  vu->changeImageLayout(imageGPU, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal,
+    vk::ImageAspectFlagBits::eColor, vk::AccessFlagBits::eTransferWrite);
 }

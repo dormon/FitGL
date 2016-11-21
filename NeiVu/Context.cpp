@@ -53,6 +53,9 @@ void NeiVu::Context::changeImageLayout(vk::CommandBuffer buffer, vk::Image image
 
   switch (newLayout) {
   case vk::ImageLayout::eTransferDstOptimal:
+    imb.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
+    break;
+  case vk::ImageLayout::eTransferSrcOptimal:
     imb.dstAccessMask = vk::AccessFlagBits::eTransferRead;
     break;
   case vk::ImageLayout::eColorAttachmentOptimal:

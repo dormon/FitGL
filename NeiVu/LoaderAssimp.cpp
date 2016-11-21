@@ -70,7 +70,7 @@ NeiVu::NodeShared NeiVu::Loader::scene(std::string const & fileName){
       void *ptr = tx->map();
       memcpy(ptr, img->data, img->height*img->width * sizeof(char) * 4);
       tx->unmap();
-      tx->setReadOptimal();
+      tx->moveToGPU();
 
       m->diffuseTex = tx;
 			m->diffuse = glm::vec4(0, 0, 0, 0);

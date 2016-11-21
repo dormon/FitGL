@@ -28,6 +28,7 @@ void NeiVu::Mesh::updateData(){
 		ptr[i] = v;
 	}
   vbo->unmap();
+  vbo->moveToGPU();
 
 	if (elements.size() > 0) {
     ebo = std::make_shared<Buffer>();
@@ -37,13 +38,14 @@ void NeiVu::Mesh::updateData(){
       *(ptr++) = e;
     }
     ebo->unmap();
+    ebo->moveToGPU();
 	}
 }
 
 void NeiVu::Mesh::draw(vk::CommandBuffer cb){
-  cb.bindVertexBuffers(0, { vbo->buffer }, { 0 });
+  cb.bindVertexBuffers(0, { vbo->bufferGPU }, { 0 });
 	if (elements.size() > 0) {
-    cb.bindIndexBuffer(ebo->buffer, 0, vk::IndexType::eUint32);
+    cb.bindIndexBuffer(ebo->bufferGPU, 0, vk::IndexType::eUint32);
     cb.drawIndexed(elements.size(), 1, 0, 0, 0);
 	}else {
     cb.draw(pos.size(), 1, 0, 0);

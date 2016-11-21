@@ -12,8 +12,8 @@ namespace NeiVu {
 
 class NeiVu::ContextOptions {
 public:
-  bool debug = true;
-  bool verbose = true;
+  bool debug = false;
+  bool verbose = false;
   int selectedDevice = -1;
   int queueCount = 1;
 };
@@ -46,6 +46,8 @@ public:
   void flushCommandBuffer();
   void changeImageLayout(vk::CommandBuffer buffer, vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask = vk::AccessFlags());
   void changeImageLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask = vk::AccessFlags());
+  //void changeBufferLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask = vk::AccessFlags());
+
   uint32_t memoryTypeBitsToIndex(uint32_t typeBits, vk::MemoryPropertyFlags requirements);
 private:
   static Context* currentContext;
