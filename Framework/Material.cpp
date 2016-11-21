@@ -1,6 +1,6 @@
 #include "Material.h"
 
-void PhongMaterial::bind(ProgramObject & program){
+void PhongMaterial::bind(ge::gl::Program & program){
 	program.set4fv("diffuse", glm::value_ptr(diffuse));
-	glBindTextureUnit(0, diffuseTex);
+  diffuseTex->bind(0);
 }

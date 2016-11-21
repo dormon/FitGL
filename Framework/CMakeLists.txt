@@ -6,11 +6,7 @@ set(FRAMEWORK_INCLUDES
 	BaseApp.h
 	SDLWindow/SDLEventProc.h
 	SDLWindow/SDLWindow.h
-		
-	Shader.h
-	ProgramObject.h
 	Loader.h
-	Debugging.h   
 	Gui.h
 	Mesh.h
 	Image.h
@@ -19,7 +15,6 @@ set(FRAMEWORK_INCLUDES
 	Camera.h
 	Manipulator.h
 	Timer.h
-
 	utils/utils.h
   
   #Timer.h
@@ -48,7 +43,7 @@ add_library(${LIB_NAME}
   ${FRAMEWORK_SOURCES}
   )
 
-set(Internal_deps SDL2 GLEW glm imgui OpenGL)
+set(Internal_deps SDL2 geGL glm imgui)
 if(FreeImage_FOUND AND FreeImagePlus_FOUND)
 	add_definitions(-DUSE_FREEIMAGE)
 	set(Internal_deps ${Internal_deps} FreeImage FreeImagePlus)	

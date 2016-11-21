@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <GL/glew.h>
+#include <geGL/geGL.h>
 
 class Image {
 public:

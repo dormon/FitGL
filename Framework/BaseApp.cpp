@@ -1,5 +1,4 @@
 #include "BaseApp.h"
-#include <Debugging.h>
 
 Options BaseApp::options;
 
@@ -48,8 +47,9 @@ void BaseApp::initGL() {
 		return;
 	}
 
-	glewExperimental = GL_TRUE;
-	glewInit();
+  ge::gl::init(SDL_GL_GetProcAddress);
+  setFunctionTable(ge::gl::getDefaultContext()->getFunctionTable());
+
 
 	auto c = glGetString(GL_VERSION);
 	std::cout << c << "\n";
@@ -160,11 +160,14 @@ void BaseApp::addUpdateCallback(UpdateCallback const & callback) {
 }
 
 void BaseApp::enableDebug() {
+  /*
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
 	glDebugMessageControl(GL_DONT_CARE, GL_DEBUG_TYPE_PERFORMANCE, GL_DONT_CARE, 0, NULL, GL_FALSE);
 	glDebugMessageCallback((GLDEBUGPROC)(defaultDebugMessage), NULL);
+  */
+  ge::gl::setHighDebugMessage();
 }
 
 void BaseApp::addEventCallback(std::function<void(SDL_Event) > callback, int type, int window) {

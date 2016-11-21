@@ -2,7 +2,7 @@
 
 #include <utils/utils.h>
 #include <glm/gtx/string_cast.hpp>
-void drawNode(ProgramObject &program, NodeShared const&node, glm::mat4 parentMat) {
+void drawNode(ge::gl::Program &program, NodeShared const&node, glm::mat4 parentMat) {
 	glm::mat4 useMat = parentMat * node->getMatrix();
 	program.setMatrix4fv("m", value_ptr(useMat));
 	glm::mat3 n = transpose(inverse(glm::mat3(useMat)));

@@ -6,9 +6,9 @@ int main(int /*argc*/, char ** /*argv*/) {
 
   app.addInitCallback([&] {
     int count;
-    glGetIntegerv(GL_NUM_EXTENSIONS, &count);
+    app.glGetIntegerv(GL_NUM_EXTENSIONS, &count);
     for (int i = 0; i < count; i++) {
-      auto a = glGetStringi(GL_EXTENSIONS, i);
+      auto a = app.glGetStringi(GL_EXTENSIONS, i);
       std::cout << a << "\n";
     }
   });

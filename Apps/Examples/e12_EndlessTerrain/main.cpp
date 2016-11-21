@@ -1,6 +1,9 @@
 #include <BaseApp.h>
 #include <map>
 
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
+
 std::string vert = R".(
 #version 430
 out flat int vid;
@@ -104,7 +107,7 @@ void main() {
 int main(int /*argc*/, char ** /*argv*/) {
   BaseApp app;
   GLuint vao;
-  ProgramObject program;
+  std::shared_ptr<Program> program;
 
   PerspectiveCamera cam;
   OrbitManipulator manipulator(&cam);
@@ -137,14 +140,13 @@ int main(int /*argc*/, char ** /*argv*/) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    program.use();
-    program.setMatrix4fv("p", value_ptr(cam.getProjection()));
-    program.setMatrix4fv("v", value_ptr(cam.getView()));
-    program.set2f("center", cam.getCenter().x, cam.getCenter().z);
-    program.set1i("levels", levels);
+    program->use();
+    program->setMatrix4fv("p", value_ptr(cam.getProjection()));
+    program->setMatrix4fv("v", value_ptr(cam.getView()));
+    program->set2f("center", cam.getCenter().x, cam.getCenter().z);
+    program->set1i("levels", levels);
     for (int i = 0; i < 8; i++) {
-      std::string label = "weights[" + std::to_string(i) + "]";
-      program.set1f(label, weights[i]);
+      program->set1fv("weights", weights, 8);
     }
 
     

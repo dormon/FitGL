@@ -1,8 +1,7 @@
 #include <BaseApp.h>
 
-#include <bunny.h>
-
-
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
 using namespace glm;
 
 void resizeID(GLuint fbo, GLuint tex,GLuint renderBuffer, int width, int height) {
@@ -12,8 +11,9 @@ void resizeID(GLuint fbo, GLuint tex,GLuint renderBuffer, int width, int height)
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-	ProgramObject programID; 
-	ProgramObject program;
+  Program::setNonexistingUniformWarning(false);
+  std::shared_ptr<Program> programID;
+  std::shared_ptr<Program> program;
 	
 
 	auto mainWindow = app.getMainWindow();
@@ -38,15 +38,15 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 
 	app.addInitCallback([&]() {
-		auto vs = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "phong.vert"));
-		auto fs = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "phong.frag"));
+		auto vs = std::make_shared<Shader>(GL_VERTEX_SHADER, Loader::text(prefix + "phong.vert"));
+		auto fs = std::make_shared<Shader>(GL_FRAGMENT_SHADER, Loader::text(prefix + "phong.frag"));
 		
-		program = createProgram(vs, fs);		
+		program = std::make_shared<Program>(vs, fs);
 		
-		auto vs1 = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "id.vert"));
-		auto fs1 = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "id.frag"));
+		auto vs1 = std::make_shared<Shader>(GL_VERTEX_SHADER, Loader::text(prefix + "id.vert"));
+		auto fs1 = std::make_shared<Shader>(GL_FRAGMENT_SHADER, Loader::text(prefix + "id.frag"));
 
-		programID = createProgram(vs1, fs1);
+		programID = std::make_shared<Program>(vs1, fs1);
 				
 		
 		cross = Loader::scene(modelPrefix + "cross.fbx");
@@ -114,16 +114,16 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		programID.use();
+		programID->use();
 		
-		programID.setMatrix4fv("p", value_ptr(cam.getProjection()));
+		programID->setMatrix4fv("p", value_ptr(cam.getProjection()));
 		
-		programID.setMatrix4fv("v", value_ptr(cam.getView()));
+		programID->setMatrix4fv("v", value_ptr(cam.getView()));
 		
 		unsigned int i = 0;
 		for (auto &n : clickPoints) {
-			programID.set1ui("id", i++);
-			drawNode(programID, n);
+			programID->set1ui("id", i++);
+			drawNode(*programID, n);
 		}
 
 		unsigned int h = mainWindow->getHeight();
@@ -134,18 +134,18 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		program.use();
-		program.setMatrix4fv("p", value_ptr(cam.getProjection()));
-		program.setMatrix4fv("v", value_ptr(cam.getView()));
-		program.set3f("Ld", 1.2, 1.2, 1.2);
+		program->use();
+		program->setMatrix4fv("p", value_ptr(cam.getProjection()));
+		program->setMatrix4fv("v", value_ptr(cam.getView()));
+		program->set3f("Ld", 1.2, 1.2, 1.2);
 		
-		program.set1ui("pick",pick);
+		program->set1ui("pick",pick);
 
 		for (int i = 0; i < 5 * 5 * 5; i++) {
 			auto n = clickPoints.at(i);
 			if (clickPointsType[i] == 0) continue;
-			program.set1ui("id", i);
-			drawNode(program, n);
+			program->set1ui("id", i);
+			drawNode(*program, n);
 		}
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -153,8 +153,8 @@ int main(int /*argc*/, char ** /*argv*/) {
 		for (int i = 0; i < 5 * 5 * 5; i++) {
 			auto n = clickPoints.at(i);
 			if (clickPointsType[i] != 0) continue;
-			program.set1ui("id", i);
-			drawNode(program, n);
+			program->set1ui("id", i);
+			drawNode(*program, n);
 		}
 		glDepthMask(GL_TRUE);
 

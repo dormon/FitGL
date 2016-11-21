@@ -1,6 +1,9 @@
 #include <BaseApp.h>
 #include <map>
 
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
+
 std::string vert = R".(
 #version 430
 void main() {
@@ -54,7 +57,7 @@ int main(int /*argc*/, char ** /*argv*/) {
   int currentSpacing = 0;
   const char* spacing[] = { "equal_spacing","fractional_even_spacing","fractional_odd_spacing" };
 
-  std::map<int, ProgramObject> programs;
+  std::map<int, std::shared_ptr<Program>> programs;
 
   auto getProgram =[&]() {
     int id = currentSpacing * 3 + currentPrimitive;
@@ -68,7 +71,7 @@ int main(int /*argc*/, char ** /*argv*/) {
     auto tcs = compileShader(GL_TESS_CONTROL_SHADER, tesc);
     auto tes = compileShader(GL_TESS_EVALUATION_SHADER, "#version 430\n",defines, tese);
     auto fs = compileShader(GL_FRAGMENT_SHADER, frag);
-    ProgramObject program = createProgram(vs, tcs, tes, fs);
+    auto program = createProgram(vs, tcs, tes, fs);
     programs[id] = program;
     return program;
   };
@@ -86,16 +89,17 @@ int main(int /*argc*/, char ** /*argv*/) {
     glClearColor(0.2, 0.2, 0.2, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    //bunny
 
     auto program = getProgram();
-    program.use();
-    program.set1f("o[0]", o[0]);
-    program.set1f("o[1]", o[1]);
-    program.set1f("o[2]", o[2]);
-    program.set1f("o[3]", o[3]);
-    program.set1f("i[0]", i[0]);
-    program.set1f("i[1]", i[1]);
+    program->use();
+    program->set1fv("o", o, 4);
+    program->set1fv("i", i, 2);/*
+    program->set1f("o[0]", o[0]);
+    program->set1f("o[1]", o[1]);
+    program->set1f("o[2]", o[2]);
+    program->set1f("o[3]", o[3]);
+    program->set1f("i[0]", i[0]);
+    program->set1f("i[1]", i[1]);*/
     
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glPatchParameteri(GL_PATCH_VERTICES, 1 );

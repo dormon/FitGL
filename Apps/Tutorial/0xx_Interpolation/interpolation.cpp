@@ -1,9 +1,11 @@
 #include <BaseApp.h>
-#include <Gui.h>
+
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-	ProgramObject program;
+  std::shared_ptr<Program> program;
 
 	auto mainWindow = app.getMainWindow();
 
@@ -17,8 +19,6 @@ int main(int /*argc*/, char ** /*argv*/) {
 	GLuint vbo;
 	GLuint vao;
 	uint32_t mode = 0;
-	GLint mvpUniform;
-	GLint modeUniform;
 
 	app.addInitCallback([&]() {
 		std::string prefix = app.getResourceDir() + "Shaders/Tutorial/";
@@ -27,10 +27,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		auto fs = compileShader(GL_FRAGMENT_SHADER,
 			Loader::text(prefix + "interpolation.fp"));
 		program = createProgram(vs, fs);
-		
-		mvpUniform = glGetUniformLocation(program, "mvp");
-		modeUniform = glGetUniformLocation(program, "mode");
-
+	
 		glCreateBuffers(1, &vbo);
 		float vertices[] = { 0,0,0,1, 1,0,0,1, 0,1,0,1 };
 		glNamedBufferData(vbo, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -52,10 +49,10 @@ int main(int /*argc*/, char ** /*argv*/) {
 	app.addDrawCallback([&]() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(program);
+    program->use();
 
-		glUniformMatrix4fv(mvpUniform, 1, GL_FALSE, glm::value_ptr(cam.getViewProjection()));
-		glUniform1ui(modeUniform, mode);
+    program->setMatrix4fv("mvp", glm::value_ptr(cam.getViewProjection()));
+    program->set1ui("mode", mode);
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);

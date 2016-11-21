@@ -93,12 +93,12 @@ protected:
 	int groundVertices = 0;
 	int groundFirstVertex = 0;
 	
-	ProgramObject programID;
-	ProgramObject program;
-	ProgramObject programLegs;
-	ProgramObject programCompute;
-	ProgramObject programShadowVolume;
-	ProgramObject programShadowVolumeLegs;
+  std::shared_ptr<ge::gl::Program> programID;
+  std::shared_ptr<ge::gl::Program> program;
+  std::shared_ptr<ge::gl::Program> programLegs;
+  std::shared_ptr<ge::gl::Program> programCompute;
+  std::shared_ptr<ge::gl::Program> programShadowVolume;
+  std::shared_ptr<ge::gl::Program> programShadowVolumeLegs;
 
 	GLuint idBuffer;
 	GLuint indirectBuffer;

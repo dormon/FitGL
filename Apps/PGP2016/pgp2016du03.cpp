@@ -33,9 +33,9 @@ int PGP2016::du03_pick() {
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
-	programID.use();
-	programID.setMatrix4fv("v", value_ptr(camera.getView()));
-	programID.setMatrix4fv("p", value_ptr(camera.getProjection()));
+	programID->use();
+	programID->setMatrix4fv("v", value_ptr(camera.getView()));
+	programID->setMatrix4fv("p", value_ptr(camera.getProjection()));
 
 	glBindVertexArray(vertexArray);
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectBuffer);

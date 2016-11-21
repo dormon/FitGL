@@ -1,10 +1,11 @@
 #pragma once
 
+#include <geGL/geGL.h>
+
 #include <Material.h>
 
 #include <vector>
 #include <map>
-#include <GL/glew.h>
 
 struct Vertex {
 	glm::vec3 pos;
@@ -12,7 +13,7 @@ struct Vertex {
 	glm::vec2 tc;
 };
 
-class Mesh{
+class Mesh: ge::gl::Context{
 public:
 	Mesh();
 	virtual ~Mesh();

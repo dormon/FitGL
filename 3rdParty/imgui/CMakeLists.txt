@@ -16,5 +16,5 @@ set(src
 )
 
 add_library(imgui ${src} ${include})
-target_link_libraries(imgui SDL2 GLEW)
+target_link_libraries(imgui SDL2 geGL)
 target_include_directories(imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

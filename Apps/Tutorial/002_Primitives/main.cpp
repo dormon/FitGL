@@ -1,5 +1,7 @@
 #include <BaseApp.h>
-#include <Gui.h>
+
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
 
 std::string vsrc = R".(
 #version 450
@@ -20,7 +22,7 @@ void main(){
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;	
-	GLuint program;
+  std::shared_ptr<Program> program;
 	GLuint vao;
 	GLuint vbo;
 	auto mainWindow = app.getMainWindow();
@@ -86,9 +88,9 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glViewport(0, 0, w, h);
 		glClearColor(0.2, 0.2, 0.2, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glUseProgram(program);
+    program->use();
 		glBindVertexArray(vao);
-		glUniform3f(glGetUniformLocation(program, "color"), 1, 1, 0);
+    program->set3f("color", 1, 1, 0);
 		glPointSize(3);
 		glLineWidth(3);
 		 
@@ -114,12 +116,12 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glDrawArrays(GL_TRIANGLE_FAN, 28, 7);
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glUniform3f(glGetUniformLocation(program, "color"), 1, 0, 0);
+    program->set3f("color", 1, 0, 0);
 		glDrawArrays(GL_TRIANGLES, 16, 6);
 		glDrawArrays(GL_TRIANGLE_STRIP, 22, 6);
 		glDrawArrays(GL_TRIANGLE_FAN, 28, 7);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glUniform3f(glGetUniformLocation(program, "color"), 0, 1, 1);
+    program->set3f("color", 0, 1, 1);
 		glPointSize(5);
 		glDrawArrays(GL_POINTS, 0, 35);
 	});

@@ -1,7 +1,7 @@
 #ifndef BUNNY_H
 #define BUNNY_H
 
-#include <GL/gl.h>
+#include <geGL/geGL.h>
 #define bunnyInit(vao,vbo,ebo) \
 glCreateBuffers(1, &vbo);\
 glNamedBufferData(vbo, sizeof(bunnyVertices), bunnyVertices, GL_STATIC_DRAW);\

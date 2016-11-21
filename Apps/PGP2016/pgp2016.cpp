@@ -5,6 +5,7 @@ using namespace glm;
 
 
 void PGP2016::init() {
+  ge::gl::Program::setNonexistingUniformWarning(false);
 	manipulator.setCamera(&camera);
 	manipulator.setupCallbacks(*this);
 	manipulator.setRotationY(45);
@@ -163,26 +164,26 @@ void PGP2016::draw() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	program.use();
-	program.setMatrix4fv("v", value_ptr(camera.getView()));
-	program.setMatrix4fv("p", value_ptr(camera.getProjection()));
-	program.set3fv("cameraPosition", value_ptr(camera.getEye()));
-	program.set3fv("lightPosition", value_ptr(lightPosition));
-	program.set1i("pick", pick);
-	program.set3f("La", 0.4, 0.4, 0.4);
-	program.set3f("Ld", 0, 0, 0);
+	program->use();
+	program->setMatrix4fv("v", value_ptr(camera.getView()));
+	program->setMatrix4fv("p", value_ptr(camera.getProjection()));
+	program->set3fv("cameraPosition", value_ptr(camera.getEye()));
+	program->set3fv("lightPosition", value_ptr(lightPosition));
+	program->set1i("pick", pick);
+	program->set3f("La", 0.4, 0.4, 0.4);
+	program->set3f("Ld", 0, 0, 0);
 
 	du01_multidraw();
 
 
-	programLegs.use();
-	programLegs.setMatrix4fv("tesView", value_ptr(camera.getView()));
-	programLegs.setMatrix4fv("tesProj", value_ptr(camera.getProjection()));
-	programLegs.set3fv("cameraPosition", value_ptr(camera.getEye()));
-	programLegs.set3fv("lightPosition", value_ptr(lightPosition));
-	programLegs.set1f("legHeight", LEG_HEIGHT);
-	programLegs.set3f("La", 0.4, 0.4, 0.4);
-	programLegs.set3f("Ld", 0, 0, 0);
+	programLegs->use();
+	programLegs->setMatrix4fv("tesView", value_ptr(camera.getView()));
+	programLegs->setMatrix4fv("tesProj", value_ptr(camera.getProjection()));
+	programLegs->set3fv("cameraPosition", value_ptr(camera.getEye()));
+	programLegs->set3fv("lightPosition", value_ptr(lightPosition));
+	programLegs->set1f("legHeight", LEG_HEIGHT);
+	programLegs->set3f("La", 0.4, 0.4, 0.4);
+	programLegs->set3f("Ld", 0, 0, 0);
 
 	du02_draw();
 
@@ -196,22 +197,22 @@ void PGP2016::draw() {
 	glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_KEEP, GL_INCR_WRAP);
 	glStencilOpSeparate(GL_BACK, GL_KEEP, GL_KEEP, GL_DECR_WRAP);
 
-	programShadowVolume.use();
-	programShadowVolume.setMatrix4fv("v", value_ptr(camera.getView()));
-	programShadowVolume.setMatrix4fv("p", value_ptr(camera.getProjection()));
-	programShadowVolume.set3fv("lightPosition", value_ptr(lightPosition));
+	programShadowVolume->use();
+	programShadowVolume->setMatrix4fv("v", value_ptr(camera.getView()));
+	programShadowVolume->setMatrix4fv("p", value_ptr(camera.getProjection()));
+	programShadowVolume->set3fv("lightPosition", value_ptr(lightPosition));
 
 	du01_multidraw();
 
 
-	programShadowVolumeLegs.use();
+	programShadowVolumeLegs->use();
 
-	programShadowVolumeLegs.setMatrix4fv("tesView", value_ptr(mat4()));
-	programShadowVolumeLegs.setMatrix4fv("tesProj", value_ptr(mat4()));
-	programShadowVolumeLegs.set3fv("lightPosition", value_ptr(lightPosition));
-	programShadowVolumeLegs.setMatrix4fv("v", value_ptr(camera.getView()));
-	programShadowVolumeLegs.setMatrix4fv("p", value_ptr(camera.getProjection()));
-	programShadowVolumeLegs.set1f("legHeight", LEG_HEIGHT);
+	programShadowVolumeLegs->setMatrix4fv("tesView", value_ptr(mat4()));
+	programShadowVolumeLegs->setMatrix4fv("tesProj", value_ptr(mat4()));
+	programShadowVolumeLegs->set3fv("lightPosition", value_ptr(lightPosition));
+	programShadowVolumeLegs->setMatrix4fv("v", value_ptr(camera.getView()));
+	programShadowVolumeLegs->setMatrix4fv("p", value_ptr(camera.getProjection()));
+	programShadowVolumeLegs->set1f("legHeight", LEG_HEIGHT);
 
 	du02_draw();
 
@@ -223,16 +224,16 @@ void PGP2016::draw() {
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glEnable(GL_CULL_FACE);
 
-	program.use();
-	program.set1i("pick", -1);
-	program.set3f("La", 0, 0, 0);
-	program.set3f("Ld", 0.6, 0.6, 0.6);
+	program->use();
+	program->set1i("pick", -1);
+	program->set3f("La", 0, 0, 0);
+	program->set3f("Ld", 0.6, 0.6, 0.6);
 
 	du01_multidraw();
 
-	programLegs.use();
-	programLegs.set3f("La", 0, 0, 0);
-	programLegs.set3f("Ld", 0.6, 0.6, 0.6);
+	programLegs->use();
+	programLegs->set3f("La", 0, 0, 0);
+	programLegs->set3f("Ld", 0.6, 0.6, 0.6);
 
 	du02_draw();
 

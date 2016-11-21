@@ -6,19 +6,22 @@
 #include <FreeImagePlus.h>
 #endif
 
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
+
 bool Loader::generateOnImageNotFound = true;
 
-GLuint Loader::texture(std::string const & fileName, bool generateMipmap,
+std::shared_ptr<ge::gl::Texture> Loader::texture(std::string const & fileName, bool generateMipmap,
 	GLenum filterMin, GLenum filterMag, GLenum wrapR, GLenum wrapS) {
 	auto img = image(fileName);
-	GLuint tex;
-	glCreateTextures(GL_TEXTURE_2D, 1, &tex);
-	glTextureImage2DEXT(tex, GL_TEXTURE_2D, 0, GL_RGBA, img->width, img->height, 0, img->format, img->type, img->data);
-	if (generateMipmap)glGenerateTextureMipmap(tex);
-	glTextureParameteri(tex, GL_TEXTURE_MIN_FILTER, filterMin);
-	glTextureParameteri(tex, GL_TEXTURE_MAG_FILTER, filterMag);
-	glTextureParameteri(tex, GL_TEXTURE_WRAP_R, wrapR);
-	glTextureParameteri(tex, GL_TEXTURE_WRAP_S, wrapS);
+  auto tex = std::make_shared<ge::gl::Texture>();
+  tex->create(GL_TEXTURE_2D, GL_RGBA, 0, img->width, img->height, 0);
+  tex->setData2D(img->data, GL_BGRA, GL_UNSIGNED_BYTE, 0, 0, 0, img->width, img->height);
+  tex->generateMipmap();
+  tex->texParameteri(GL_TEXTURE_MIN_FILTER, filterMin);
+  tex->texParameteri(GL_TEXTURE_MAG_FILTER, filterMag);
+  tex->texParameteri(GL_TEXTURE_WRAP_R, wrapR);
+  tex->texParameteri(GL_TEXTURE_WRAP_S, wrapS);
 	return tex;
 }
 

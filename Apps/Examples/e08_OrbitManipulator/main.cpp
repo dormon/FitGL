@@ -1,8 +1,11 @@
 #include <BaseApp.h>
 
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
+
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-	ProgramObject program;
+  std::shared_ptr<Program> program;
 
 	auto mainWindow = app.getMainWindow();
 	
@@ -14,9 +17,9 @@ int main(int /*argc*/, char ** /*argv*/) {
 	NodeShared root;
 
 	app.addInitCallback([&]() {
-		auto vs = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "phong.vert"));
-		auto fs = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "phong.frag"));
-		program = createProgram(vs, fs);
+    auto vs = std::make_shared<Shader>(GL_VERTEX_SHADER, Loader::text(prefix + "phong.vert"));
+    auto fs = std::make_shared<Shader>(GL_FRAGMENT_SHADER, Loader::text(prefix + "phong.frag"));
+    program = std::make_shared<Program>(vs, fs);
 
 		root = Loader::scene(app.getResourceDir() + "Models/sponza/sponza.fbx");
 	});
@@ -32,11 +35,11 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glEnable(GL_DEPTH_TEST);
 		//bunny
 
-		program.use();
-		program.setMatrix4fv("p", value_ptr(cam.getProjection()));
-		program.setMatrix4fv("v", value_ptr(cam.getView()));
+		program->use();
+		program->setMatrix4fv("p", value_ptr(cam.getProjection()));
+		program->setMatrix4fv("v", value_ptr(cam.getView()));
 
-		drawNode(program, root);
+		drawNode(*program, root);
 
 		fpsLabel();
 		label("Orbit manipulator:\nWSAD - Move center\nEQ - Up/Down\nRMB/LMB drag - rotate\nMMB drag - move center\nWheel - zoom",0,20,200,200);

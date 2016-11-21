@@ -1,9 +1,11 @@
 #include <BaseApp.h>
-#include <Gui.h>
+
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-	ProgramObject program;
+  std::shared_ptr<Program> program;
 
 	auto mainWindow = app.getMainWindow();
 
@@ -73,21 +75,21 @@ int main(int /*argc*/, char ** /*argv*/) {
 	app.addDrawCallback([&]() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		program.use();
-		program.setMatrix4fv("v", glm::value_ptr(cam.getView()));
-		program.setMatrix4fv("p", glm::value_ptr(cam.getProjection()));
+		program->use();
+		program->setMatrix4fv("v", glm::value_ptr(cam.getView()));
+		program->setMatrix4fv("p", glm::value_ptr(cam.getProjection()));
 
 
-		program.set4f("light", 10, 10, 10, 1);
+		program->set4f("light", 10, 10, 10, 1);
 
-		program.set1ui("sphereSizeX", sphereSizeX);
-		program.set1ui("sphereSizeY", sphereSizeY);
+		program->set1ui("sphereSizeX", sphereSizeX);
+		program->set1ui("sphereSizeY", sphereSizeY);
 
-		program.set1i("useGouraudNormal", useGouraudNormal);
-		program.set1i("usePhongLighting", usePhongLighting);
-		program.set1i("computeLightInFS", computeLightInFS);
+		program->set1i("useGouraudNormal", useGouraudNormal);
+		program->set1i("usePhongLighting", usePhongLighting);
+		program->set1i("computeLightInFS", computeLightInFS);
 
-		program.set1f("time", app.getTimeFromStart());
+		program->set1f("time", app.getTimeFromStart());
 
 
 		glBindVertexArray(vao);

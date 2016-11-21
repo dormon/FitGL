@@ -1,9 +1,11 @@
 #include <BaseApp.h>
-#include <Gui.h>
+
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-	ProgramObject program;
+  std::shared_ptr<Program> program;
 
 	auto mainWindow = app.getMainWindow();
 
@@ -20,9 +22,9 @@ int main(int /*argc*/, char ** /*argv*/) {
 	uint32_t drawSpecularTexture = 0;
 	uint32_t drawNormalTexture = 0;
 
-	GLuint diffuseTexture;
-	GLuint specularTexture;
-	GLuint normalTexture;
+  std::shared_ptr<Texture> diffuseTexture;
+  std::shared_ptr<Texture> specularTexture;
+  std::shared_ptr<Texture> normalTexture;
 
 	app.addInitCallback([&]() {
 		std::string prefix = app.getResourceDir() + "Shaders/Tutorial/";
@@ -57,19 +59,19 @@ int main(int /*argc*/, char ** /*argv*/) {
 	app.addDrawCallback([&]() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		program.use();
+		program->use();
 
-		glBindTextureUnit(0, diffuseTexture);
-		glBindTextureUnit(1, specularTexture);
-		glBindTextureUnit(2, normalTexture);
+    diffuseTexture->bind(0);
+    specularTexture->bind(1);
+    normalTexture->bind(2);
 
-		program.setMatrix4fv("v", glm::value_ptr(cam.getView()));
-		program.setMatrix4fv("p", glm::value_ptr(cam.getProjection()));
-		program.set1ui("useSpecularTexture", useSpecularTexture);
-		program.set1ui("useNormalTexture", useNormalTexture);
-		program.set1ui("drawDiffuseTexture", drawDiffuseTexture);
-		program.set1ui("drawSpecularTexture", drawSpecularTexture);
-		program.set1ui("drawNormalTexture", drawNormalTexture);
+		program->setMatrix4fv("v", glm::value_ptr(cam.getView()));
+		program->setMatrix4fv("p", glm::value_ptr(cam.getProjection()));
+		program->set1ui("useSpecularTexture", useSpecularTexture);
+		program->set1ui("useNormalTexture", useNormalTexture);
+		program->set1ui("drawDiffuseTexture", drawDiffuseTexture);
+		program->set1ui("drawSpecularTexture", drawSpecularTexture);
+		program->set1ui("drawNormalTexture", drawNormalTexture);
 
 
 		glBindVertexArray(vao);

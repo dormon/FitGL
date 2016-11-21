@@ -1,9 +1,11 @@
 #include <BaseApp.h>
-#include <Gui.h>
+
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-	ProgramObject program;
+  std::shared_ptr<Program> program;
 
 	auto mainWindow = app.getMainWindow();
 
@@ -69,13 +71,13 @@ int main(int /*argc*/, char ** /*argv*/) {
 	app.addDrawCallback([&]() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		program.use();
-		program.setMatrix4fv("p", value_ptr(cam.getProjection()));
-		program.setMatrix4fv("v", value_ptr(cam.getView()));
+		program->use();
+		program->setMatrix4fv("p", value_ptr(cam.getProjection()));
+		program->setMatrix4fv("v", value_ptr(cam.getView()));
 
 		glBindTextureUnit(0, cubeTexture);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, sphereBuffer);
-		program.set1ui("nofSpheres", sphereCount);
+		program->set1ui("nofSpheres", sphereCount);
 		glBindVertexArray(vaoEmpty);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);

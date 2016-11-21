@@ -48,7 +48,7 @@ ENDIF()
 set(CMAKE_MODULE_PATH "${FitGL_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-find_package(GLEW          REQUIRED)
+find_package(GPUEngine COMPONENTS geGL)
 find_package(OpenGL        REQUIRED)
 find_package(SDL2          REQUIRED)
 find_package(glm           REQUIRED)
@@ -99,8 +99,8 @@ if(FITGL_BUILD_EXAMPLES)
 endif()
 	
 # copy resources - whole dir	
-add_custom_command(
-    OUTPUT res
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources/ ${CMAKE_CURRENT_BINARY_DIR}/Resources/
-    )
-add_custom_target(CopyResources DEPENDS res)
+#add_custom_command(
+#    OUTPUT res
+#    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources/ ${CMAKE_CURRENT_BINARY_DIR}/Resources/
+#    )
+#add_custom_target(CopyResources DEPENDS res)

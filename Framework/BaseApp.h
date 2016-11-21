@@ -1,7 +1,8 @@
 #pragma once
 class BaseApp;
 
-#include <GL/glew.h>
+#include <geGL/geGL.h>
+
 #include <SDLWindow/SDLWindow.h>
 #include <cstdlib>
 #include <iostream>
@@ -15,8 +16,6 @@ class BaseApp;
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include <ProgramObject.h>
-#include <Shader.h>
 #include <Gui.h>
 #include <Loader.h>
 #include <Timer.h>
@@ -40,7 +39,7 @@ struct Options {
 	SDLWindow::Flag flags = SDLWindow::Flag::DEBUG;
 };
 
-class BaseApp {
+class BaseApp : public ge::gl::Context {
 public:
 	BaseApp();
 	virtual ~BaseApp();

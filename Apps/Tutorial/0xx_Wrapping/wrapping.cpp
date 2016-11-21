@@ -1,9 +1,11 @@
 #include <BaseApp.h>
-#include <Gui.h>
+
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-	ProgramObject program;
+  std::shared_ptr<Program> program;
 
 	auto mainWindow = app.getMainWindow();
 
@@ -14,7 +16,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 	manipulator.setRotationX(90);
 
 	GLuint vao;
-	GLuint diffuseTexture;
+  std::shared_ptr<Texture> diffuseTexture;
 	bool useMagLINEAR = true;
 	bool useMipmap = true;
 	bool useMinLINEAR = true;
@@ -48,55 +50,55 @@ int main(int /*argc*/, char ** /*argv*/) {
 	app.addDrawCallback([&]() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		program.use();
-		glBindTextureUnit(0, diffuseTexture);
+		program->use();
+    diffuseTexture->bind(0);
 
 		std::string mag;
 		std::string min;
 		if (useMagLINEAR) {
-			glTextureParameteri(diffuseTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      diffuseTexture->texParameteri(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			mag = "GL_LINEAR";
 		}
 		else {
-			glTextureParameteri(diffuseTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      diffuseTexture->texParameteri(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			mag = "GL_NEAREST";
 		}
 
 		if (useMipmap) {
 			if (useMinLINEAR) {
 				if (useBetweenLINEAR) {
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+          diffuseTexture->texParameteri( GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 					min = "GL_LINEAR_MIPMAP_LINEAR";
 				}
 				else {
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+          diffuseTexture->texParameteri( GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 					min = "GL_LINEAR_MIPMAP_NEAREST";
 				}
 			}
 			else {
 				if (useBetweenLINEAR) {
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+          diffuseTexture->texParameteri( GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
 					min = "GL_NEAREST_MIPMAP_LINEAR";
 				}
 				else {
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+          diffuseTexture->texParameteri( GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 					min = "GL_NEAREST_MIPMAP_NEAREST";
 				}
 			}
 		}
 		else {
 			if (useMinLINEAR) {
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        diffuseTexture->texParameteri( GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				min = "GL_LINEAR";
 			}
 			else {
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        diffuseTexture->texParameteri( GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				min = "GL_NEAREST";
 			}
 		}
 
-		program.setMatrix4fv("v", glm::value_ptr(cam.getView()));
-		program.setMatrix4fv("p", glm::value_ptr(cam.getProjection()));
+		program->setMatrix4fv("v", glm::value_ptr(cam.getView()));
+		program->setMatrix4fv("p", glm::value_ptr(cam.getProjection()));
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 6);

@@ -1,9 +1,11 @@
 #include <BaseApp.h>
-#include <Gui.h>
+
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-	ProgramObject programEnv, program;
+  std::shared_ptr<Program> programEnv, program;
 
 	auto mainWindow = app.getMainWindow();
 
@@ -12,8 +14,8 @@ int main(int /*argc*/, char ** /*argv*/) {
 	manipulator.setupCallbacks(app);
 	manipulator.setZoom(3);
 	
-	GLuint diffuseTexture;
-	GLuint specularTexture;
+  std::shared_ptr<Texture> diffuseTexture;
+  std::shared_ptr<Texture> specularTexture;
 
 	GLuint vao;
 	GLuint vaoEmpty;
@@ -86,12 +88,12 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	app.addDrawCallback([&]() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		program.use();
-		glBindTextureUnit(0, diffuseTexture);
-		glBindTextureUnit(1, specularTexture);
+		program->use();
+    diffuseTexture->bind(0);
+    specularTexture->bind(1);
 
-		program.setMatrix4fv("p", value_ptr(cam.getProjection()));
-		program.setMatrix4fv("v", value_ptr(cam.getView()));
+		program->setMatrix4fv("p", value_ptr(cam.getProjection()));
+		program->setMatrix4fv("v", value_ptr(cam.getView()));
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, sphereSizeX*sphereSizeY * 6);

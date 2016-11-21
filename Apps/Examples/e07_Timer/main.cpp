@@ -1,5 +1,8 @@
 #include <BaseApp.h>
 
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
+
 #include <Loader.h>
 #include <bunny.h>
 
@@ -9,7 +12,7 @@ using namespace glm;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-	ProgramObject program;
+  std::shared_ptr<Program> program;
 	
 	auto mainWindow = app.getMainWindow();
 
@@ -24,9 +27,9 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 
 	app.addInitCallback([&]() {
-		auto vs = compileShader(GL_VERTEX_SHADER, Loader::text(prefix + "lambert.vert"));
-		auto fs = compileShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "lambert.frag"));
-		program = createProgram(vs, fs);
+    auto vs = std::make_shared<Shader>(GL_VERTEX_SHADER, Loader::text(prefix + "lambert.vert"));
+    auto fs = std::make_shared<Shader>(GL_FRAGMENT_SHADER, Loader::text(prefix + "lambert.frag"));
+    program = std::make_shared<Program>(vs, fs);
 
 		bunnyInit(vao,vbo,ebo);
 		v = lookAt(vec3(zoom, zoom, zoom), vec3(0, 0, 0), vec3(0, 1, 0));
@@ -51,10 +54,10 @@ int main(int /*argc*/, char ** /*argv*/) {
 		//bunny
 		p = perspective(radians(45.0f), float(w) / float(h), 0.1f, 1000.0f);
 
-		program.use();
-		program.setMatrix4fv("p", value_ptr(p));
-		program.setMatrix4fv("v", value_ptr(v));
-		program.set3f("color", 1,0.5,0.25);
+		program->use();
+		program->setMatrix4fv("p", value_ptr(p));
+		program->setMatrix4fv("v", value_ptr(v));
+		program->set3f("color", 1,0.5,0.25);
 
 		bunnyDraw();
 	});

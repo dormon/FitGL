@@ -15,7 +15,7 @@ void Callbacks::init() {
 		std::cout << "Second window mous muf "<< x<<","<<y <<"\n";
 	}, window2->getId());
 		
-	addDrawCallback([]() {
+	addDrawCallback([&]() {
 		glViewport(0, 0, 100, 100);
 		glClearColor(0, 1, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT);

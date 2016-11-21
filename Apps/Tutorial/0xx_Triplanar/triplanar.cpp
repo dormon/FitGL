@@ -1,9 +1,11 @@
 #include <BaseApp.h>
-#include <Gui.h>
+
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-	ProgramObject programEnv, program;
+  std::shared_ptr<Program> programEnv, program;
 
 	auto mainWindow = app.getMainWindow();
 
@@ -11,9 +13,9 @@ int main(int /*argc*/, char ** /*argv*/) {
 	OrbitManipulator manipulator(&cam);
 	manipulator.setupCallbacks(app);
 	
-	GLuint diffuseTextureTop;
-	GLuint diffuseTextureSide;
-	GLuint diffuseTextureDown;
+  std::shared_ptr<Texture> diffuseTextureTop;
+  std::shared_ptr<Texture> diffuseTextureSide;
+  std::shared_ptr<Texture> diffuseTextureDown;
 
 	GLuint vao;
 	GLuint vaoEmpty;
@@ -87,13 +89,13 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	app.addDrawCallback([&]() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		program.use();
-		glBindTextureUnit(0, diffuseTextureTop);
-		glBindTextureUnit(1, diffuseTextureSide);
-		glBindTextureUnit(2, diffuseTextureDown);
+		program->use();
+    diffuseTextureTop->bind(0);
+    diffuseTextureSide->bind(1);
+    diffuseTextureDown->bind(2);
 
-		program.setMatrix4fv("p", value_ptr(cam.getProjection()));
-		program.setMatrix4fv("v", value_ptr(cam.getView()));
+		program->setMatrix4fv("p", value_ptr(cam.getProjection()));
+		program->setMatrix4fv("v", value_ptr(cam.getView()));
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, sphereSizeX*sphereSizeY * 6);

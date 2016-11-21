@@ -1,5 +1,8 @@
 #include <BaseApp.h>
 
+#include <geGL/StaticCalls.h>
+using namespace ge::gl;
+
 std::string vsrc = R".(
 #version 450
 layout(location=0) in vec2 position;
@@ -18,7 +21,7 @@ void main(){
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;	
-	GLuint program;
+  std::shared_ptr<Program> program;
 	GLuint vao;
 	GLuint vbo;
 	auto mainWindow = app.getMainWindow();
@@ -45,7 +48,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glViewport(0, 0, w, h);
 		glClearColor(0.2, 0.2, 0.2, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glUseProgram(program);
+    program->use();
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 	});
