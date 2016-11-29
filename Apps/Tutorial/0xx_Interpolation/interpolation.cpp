@@ -2,6 +2,7 @@
 
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
+using namespace fgl;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
@@ -9,12 +10,12 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	auto mainWindow = app.getMainWindow();
 
-	PerspectiveCamera cam;
-	OrbitManipulator manipulator(&cam);
+  PerspectiveCameraS cam = newPerspectiveCamera();
+  OrbitManipulator manipulator(cam);
 	manipulator.setupCallbacks(app);
 	manipulator.setZoom(2);
 	manipulator.setRotationX(90);
-	cam.setCenter(glm::vec3(0.5,0.5,0));
+	cam->setCenter(glm::vec3(0.5,0.5,0));
 
 	GLuint vbo;
 	GLuint vao;
@@ -43,7 +44,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	app.addResizeCallback([&](int w, int h) {
 		glViewport(0, 0, w, h);
-		cam.setAspect(float(w) / float(h));
+		cam->setAspect(float(w) / float(h));
 	});
 
 	app.addDrawCallback([&]() {
@@ -51,7 +52,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
     program->use();
 
-    program->setMatrix4fv("mvp", glm::value_ptr(cam.getViewProjection()));
+    program->setMatrix4fv("mvp", glm::value_ptr(cam->getViewProjection()));
     program->set1ui("mode", mode);
 
 		glBindVertexArray(vao);

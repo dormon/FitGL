@@ -1,5 +1,6 @@
 #include <BaseApp.h>
 #include <string>
+using namespace fgl;
 
 int main(int /*argc*/, char ** /*argv*/) {
   BaseApp app;

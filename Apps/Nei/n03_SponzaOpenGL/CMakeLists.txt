@@ -1,10 +1,11 @@
 set(app	n03_SponzaOpenGL)
 
-set(deps Framework imgui)
+set(deps FGL)
 
-foreach(dep ${Internal_deps})
+foreach(dep ${deps})
   if(NOT TARGET ${dep})
     message(${LIB_NAME} " Missing target: " ${dep})
+	return()
   endif()
 endforeach(dep)
 

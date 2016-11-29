@@ -2,14 +2,15 @@
 
 
 using namespace glm;
-
+using namespace fgl;
 
 void PGP2016::init() {
   ge::gl::Program::setNonexistingUniformWarning(false);
-	manipulator.setCamera(&camera);
-	manipulator.setupCallbacks(*this);
-	manipulator.setRotationY(45);
-	manipulator.setZoom(50);
+  camera = newPerspectiveCamera();
+  manipulator = newOrbitManipulator(camera);
+	manipulator->setupCallbacks(*this);
+	manipulator->setRotationY(45);
+	manipulator->setZoom(50);
 
 	initPrograms();
 	initGeometry();
@@ -165,9 +166,9 @@ void PGP2016::draw() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	program->use();
-	program->setMatrix4fv("v", value_ptr(camera.getView()));
-	program->setMatrix4fv("p", value_ptr(camera.getProjection()));
-	program->set3fv("cameraPosition", value_ptr(camera.getEye()));
+	program->setMatrix4fv("v", value_ptr(camera->getView()));
+	program->setMatrix4fv("p", value_ptr(camera->getProjection()));
+	program->set3fv("cameraPosition", value_ptr(camera->getEye()));
 	program->set3fv("lightPosition", value_ptr(lightPosition));
 	program->set1i("pick", pick);
 	program->set3f("La", 0.4, 0.4, 0.4);
@@ -177,9 +178,9 @@ void PGP2016::draw() {
 
 
 	programLegs->use();
-	programLegs->setMatrix4fv("tesView", value_ptr(camera.getView()));
-	programLegs->setMatrix4fv("tesProj", value_ptr(camera.getProjection()));
-	programLegs->set3fv("cameraPosition", value_ptr(camera.getEye()));
+	programLegs->setMatrix4fv("tesView", value_ptr(camera->getView()));
+	programLegs->setMatrix4fv("tesProj", value_ptr(camera->getProjection()));
+	programLegs->set3fv("cameraPosition", value_ptr(camera->getEye()));
 	programLegs->set3fv("lightPosition", value_ptr(lightPosition));
 	programLegs->set1f("legHeight", LEG_HEIGHT);
 	programLegs->set3f("La", 0.4, 0.4, 0.4);
@@ -198,8 +199,8 @@ void PGP2016::draw() {
 	glStencilOpSeparate(GL_BACK, GL_KEEP, GL_KEEP, GL_DECR_WRAP);
 
 	programShadowVolume->use();
-	programShadowVolume->setMatrix4fv("v", value_ptr(camera.getView()));
-	programShadowVolume->setMatrix4fv("p", value_ptr(camera.getProjection()));
+	programShadowVolume->setMatrix4fv("v", value_ptr(camera->getView()));
+	programShadowVolume->setMatrix4fv("p", value_ptr(camera->getProjection()));
 	programShadowVolume->set3fv("lightPosition", value_ptr(lightPosition));
 
 	du01_multidraw();
@@ -210,8 +211,8 @@ void PGP2016::draw() {
 	programShadowVolumeLegs->setMatrix4fv("tesView", value_ptr(mat4()));
 	programShadowVolumeLegs->setMatrix4fv("tesProj", value_ptr(mat4()));
 	programShadowVolumeLegs->set3fv("lightPosition", value_ptr(lightPosition));
-	programShadowVolumeLegs->setMatrix4fv("v", value_ptr(camera.getView()));
-	programShadowVolumeLegs->setMatrix4fv("p", value_ptr(camera.getProjection()));
+	programShadowVolumeLegs->setMatrix4fv("v", value_ptr(camera->getView()));
+	programShadowVolumeLegs->setMatrix4fv("p", value_ptr(camera->getProjection()));
 	programShadowVolumeLegs->set1f("legHeight", LEG_HEIGHT);
 
 	du02_draw();
@@ -264,7 +265,7 @@ void PGP2016::onResize(int w, int h) {
 	width = w;
 	height = h;
 	glViewport(0, 0, w, h);
-	camera.setAspect(float(w) / float(h));
+	camera->setAspect(float(w) / float(h));
 	du03_resizeFramebuffer(w, h);
 }
 

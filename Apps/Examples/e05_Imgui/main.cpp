@@ -2,6 +2,7 @@
 
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
+using namespace fgl;
 
 #include <Loader.h>
 #include <bunny.h>
@@ -28,8 +29,8 @@ int main(int /*argc*/, char ** /*argv*/) {
 	ImVec2 optSize(200, 200);
 	ImVec2 optPos(20, 40);
 
-	PerspectiveCamera cam;
-	OrbitManipulator manipulator(&cam);
+	PerspectiveCameraS cam = newPerspectiveCamera();
+	OrbitManipulator manipulator(cam);
 	manipulator.setupCallbacks(app);
 
 	std::string prefix = app.getResourceDir() + "Shaders/Examples/e05_Imgui/";
@@ -54,8 +55,8 @@ int main(int /*argc*/, char ** /*argv*/) {
 		lightPos = lightPos*lightDist;
 		program->use();
 		program->set3fv("color", bunnyColor);
-		program->setMatrix4fv("p", value_ptr(cam.getProjection()));
-		program->setMatrix4fv("v", value_ptr(cam.getView()));
+		program->setMatrix4fv("p", value_ptr(cam->getProjection()));
+		program->setMatrix4fv("v", value_ptr(cam->getView()));
 		program->set3fv("lightPosition", value_ptr(lightPos));
 
 		bunnyDraw();

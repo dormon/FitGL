@@ -25,7 +25,13 @@ struct Ball {
 	glm::mat4 m;
 };
 
-class PGP2016 :public BaseApp {
+struct Vertex {
+  glm::vec3 pos;
+  glm::vec3 norm;
+  glm::vec2 tc;
+};
+
+class PGP2016 :public fgl::BaseApp {
 public:
 	PGP2016() {};
 	virtual ~PGP2016() {};
@@ -68,8 +74,8 @@ protected:
 		glm::vec2 tc0 = glm::vec2(0, 0), glm::vec2 tc1 = glm::vec2(0, 0),
 		glm::vec2 tc2 = glm::vec2(0, 0), glm::vec2 tc3 = glm::vec2(0, 0));
 
-	PerspectiveCamera camera;
-	OrbitManipulator manipulator;
+	fgl::PerspectiveCameraS camera;
+  fgl::OrbitManipulatorS manipulator;
 	glm::vec3 lightPosition = glm::vec3(100, 50, 100);
 	bool useComputeShader = false;
 	bool usePicking = false;

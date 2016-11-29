@@ -2,6 +2,7 @@
 
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
+using namespace fgl;
 
 #include <Loader.h>
 

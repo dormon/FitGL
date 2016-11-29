@@ -6,6 +6,7 @@ using namespace ge::gl;
 #include <Loader.h>
 
 using namespace glm;
+using namespace fgl;
 
 int main(int /*argc*/, char ** /*argv*/) {
   BaseApp app;
@@ -15,7 +16,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
   float zoom = 4;
 
-  NodeShared scene;
+  NodeS scene;
 
   std::string prefix = app.getResourceDir() + "Shaders/Examples/e06_ModelLoader/";
   std::string prefixModel = app.getResourceDir() + "Models/";
@@ -31,7 +32,7 @@ int main(int /*argc*/, char ** /*argv*/) {
     int w = mainWindow->getWidth();
     int h = mainWindow->getHeight();
     glViewport(0, 0, w, h);
-    glClearColor(0.2, 0.2, 0.2, 1);
+    glClearColor(0.2, 0.2, 0.2, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
@@ -41,7 +42,7 @@ int main(int /*argc*/, char ** /*argv*/) {
     program->setMatrix4fv("p", value_ptr(p));
     program->setMatrix4fv("v", value_ptr(v));
 
-    drawNode(*program, scene);
+    drawNode(program, scene);
   });
   return app.run();
 }

@@ -2,7 +2,7 @@
 
 #include "BaseApp.h"
 
-class Callbacks: public BaseApp{
+class Callbacks: public fgl::BaseApp{
 public:
 	Callbacks();
 protected:
@@ -18,5 +18,5 @@ protected:
 	virtual void onKeyPress(SDL_Keycode  key , Uint16  mod );
 	virtual void onKeyRelease(SDL_Keycode  key , Uint16  mod );
 
-	SDLWindowShared window2;
+	fgl::SDLWindowS window2;
 };

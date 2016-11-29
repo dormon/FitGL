@@ -2,9 +2,10 @@ set(app	n04_SponzaVulkan)
 
 set(deps NeiVu)
 
-foreach(dep ${Internal_deps})
+foreach(dep ${deps})
   if(NOT TARGET ${dep})
     message(${LIB_NAME} " Missing target: " ${dep})
+	return()
   endif()
 endforeach(dep)
 

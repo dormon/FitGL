@@ -3,6 +3,7 @@
 
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
+using namespace fgl;
 
 std::string vert = R".(
 #version 430
@@ -107,10 +108,10 @@ void main() {
 int main(int /*argc*/, char ** /*argv*/) {
   BaseApp app;
   GLuint vao;
-  std::shared_ptr<Program> program;
+  ProgramS program;
 
-  PerspectiveCamera cam;
-  OrbitManipulator manipulator(&cam);
+  PerspectiveCameraS cam = newPerspectiveCamera();
+  OrbitManipulator manipulator(cam);
   manipulator.setupCallbacks(app);
   manipulator.setZoom(1);
 
@@ -141,9 +142,9 @@ int main(int /*argc*/, char ** /*argv*/) {
     glEnable(GL_DEPTH_TEST);
 
     program->use();
-    program->setMatrix4fv("p", value_ptr(cam.getProjection()));
-    program->setMatrix4fv("v", value_ptr(cam.getView()));
-    program->set2f("center", cam.getCenter().x, cam.getCenter().z);
+    program->setMatrix4fv("p", value_ptr(cam->getProjection()));
+    program->setMatrix4fv("v", value_ptr(cam->getView()));
+    program->set2f("center", cam->getCenter().x, cam->getCenter().z);
     program->set1i("levels", levels);
     for (int i = 0; i < 8; i++) {
       program->set1fv("weights", weights, 8);

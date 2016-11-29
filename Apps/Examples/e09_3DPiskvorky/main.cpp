@@ -3,6 +3,7 @@
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
 using namespace glm;
+using namespace fgl;
 
 void resizeID(GLuint fbo, GLuint tex,GLuint renderBuffer, int width, int height) {
 	glTextureImage2DEXT(tex, GL_TEXTURE_2D, 0, GL_R32I, width, height, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, 0);
@@ -12,8 +13,8 @@ void resizeID(GLuint fbo, GLuint tex,GLuint renderBuffer, int width, int height)
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
   Program::setNonexistingUniformWarning(false);
-  std::shared_ptr<Program> programID;
-  std::shared_ptr<Program> program;
+  ProgramS programID;
+  ProgramS program;
 	
 
 	auto mainWindow = app.getMainWindow();
@@ -22,14 +23,14 @@ int main(int /*argc*/, char ** /*argv*/) {
 	std::string prefix = app.getResourceDir() + "Shaders/Examples/e09_3DPiskvorky/";
 	std::string modelPrefix = app.getResourceDir() + "Models/Challenge/";
 
-	PerspectiveCamera cam;
-	OrbitManipulator manipulator(&cam);
+	PerspectiveCameraS cam = newPerspectiveCamera();
+	OrbitManipulator manipulator(cam);
 	manipulator.setupCallbacks(app);
 
-	NodeShared cross, sphere, ring;
-	NodeShared root = std::make_shared<Node>();
+	NodeS cross, sphere, ring;
+	NodeS root = std::make_shared<Node>();
 
-	std::vector<NodeShared> clickPoints;
+	std::vector<NodeS> clickPoints;
 	int clickPointsType[5 * 5 * 5] = {};
 	GLuint texid,fbo,renderBuffer;
 	int lastX = 0, lastY = 0;
@@ -51,7 +52,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 		
 		cross = Loader::scene(modelPrefix + "cross.fbx");
 		sphere = Loader::scene(modelPrefix + "sphere.fbx");
-		((PhongMaterial*)(sphere->children[0]->meshes[0]->mat.get()))->diffuse.w = 0.1;
+		((PhongMaterial*)(sphere->children[0]->meshes[0]->getMaterial(0).get()))->diffuse.w = 0.1;
 		ring = Loader::scene(modelPrefix + "ring.fbx");
 
 
@@ -87,7 +88,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	app.addResizeCallback([&](int w, int h) {
 		glViewport(0, 0, w, h);
-		cam.setAspect(float(w) / float(h));
+		cam->setAspect(float(w) / float(h));
 		resizeID(fbo, texid, renderBuffer, w, h);
 	});
 	
@@ -116,14 +117,14 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		programID->use();
 		
-		programID->setMatrix4fv("p", value_ptr(cam.getProjection()));
+		programID->setMatrix4fv("p", value_ptr(cam->getProjection()));
 		
-		programID->setMatrix4fv("v", value_ptr(cam.getView()));
+		programID->setMatrix4fv("v", value_ptr(cam->getView()));
 		
 		unsigned int i = 0;
 		for (auto &n : clickPoints) {
 			programID->set1ui("id", i++);
-			drawNode(*programID, n);
+			drawNode(programID, n);
 		}
 
 		unsigned int h = mainWindow->getHeight();
@@ -135,8 +136,8 @@ int main(int /*argc*/, char ** /*argv*/) {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		program->use();
-		program->setMatrix4fv("p", value_ptr(cam.getProjection()));
-		program->setMatrix4fv("v", value_ptr(cam.getView()));
+		program->setMatrix4fv("p", value_ptr(cam->getProjection()));
+		program->setMatrix4fv("v", value_ptr(cam->getView()));
 		program->set3f("Ld", 1.2, 1.2, 1.2);
 		
 		program->set1ui("pick",pick);
@@ -145,7 +146,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 			auto n = clickPoints.at(i);
 			if (clickPointsType[i] == 0) continue;
 			program->set1ui("id", i);
-			drawNode(*program, n);
+			drawNode(program, n);
 		}
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -154,7 +155,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 			auto n = clickPoints.at(i);
 			if (clickPointsType[i] != 0) continue;
 			program->set1ui("id", i);
-			drawNode(*program, n);
+			drawNode(program, n);
 		}
 		glDepthMask(GL_TRUE);
 

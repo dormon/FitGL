@@ -2,6 +2,7 @@
 
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
+using namespace fgl;
 
 std::string vsrc = R".(
 #version 450
@@ -20,37 +21,37 @@ void main(){
 ).";
 
 int main(int /*argc*/, char ** /*argv*/) {
-	BaseApp app;	
+  BaseApp app;
   std::shared_ptr<Program> program;
-	GLuint vao;
-	GLuint vbo;
-	auto mainWindow = app.getMainWindow();
-	app.addInitCallback([&]() {
-		auto vs = compileShader(GL_VERTEX_SHADER, vsrc);
-		auto fs = compileShader(GL_FRAGMENT_SHADER, fsrc);
-		program = createProgram(vs, fs);
-		glCreateVertexArrays(1, &vao);
-		glCreateBuffers(1, &vbo);
-		float data[] = {
-			0, 0.8,
-			0.7, -0.4,
-			-0.7, -0.4
-		};
-		glNamedBufferData(vbo, sizeof(data), data, GL_STATIC_DRAW);
-		glEnableVertexArrayAttrib(vao, 0);
-		glVertexArrayAttribFormat(vao, 0, 2, GL_FLOAT, 0, 0);
-		glVertexArrayVertexBuffer(vao, 0, vbo, 0, sizeof(float)*2);
-	});
+  GLuint vao;
+  GLuint vbo;
+  auto mainWindow = app.getMainWindow();
+  app.addInitCallback([&]() {
+    auto vs = compileShader(GL_VERTEX_SHADER, vsrc);
+    auto fs = compileShader(GL_FRAGMENT_SHADER, fsrc);
+    program = createProgram(vs, fs);
+    glCreateVertexArrays(1, &vao);
+    glCreateBuffers(1, &vbo);
+    float data[] = {
+      0, 0.8,
+      0.7, -0.4,
+      -0.7, -0.4
+    };
+    glNamedBufferData(vbo, sizeof(data), data, GL_STATIC_DRAW);
+    glEnableVertexArrayAttrib(vao, 0);
+    glVertexArrayAttribFormat(vao, 0, 2, GL_FLOAT, 0, 0);
+    glVertexArrayVertexBuffer(vao, 0, vbo, 0, sizeof(float) * 2);
+  });
 
-	app.addDrawCallback([&]() {
-		int w = mainWindow->getWidth();
-		int h = mainWindow->getHeight();
-		glViewport(0, 0, w, h);
-		glClearColor(0.2, 0.2, 0.2, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
+  app.addDrawCallback([&]() {
+    int w = mainWindow->getWidth();
+    int h = mainWindow->getHeight();
+    glViewport(0, 0, w, h);
+    glClearColor(0.2, 0.2, 0.2, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
     program->use();
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-	});
-	return app.run();
+    glBindVertexArray(vao);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+  });
+  return app.run();
 }

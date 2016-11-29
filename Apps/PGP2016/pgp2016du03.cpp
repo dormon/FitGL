@@ -34,8 +34,8 @@ int PGP2016::du03_pick() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
 	programID->use();
-	programID->setMatrix4fv("v", value_ptr(camera.getView()));
-	programID->setMatrix4fv("p", value_ptr(camera.getProjection()));
+	programID->setMatrix4fv("v", value_ptr(camera->getView()));
+	programID->setMatrix4fv("p", value_ptr(camera->getProjection()));
 
 	glBindVertexArray(vertexArray);
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectBuffer);
@@ -53,9 +53,9 @@ int PGP2016::du03_pick() {
 
 void PGP2016::du03_onClick() {
 	if (pick >= 0) {
-		vec3 center = camera.getCenter();
-		vec3 eye = camera.getEye();
-		vec3 up = camera.getUp();
+		vec3 center = camera->getCenter();
+		vec3 eye = camera->getEye();
+		vec3 up = camera->getUp();
 		vec3 dir = eye - center;
 		vec3 a = cross(dir, up);
 		vec3 f = normalize(cross(a, up));

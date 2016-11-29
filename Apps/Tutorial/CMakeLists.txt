@@ -1,3 +1,12 @@
+set(deps FGL)
+
+foreach(dep ${deps})
+  if(NOT TARGET ${dep})
+    message(${LIB_NAME} " Missing target: " ${dep})
+	return()
+  endif()
+endforeach(dep)
+
 set(apps
 	001_HelloTriangle
 	002_Primitives
@@ -21,6 +30,6 @@ foreach(app ${apps})
 	file(GLOB src ${FitGL_SOURCE_DIR}/Apps/Tutorial/${app}/*)
 	add_executable(${app} ${src} ${shaders})
 	source_group("Shaders" FILES ${shaders})
-	target_link_libraries(${app} Framework imgui)
+	target_link_libraries(${app} ${deps})
 	set_target_properties(${app} PROPERTIES FOLDER "Tutorial")
 endforeach()

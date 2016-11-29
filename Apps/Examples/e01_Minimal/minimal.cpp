@@ -2,6 +2,7 @@
 
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
+using namespace fgl;
 
 std::string vsrc = R".(
 #version 450
@@ -17,15 +18,15 @@ std::string fsrc = R".(
 #version 450
 in vec4 c;
 out vec4 f;
-void main(){asd
+void main(){
 	f=c;
 }
 ).";
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;	
-  std::shared_ptr<Program> program;
-  std::shared_ptr<VertexArray> vao;
+  ProgramS program;
+  VertexArrayS vao;
   vao = std::make_shared<VertexArray>();
 
   app.addInitCallback([&]() {

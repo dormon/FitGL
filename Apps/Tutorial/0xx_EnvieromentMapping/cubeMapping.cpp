@@ -2,21 +2,22 @@
 
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
+using namespace fgl;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-  std::shared_ptr<Program> programEnv, program, programWater;
+  ProgramS programEnv, program, programWater;
 
 	auto mainWindow = app.getMainWindow();
 
-	PerspectiveCamera cam;
-	OrbitManipulator manipulator(&cam);
+  PerspectiveCameraS cam = newPerspectiveCamera();
+  OrbitManipulator manipulator(cam);
 	manipulator.setupCallbacks(app);
 	
-  std::shared_ptr<Texture> diffuseTextureTop;
-  std::shared_ptr<Texture> diffuseTextureSide;
-  std::shared_ptr<Texture> diffuseTextureDown;
-	GLuint cubeTexture;
+  TextureS diffuseTextureTop;
+  TextureS diffuseTextureSide;
+  TextureS diffuseTextureDown;
+  TextureS cubeTexture;
 
 	GLuint vao;
 	GLuint vaoEmpty;
@@ -116,16 +117,16 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	app.addResizeCallback([&](int w, int h) {
 		glViewport(0, 0, w, h);
-		cam.setAspect(float(w) / float(h));
+    cam->setAspect(float(w) / float(h));
 	});
 
 	app.addDrawCallback([&]() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		programEnv->use();
-		programEnv->setMatrix4fv("p", value_ptr(cam.getProjection()));
-		programEnv->setMatrix4fv("v", value_ptr(cam.getView()));
+		programEnv->setMatrix4fv("p", value_ptr(cam->getProjection()));
+		programEnv->setMatrix4fv("v", value_ptr(cam->getView()));
 
-		glBindTextureUnit(0, cubeTexture);
+    cubeTexture->bind(0);
 		glBindVertexArray(vaoEmpty);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);
@@ -134,10 +135,10 @@ int main(int /*argc*/, char ** /*argv*/) {
     diffuseTextureTop->bind(0);
     diffuseTextureSide->bind(1);
     diffuseTextureDown->bind(2);
-    glBindTextureUnit(3, cubeTexture);
+    cubeTexture->bind(3);
 
-    program->setMatrix4fv("p", value_ptr(cam.getProjection()));
-    program->setMatrix4fv("v", value_ptr(cam.getView()));
+    program->setMatrix4fv("p", value_ptr(cam->getProjection()));
+    program->setMatrix4fv("v", value_ptr(cam->getView()));
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, sphereSizeX*sphereSizeY * 6);
@@ -147,11 +148,11 @@ int main(int /*argc*/, char ** /*argv*/) {
 		programWater->set1ui("waterSizeX", waterSizeX);
 		programWater->set1ui("waterSizeY", waterSizeY);
 		programWater->set1f("time", app.getTimeFromStart());
-		programWater->setMatrix4fv("p", value_ptr(cam.getProjection()));
-		programWater->setMatrix4fv("v", value_ptr(cam.getView()));
+		programWater->setMatrix4fv("p", value_ptr(cam->getProjection()));
+		programWater->setMatrix4fv("v", value_ptr(cam->getView()));
 
 		glEnable(GL_BLEND);
-		glBindTextureUnit(0, cubeTexture);
+    cubeTexture->bind(0);
 		glBindVertexArray(vaoEmpty);
 		glPatchParameteri(GL_PATCH_VERTICES, 1);
 		glDrawArrays(GL_PATCHES, 0, waterSizeX*waterSizeY);

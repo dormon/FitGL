@@ -3,6 +3,7 @@
 
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
+using namespace fgl;
 
 std::string vert = R".(
 #version 430

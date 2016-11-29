@@ -2,6 +2,7 @@
 
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
+using namespace fgl;
 
 std::string vsrc = R".(
 #version 450
@@ -40,45 +41,45 @@ void main(){
 ).";
 
 int main(int /*argc*/, char ** /*argv*/) {
-	BaseApp app;	
+  BaseApp app;
   std::shared_ptr<Program> program;
-	GLuint vao;
-	GLuint vbo;
-	auto mainWindow = app.getMainWindow();
+  GLuint vao;
+  GLuint vbo;
+  auto mainWindow = app.getMainWindow();
 
-	PerspectiveCamera cam;
-	OrbitManipulator manipulator(&cam);
-	manipulator.setupCallbacks(app);
+  PerspectiveCameraS cam = newPerspectiveCamera();
+  OrbitManipulator manipulator(cam);
+  manipulator.setupCallbacks(app);
 
-	app.addInitCallback([&]() {
-		auto vs = compileShader(GL_VERTEX_SHADER, vsrc);
-		auto fs = compileShader(GL_FRAGMENT_SHADER, fsrc);
-		program = createProgram(vs, fs);
-		glCreateVertexArrays(1, &vao);
+  app.addInitCallback([&]() {
+    auto vs = compileShader(GL_VERTEX_SHADER, vsrc);
+    auto fs = compileShader(GL_FRAGMENT_SHADER, fsrc);
+    program = createProgram(vs, fs);
+    glCreateVertexArrays(1, &vao);
 
 
-		glClearColor(0.2, 0.2, 0.2, 1);
-		glDisable(GL_CULL_FACE);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	});
+    glClearColor(0.2, 0.2, 0.2, 1);
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  });
 
-	app.addResizeCallback([&](int w, int h) {
-		glViewport(0, 0, w, h);
-		cam.setAspect(float(w) / float(h));
-	});
-	
-	app.addDrawCallback([&]() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  app.addResizeCallback([&](int w, int h) {
+    glViewport(0, 0, w, h);
+    cam->setAspect(float(w) / float(h));
+  });
+
+  app.addDrawCallback([&]() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     program->use();
 
-		program->setMatrix4fv("p", value_ptr(cam.getProjection()));
-		program->setMatrix4fv("v", value_ptr(cam.getView()));
+    program->setMatrix4fv("p", value_ptr(cam->getProjection()));
+    program->setMatrix4fv("v", value_ptr(cam->getView()));
 
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 18);
-	});
-	return app.run();
+    glBindVertexArray(vao);
+    glDrawArrays(GL_TRIANGLES, 0, 18);
+  });
+  return app.run();
 }

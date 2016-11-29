@@ -2,6 +2,7 @@
 
 #include <geGL/StaticCalls.h>
 using namespace ge::gl;
+using namespace fgl;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
@@ -9,8 +10,8 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	auto mainWindow = app.getMainWindow();
 
-	PerspectiveCamera cam;
-	OrbitManipulator manipulator(&cam);
+  PerspectiveCameraS cam = newPerspectiveCamera();
+  OrbitManipulator manipulator(cam);
 	manipulator.setupCallbacks(app);
 	manipulator.setZoom(3);
 	
@@ -83,7 +84,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
 	app.addResizeCallback([&](int w, int h) {
 		glViewport(0, 0, w, h);
-		cam.setAspect(float(w) / float(h));
+		cam->setAspect(float(w) / float(h));
 	});
 
 	app.addDrawCallback([&]() {
@@ -92,8 +93,8 @@ int main(int /*argc*/, char ** /*argv*/) {
     diffuseTexture->bind(0);
     specularTexture->bind(1);
 
-		program->setMatrix4fv("p", value_ptr(cam.getProjection()));
-		program->setMatrix4fv("v", value_ptr(cam.getView()));
+    program->setMatrix4fv("p", value_ptr(cam->getProjection()));
+    program->setMatrix4fv("v", value_ptr(cam->getView()));
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, sphereSizeX*sphereSizeY * 6);

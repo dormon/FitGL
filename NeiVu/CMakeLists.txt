@@ -1,6 +1,6 @@
 set(LIB_NAME NeiVu)
 
-set(Internal_deps SDL2 glm vulkan Framework)
+set(Internal_deps FGL vulkan)
 
 foreach(dep ${Internal_deps})
   if(NOT TARGET ${dep})
