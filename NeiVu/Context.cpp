@@ -22,7 +22,7 @@ NeiVu::Context::~Context() {
 
 
 vk::ShaderModule NeiVu::Context::loadShader(std::string name){
-  auto s = Loader::binary(name);
+  auto s = fgl::Loader::binary(name);
   vk::ShaderModuleCreateInfo smci;
   smci.codeSize = s.size();
   smci.pCode = (uint32_t*)s.data();
@@ -43,12 +43,12 @@ void NeiVu::Context::flushCommandBuffer(){
   commandBuffer.begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse));
 }
 
-void NeiVu::Context::changeImageLayout(vk::CommandBuffer buffer, vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask){
+void NeiVu::Context::changeImageLayout(vk::CommandBuffer buffer, vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask, int mip){
   vk::ImageMemoryBarrier imb;
   imb.oldLayout = oldLayout;
   imb.newLayout = newLayout;
   imb.image = image;
-  imb.subresourceRange = vk::ImageSubresourceRange(imageAspect, 0, 1, 0, 1);
+  imb.subresourceRange = vk::ImageSubresourceRange(imageAspect, 0, mip, 0, 1);
   imb.srcAccessMask = srcAccessMask;
 
   switch (newLayout) {
@@ -78,8 +78,8 @@ void NeiVu::Context::changeImageLayout(vk::CommandBuffer buffer, vk::Image image
     vk::DependencyFlags(), 0, NULL, 0, NULL, 1, &imb);
 }
 
-void NeiVu::Context::changeImageLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask){
-  changeImageLayout(commandBuffer,image,oldLayout, newLayout,imageAspect,srcAccessMask);
+void NeiVu::Context::changeImageLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask, int mip){
+  changeImageLayout(commandBuffer,image,oldLayout, newLayout,imageAspect,srcAccessMask, mip);
 }
 
 uint32_t NeiVu::Context::memoryTypeBitsToIndex(uint32_t typeBits, vk::MemoryPropertyFlags requirements){

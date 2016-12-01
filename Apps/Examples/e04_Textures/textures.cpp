@@ -10,7 +10,7 @@ using namespace glm;
 
 int main(int /*argc*/, char ** /*argv*/) {
 	BaseApp app;
-  std::shared_ptr<Program> program;
+ ProgramS program;
 	GLuint vao;
 	GLuint vbo;
 	GLuint ebo;
@@ -25,9 +25,9 @@ int main(int /*argc*/, char ** /*argv*/) {
   std::shared_ptr<Texture> texture[9];
 
 	app.addInitCallback([&]() {
-    auto vs = std::make_shared<Shader>(GL_VERTEX_SHADER, Loader::text(prefix + "empty.vert"));
-    auto gs = std::make_shared<Shader>(GL_GEOMETRY_SHADER, Loader::text(prefix + "quad.geo"));
-    auto fs = std::make_shared<Shader>(GL_FRAGMENT_SHADER, Loader::text(prefix + "texture.frag"));
+    auto vs = newShader(GL_VERTEX_SHADER, Loader::text(prefix + "empty.vert"));
+    auto gs = newShader(GL_GEOMETRY_SHADER, Loader::text(prefix + "quad.geo"));
+    auto fs = newShader(GL_FRAGMENT_SHADER, Loader::text(prefix + "texture.frag"));
     program = std::make_shared<Program>(vs, gs, fs);
 
 

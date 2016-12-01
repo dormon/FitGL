@@ -1,11 +1,5 @@
 #include "VuMesh.h"
 
-struct Vertex {
-  glm::vec3 pos;
-  glm::vec3 norm;
-  glm::vec2 tc;
-};
-
 NeiVu::Mesh::Mesh(){
 }
 

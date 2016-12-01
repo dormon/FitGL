@@ -64,7 +64,7 @@ NeiVu::NodeShared NeiVu::Loader::scene(std::string const & fileName){
 			std::string texPath = dir + tex.C_Str();
 			texPath = std::regex_replace(texPath, std::regex("\\\\"), "/");
 
-      auto img = ::Loader::image(texPath);
+      auto img = fgl::Loader::image(texPath);
       auto tx = new NeiVu::Texture();
       tx->alloc(img->width, img->height, vk::Format::eB8G8R8A8Unorm);
       void *ptr = tx->map();

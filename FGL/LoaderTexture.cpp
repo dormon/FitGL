@@ -18,7 +18,7 @@ std::shared_ptr<ge::gl::Texture> Loader::texture(std::string const & fileName, b
   auto tex = std::make_shared<ge::gl::Texture>();
   tex->create(GL_TEXTURE_2D, GL_RGBA, 0, img->width, img->height, 0);
   tex->setData2D(img->data, GL_BGRA, GL_UNSIGNED_BYTE);
-  tex->generateMipmap();
+  if(generateMipmap)tex->generateMipmap();
   tex->texParameteri(GL_TEXTURE_MIN_FILTER, filterMin);
   tex->texParameteri(GL_TEXTURE_MAG_FILTER, filterMag);
   tex->texParameteri(GL_TEXTURE_WRAP_R, wrapR);

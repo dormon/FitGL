@@ -13,8 +13,8 @@ VuApp::VuApp() {
   height = mainWindow->getHeight();
 
   try {
-    vu = new Context();
-    Context::makeCurrent(vu);
+    vu = new NeiVu::Context();
+    NeiVu::Context::makeCurrent(vu);
 
     SwapchainOptions so;
     so.vu = vu;

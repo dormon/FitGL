@@ -3,7 +3,6 @@ namespace NeiVu {
   class Loader;
 };
 #include <string>
-#include <GL/glew.h>
 #include <Image.h>
 #include <VuNode.h>
 

@@ -183,6 +183,8 @@ void NeiVu::printDeviceProperties(vk::PhysicalDevice &device) {
     vk::Format format[] = {
       vk::Format::eR8Uint,
       vk::Format::eR8G8B8A8Uint,
+      vk::Format::eB8G8R8A8Unorm,
+      vk::Format::eB8G8R8A8Uint,
       vk::Format::eR32Sfloat,
       vk::Format::eR32G32B32A32Sfloat,
       vk::Format::eD16Unorm,

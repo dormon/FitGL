@@ -5,8 +5,10 @@ using namespace glm;
 
 class VuTest : public VuApp {
 public:
-  VuTest() :manipulator(&cam) {
-    manipulator.setupCallbacks(*this);
+  VuTest(){
+    cam = fgl::newPerspectiveCamera();
+    manipulator = fgl::newOrbitManipulator(cam);
+    manipulator->setupCallbacks(*this);
   }
 
   vk::DescriptorSetLayout descriptorSetLayout;
@@ -15,8 +17,8 @@ public:
 
   Pipeline* pipeline;
 
-  PerspectiveCamera cam;
-  OrbitManipulator manipulator;
+  fgl::PerspectiveCameraS cam;
+  fgl::OrbitManipulatorS manipulator;
   NeiVu::NodeShared root;
 
   vk::QueryPool queryPool;
@@ -112,8 +114,8 @@ public:
       vk::Extent2D(width, height));
     commandBuffer.setScissor(0, 1, &scissor);
 
-    mat4 p = cam.getProjection();
-    mat4 v = cam.getView();
+    mat4 p = cam->getProjection();
+    mat4 v = cam->getView();
     mat4 m;
 
     commandBuffer.pushConstants<mat4>(pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, { p,v,m });
@@ -174,7 +176,7 @@ public:
 
   virtual void update(float dt) {
     //mainWindow->setTitle(std::to_string(1.0f / dt) + "");
-    manipulator.update(dt);
+    manipulator->update(dt);
     if (frame % 10 == 0) {
       mainWindow->setTitle(std::to_string(fps) + "("+std::to_string(1.0f / dt)+")");
     }
@@ -207,7 +209,7 @@ public:
 };
 
 int main(int /*argc*/, char ** /*argv*/) {
-  BaseApp::options.minimumVersion = 0;
+  fgl::BaseApp::options.minimumVersion = 0;
   VuTest app;
 
   return app.run();

@@ -9,6 +9,12 @@ namespace NeiVu {
 #include "Buffer.h"
 #include "VuMaterial.h"
 
+struct Vertex {
+  glm::vec3 pos;
+  glm::vec3 norm;
+  glm::vec2 tc;
+};
+
 class NeiVu::Mesh: public std::enable_shared_from_this<NeiVu::Mesh> {
 public:
 	Mesh();

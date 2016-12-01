@@ -1,17 +1,21 @@
 #include <BaseApp.h>
 
+#include <geGL/StaticCalls.h>
+using namespace fgl;
+using namespace ge::gl;
+
 int main(int /*argc*/, char ** /*argv*/) {
   BaseApp app;
-  ProgramObject program;
+  ProgramS program;
 
   auto mainWindow = app.getMainWindow();
 
   std::string prefix = app.getResourceDir() + "Shaders/Examples/e06_ModelLoader/";
 
-  PerspectiveCamera cam;
-  OrbitManipulator manipulator(&cam);
-  manipulator.setupCallbacks(app);
-  NodeShared root;
+  PerspectiveCameraS cam = newPerspectiveCamera();
+  OrbitManipulatorS manipulator= newOrbitManipulator(cam);
+  manipulator->setupCallbacks(app);
+  NodeS root;
 
   GLuint query[2];
 
@@ -28,7 +32,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
   app.addResizeCallback([&](int w, int h) {
     glViewport(0, 0, w, h);
-    cam.setAspect(float(w) / float(h));
+    cam->setAspect(float(w) / float(h));
   });
 
   app.addDrawCallback([&]() {
@@ -40,9 +44,9 @@ int main(int /*argc*/, char ** /*argv*/) {
     glEnable(GL_DEPTH_TEST);
     //bunny
 
-    program.use();
-    program.setMatrix4fv("p", value_ptr(cam.getProjection()));
-    program.setMatrix4fv("v", value_ptr(cam.getView()));
+    program->use();
+    program->setMatrix4fv("p", value_ptr(cam->getProjection()));
+    program->setMatrix4fv("v", value_ptr(cam->getView()));
 
     drawNode(program, root);
     glQueryCounter(query[1], GL_TIMESTAMP);

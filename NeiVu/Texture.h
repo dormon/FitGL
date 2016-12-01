@@ -10,13 +10,18 @@ public:
   Texture(Context* vu=nullptr);
   ~Texture();
 
-  void alloc(int width, int height, vk::Format format);
-  void setReadOptimal();
+  void alloc(int width, int height, vk::Format format, int mipLevels = 15);
+  void generateMipmaps();
   void* map();
   void unmap();
   void moveToGPU();
 
-  vk::Image image;
+  //vk::Image image;
+  vk::Buffer buffer;
+  vk::DeviceMemory bufferMemory;
+  int bufferSize;
+
+
   vk::ImageView imageView;
   vk::Sampler sampler;
 
@@ -30,4 +35,9 @@ private:
   vk::Format format;
   int width = 0;
   int height = 0;
+  int mipLevels = 0;
+
+  std::vector<int> mipOffsets;
+  std::vector<int> mipWidths;
+  std::vector<int> mipHeights;
 };

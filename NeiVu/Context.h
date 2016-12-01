@@ -44,8 +44,8 @@ public:
   vk::ShaderModule loadShader(std::string name);
   
   void flushCommandBuffer();
-  void changeImageLayout(vk::CommandBuffer buffer, vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask = vk::AccessFlags());
-  void changeImageLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask = vk::AccessFlags());
+  void changeImageLayout(vk::CommandBuffer buffer, vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask = vk::AccessFlags(), int mip=1);
+  void changeImageLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask = vk::AccessFlags(),int mip=1);
   //void changeBufferLayout(vk::Image image, vk::ImageLayout oldLayout, vk::ImageLayout newLayout, vk::ImageAspectFlagBits imageAspect, vk::AccessFlags srcAccessMask = vk::AccessFlags());
 
   uint32_t memoryTypeBitsToIndex(uint32_t typeBits, vk::MemoryPropertyFlags requirements);

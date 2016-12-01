@@ -91,14 +91,15 @@ void NeiVu::Swapchain::createSwapchain(){
     return find(presentModes.begin(), presentModes.end(), mode) != presentModes.end();
   };
 
-  if (isModePresent(vk::PresentModeKHR::eImmediate))
-    presentMode = vk::PresentModeKHR::eImmediate;
-  if (isModePresent(vk::PresentModeKHR::eMailbox))
-    presentMode = vk::PresentModeKHR::eMailbox;
-  if (isModePresent(vk::PresentModeKHR::eFifo))
-    presentMode = vk::PresentModeKHR::eFifo;
-  if (isModePresent(vk::PresentModeKHR::eFifoRelaxed))
-    presentMode = vk::PresentModeKHR::eFifoRelaxed;
+  std::vector<vk::PresentModeKHR> modes = {
+    vk::PresentModeKHR::eImmediate,
+    vk::PresentModeKHR::eMailbox,
+    //vk::PresentModeKHR::eFifo,
+    //vk::PresentModeKHR::eFifoRelaxed
+  };
+  for (auto &mode : modes) {
+    if (isModePresent(mode)) presentMode = mode;
+  }
 
   imageCount = (std::min)(imageCount, surfaceCapabilities.maxImageCount);
   imageCount = (std::max)(imageCount, surfaceCapabilities.minImageCount);
@@ -159,10 +160,11 @@ void NeiVu::Swapchain::createDepthBuffer(){
   ici.tiling = vk::ImageTiling::eOptimal;
   ici.initialLayout = vk::ImageLayout::eUndefined;
 
+
   depthBufferImage = device.createImage(ici, 0);
 
   vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements(depthBufferImage);
-  uint32_t memoryTypeIndex = vu->memoryTypeBitsToIndex(memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlags());
+  uint32_t memoryTypeIndex = vu->memoryTypeBitsToIndex(memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
   vk::MemoryAllocateInfo mai;
   mai.allocationSize = memoryRequirements.size;

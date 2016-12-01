@@ -5,8 +5,10 @@ using namespace glm;
 
 class VuTest : public VuApp {
 public:
-  VuTest() :manipulator(&cam) {
-    manipulator.setupCallbacks(*this);
+  VuTest(){
+    cam = fgl::newPerspectiveCamera();
+    manipulator = fgl::newOrbitManipulator(cam);
+    manipulator->setupCallbacks(*this);
   }
 
   vk::DescriptorSetLayout descriptorSetLayout;
@@ -15,8 +17,8 @@ public:
 
   Pipeline* pipeline;
 
-  PerspectiveCamera cam;
-  OrbitManipulator manipulator;
+  fgl::PerspectiveCameraS cam;
+  fgl::OrbitManipulatorS manipulator;
   NeiVu::NodeShared root;
 
   void createDescriptors(NeiVu::NodeShared const&node) {
@@ -104,8 +106,8 @@ public:
       vk::Extent2D(width, height));
     commandBuffer.setScissor(0, 1, &scissor);
 
-    mat4 p = cam.getProjection();
-    mat4 v = cam.getView();
+    mat4 p = cam->getProjection();
+    mat4 v = cam->getView();
     mat4 m;
 
     commandBuffer.pushConstants<mat4>(pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, { p,v,m });
@@ -120,8 +122,8 @@ public:
   virtual void init() {
 
     //root = NeiVu::Loader::scene(RESOURCE_DIR"Models/Challenge/cross.fbx");
-    root = NeiVu::Loader::scene(RESOURCE_DIR"Models/Sponza/sponza.fbx");
-    //root = NeiVu::Loader::scene(RESOURCE_DIR"Models/texCube/texCube.obj");
+    //root = NeiVu::Loader::scene(RESOURCE_DIR"Models/Sponza/sponza.fbx");
+    root = NeiVu::Loader::scene(RESOURCE_DIR"Models/texCube/texCube.obj");
 
     vu->flushCommandBuffer();
 
@@ -163,7 +165,7 @@ public:
   }
 
   virtual void draw() {
-    manipulator.update(0.015);
+    manipulator->update(0.015);
     swapchain->next();
 
     createDrawCommand();
@@ -185,7 +187,7 @@ public:
 };
 
 int main(int /*argc*/, char ** /*argv*/) {
-  BaseApp::options.minimumVersion = 0;
+  fgl::BaseApp::options.minimumVersion = 0;
   VuTest app;
 
   return app.run();

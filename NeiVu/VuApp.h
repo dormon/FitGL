@@ -23,7 +23,7 @@ namespace NeiVu {
 	class VuApp;
 };
 
-class NeiVu::VuApp: public BaseApp {
+class NeiVu::VuApp: public fgl::BaseApp {
 public:
 	VuApp();
 

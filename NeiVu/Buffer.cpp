@@ -60,5 +60,4 @@ void NeiVu::Buffer::moveToGPU(){
   }
   
   vu->commandBuffer.copyBuffer(buffer, bufferGPU, { vk::BufferCopy(0,0,size) });
-
 }
