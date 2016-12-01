@@ -24,6 +24,7 @@ namespace fgl{
 #include <Timer.h>
 #include <Camera.h>
 #include <Manipulator.h>
+#include <Shape.h>
 //
 #include <utils/utils.h>
 

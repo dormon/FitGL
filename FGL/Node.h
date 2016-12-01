@@ -21,7 +21,7 @@ public:
   void addMesh(MeshS &m);
   void removeMesh(MeshS &m);
 	
-	glm::mat4 matrix;
 	std::vector<NodeS> children;
 	std::vector<MeshS> meshes;
+  glm::mat4 matrix;
 };
