@@ -102,31 +102,6 @@ void NeiVu::Texture::alloc(int width, int height, vk::Format format, int maxMipL
 
 }
 void NeiVu::Texture::generateMipmaps() {
-  unsigned char* ptr = (unsigned char*)map();
-
-  for (int i = 1; i < mipLevels; i++) {
-    int w = mipWidths[i];
-    int h = mipHeights[i];
-    int o = mipOffsets[i];
-
-    int o1 = mipOffsets[i-1];
-    int w1 = mipWidths[i-1];
-    int h1 = mipHeights[i-1];
-
-    for (int y = 0; y < h; y++) {
-      for (int x = 0; x < w; x++) {
-        for (int c = 0; c < 4; c++) {
-          int s = 0;
-          s += ptr[o1 + ((y*2)*w1 + (x*2)) * 4 + c];
-          s += ptr[o1 + ((y*2+1)*w1 + (x*2)) * 4 + c];
-          s += ptr[o1 + ((y*2+1)*w1 + (x*2+1)) * 4 + c];
-          s += ptr[o1 + ((y*2)*w1 + (x*2+1)) * 4 + c];
-          ptr[o + (y*w +x) * 4 + c] = s/4;
-        }
-      }
-    }
-  }
-  unmap();
 }
 
 void * NeiVu::Texture::map() {
@@ -148,7 +123,7 @@ void NeiVu::Texture::moveToGPU() {
     ici.initialLayout = vk::ImageLayout::eUndefined;
     ici.mipLevels = mipLevels;
     ici.tiling = vk::ImageTiling::eOptimal;
-    ici.usage = vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled;
+    ici.usage = vk::ImageUsageFlagBits::eTransferSrc|vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled;
 
     imageGPU = vu->device.createImage(ici);
 
@@ -176,23 +151,38 @@ void NeiVu::Texture::moveToGPU() {
   }
 
   vu->changeImageLayout(imageGPU, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal,
-    vk::ImageAspectFlagBits::eColor,vk::AccessFlags(),mipLevels);
+    vk::ImageAspectFlagBits::eColor, vk::AccessFlags(), mipLevels);
 
-  /*vu->commandBuffer.copyImage(image, vk::ImageLayout::eTransferSrcOptimal,
-    imageGPU, vk::ImageLayout::eTransferDstOptimal,
-    { vk::ImageCopy(
-      vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor,0,0,1),vk::Offset3D(0,0,0),
-      vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor,0,0,1),vk::Offset3D(0,0,0),
-      vk::Extent3D(width,height,1))});*/
-  for (int i = 0; i < mipLevels; i++)
     vu->commandBuffer.copyBufferToImage(buffer, imageGPU, vk::ImageLayout::eTransferDstOptimal,
-    { vk::BufferImageCopy(mipOffsets[i],0,0,
-      vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor,i,0,1),
-      vk::Offset3D(0,0,0),vk::Extent3D(mipWidths[i],mipHeights[i],1)),
+    { vk::BufferImageCopy(0,0,0,
+      vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor,0,0,1),
+      vk::Offset3D(0,0,0),vk::Extent3D(width,height,1)),
     });
 
-  vu->changeImageLayout(imageGPU, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal,
-    vk::ImageAspectFlagBits::eColor, vk::AccessFlagBits::eTransferWrite, mipLevels);
+  vu->changeImageLayout(imageGPU, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eTransferSrcOptimal,
+    vk::ImageAspectFlagBits::eColor, vk::AccessFlagBits::eTransferWrite, 1, 0);
+  vu->changeImageLayout(imageGPU, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal,
+    vk::ImageAspectFlagBits::eColor, vk::AccessFlags(), mipLevels - 1, 1);
 
+  std::vector<vk::ImageBlit> regions;
+  for (int i = 1; i < mipLevels; i++) {
+    vk::ImageBlit ib;
+    ib.srcSubresource = vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor, i - 1, 0, 1);
+    ib.srcOffsets[0] = vk::Offset3D(0, 0, 0);
+    ib.srcOffsets[1] = vk::Offset3D(width>>(i-1), height>>(i-1), 1);
+    ib.dstSubresource = vk::ImageSubresourceLayers(vk::ImageAspectFlagBits::eColor, i, 0, 1);
+    ib.dstOffsets[0] = vk::Offset3D(0, 0, 0);
+    ib.dstOffsets[1] = vk::Offset3D(width >> i, height >> i, 1);
+    regions.push_back(ib);
+  }
+
+  vu->commandBuffer.blitImage(imageGPU, vk::ImageLayout::eTransferSrcOptimal,
+    imageGPU, vk::ImageLayout::eTransferDstOptimal,
+    regions, vk::Filter::eLinear);
+
+  vu->changeImageLayout(imageGPU, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal,
+    vk::ImageAspectFlagBits::eColor, vk::AccessFlagBits::eTransferWrite, mipLevels - 1, 1);
+  vu->changeImageLayout(imageGPU, vk::ImageLayout::eTransferSrcOptimal, vk::ImageLayout::eShaderReadOnlyOptimal,
+    vk::ImageAspectFlagBits::eColor, vk::AccessFlagBits::eTransferRead, 1, 0);
 
 }
